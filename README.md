@@ -1,57 +1,42 @@
-# Prime OS Martin Reyes - V7.3 Plan 6 Semanas / iPhone Ready
+# Prime OS - Martin Reyes
 
-## Base usada
-Esta versión carga el plan estructurado del mesociclo de 6 semanas que ya teníamos:
+## ¿Qué es Prime OS?
+
+Prime OS es una plataforma personal de entrenamiento para registrar, organizar y revisar el bloques de entrenamiento.
+
+## Objetivo
+
+Automatizar el seguimiento del entrenamiento para:
+
+- revisar qué rutina toca;
+- registrar peso, reps, RIR/RPE, descanso, dolor y observaciones;
+- controlar series semanales por músculo;
+- comparar lo planificado contra lo realizado;
+- exportar respaldo en Excel;
+- importar rutina/registros desde Excel.
+
+## Plan cargado
+
 - Semana 1: Reentrada técnica / resensibilización.
 - Semana 2: Acumulación efectiva.
+- Semana 2.5 Pivot: registros reales cargados.
 - Semana 3: Intensificación I.
 - Semana 4: Intensificación II.
 - Semana 5: Pico técnico controlado.
 - Semana 6: Pivot / deload inteligente.
 
-También mantiene Semana 2.5 Pivot con tus registros reales.
+## Uso móvil
 
-## Estructura cargada
-Cada semana tiene:
-- Lunes - Descanso
-- Martes - Lower A
-- Miércoles - Upper A
-- Jueves - Cardio suave
-- Viernes - Lower B
-- Sábado - Upper B
-- Domingo - Trote opcional
+El botón `☰` abre el menú como panel lateral.  
+Al tocar una sección, el menú se cierra y se muestra el contenido usando todo el ancho disponible.
 
-## Objetivos semanales corregidos
-Se cambian los objetivos por músculo/patrón:
-- cuádriceps
-- glúteo
-- isquios
-- posterior/hinge
-- pecho
-- espalda/dorsal
-- deltoide lateral
-- bíceps
-- tríceps
-- gemelos
-- core/control
-- escápula/manguito
-- cardio
-- recuperación
+## GitHub Pages
 
-## Semana 2.5 real
-Se mantiene cargado:
-- Búlgaras 27,5 kg
-- Prensa 230 kg
-- Sóleo/gemelos
-- Extensión cuádriceps 115 kg
-- Press inclinado 75 lbs con dolor 6/10
-- Pulldown 96/82 kg
-- Pushdown 80/65 lbs
-- Peso muerto semi sumo 130 kg
-- Curl femoral 60/80 lbs
+El sitio puede abrirse desde:
 
-## Uso en iPhone
-1. Descomprime el ZIP.
-2. Sube la carpeta completa a GitHub Pages, Netlify, Vercel o Cloudflare Pages.
-3. Abre el link en Safari.
-4. Compartir > Agregar a pantalla de inicio.
+`https://mrg722.github.io/prime-os-M-Reyes-/`
+
+## Guardado
+
+Los datos se guardan en LocalStorage del navegador.  
+Exporta respaldo en Excel cada cierto tiempo.

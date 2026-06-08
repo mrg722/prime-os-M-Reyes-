@@ -1,12 +1,12 @@
 {
-  "name": "Prime OS Martin Reyes V7.3",
+  "name": "Prime OS Martin Reyes V7.3.5",
   "short_name": "Prime OS",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0d1117",
   "theme_color": "#0d1117",
   "icons": [],
-  "description": "Prime OS con plan estructurado de 6 semanas",
+  "description": "Plataforma personal de entrenamiento para registrar rutina, RIR/RPE, dolor, fatiga y progreso semanal.",
   "orientation": "portrait-primary",
   "scope": "./"
 }

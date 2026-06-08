@@ -452,6 +452,40 @@ let state = loadState();
 let trainingDraft = [];
 let chartInstance = null;
 
+function bindMobileOverlayMenu(){
+  document.addEventListener("click", (event) => {
+    const sidebar = document.getElementById("sidebar");
+    const menuBtn = document.getElementById("menuBtn");
+    if(!sidebar || !menuBtn) return;
+    if(window.innerWidth > 980) return;
+    if(!sidebar.classList.contains("open")) return;
+
+    const insideSidebar = sidebar.contains(event.target);
+    const insideButton = menuBtn.contains(event.target);
+
+    if(!insideSidebar && !insideButton){
+      sidebar.classList.remove("open");
+      document.body.classList.remove("mobile-menu-open");
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if(event.key !== "Escape") return;
+    const sidebar = document.getElementById("sidebar");
+    sidebar?.classList.remove("open");
+    document.body.classList.remove("mobile-menu-open");
+  });
+
+  window.addEventListener("resize", () => {
+    if(window.innerWidth > 980){
+      const sidebar = document.getElementById("sidebar");
+      sidebar?.classList.remove("open");
+      document.body.classList.remove("mobile-menu-open");
+    }
+  });
+}
+
+
 const PAGE_META = {
   inicio: { title: "Inicio", subtitle: "Panel principal de control y estado actual del bloque." },
   rutina: { title: "Rutina Base", subtitle: "Configura la estructura semanal, ejercicios y planificación del bloque." },
@@ -627,6 +661,7 @@ function setup(){
   fillSelectors();
   bindNav();
   bindInputs();
+  bindMobileOverlayMenu();
   applySidebarPreference();
   applyBackgroundForView("inicio");
   resetTrainingDraft();
@@ -647,7 +682,12 @@ function bindNav(){
 }
 
 function bindInputs(){
-  $("#menuBtn")?.addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
+  $("#menuBtn")?.addEventListener("click",()=>{
+    const sidebar = $("#sidebar");
+    if(!sidebar) return;
+    sidebar.classList.toggle("open");
+    document.body.classList.toggle("mobile-menu-open", sidebar.classList.contains("open"));
+  });
   $("#sidebarCompactBtn")?.addEventListener("click", toggleSidebarCompact);
   $("#sidebarTopToggle")?.addEventListener("click", toggleSidebarCompact);
   $("#sidebarCompactBtnMobile")?.addEventListener("click", toggleSidebarCompact);
@@ -685,6 +725,7 @@ function switchView(view){
   refreshTopMeta(view);
   applyBackgroundForView(view);
   $("#sidebar")?.classList.remove("open");
+  document.body.classList.remove("mobile-menu-open");
   renderAll();
   if(view === "nutricion") setTimeout(renderChart, 50);
 }
