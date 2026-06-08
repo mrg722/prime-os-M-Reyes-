@@ -44,4 +44,3 @@ Sube todos los archivos a la raíz del repositorio y abre:
 ## Guardado
 
 Los datos se guardan en LocalStorage del navegador. Exporta respaldo en Excel cada cierto tiempo.
-Versión actual: V7.4
