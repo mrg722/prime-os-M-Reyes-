@@ -1,0 +1,12 @@
+{
+  "name": "Prime OS Martin Reyes V7.4",
+  "short_name": "Prime OS",
+  "start_url": "./index.html?v=7.4",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "icons": [],
+  "description": "Prime OS V7.4 con pantalla inicial y drawer móvil aislado.",
+  "orientation": "portrait-primary",
+  "scope": "./"
+}
