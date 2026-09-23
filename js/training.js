@@ -175,6 +175,10 @@ function formatBestSet(prev){
 window.updateDraftField = function(i,k,v){
   collectDraftInputs();
   trainingDraft[i][k] = k === "muscle" ? normalizeMuscle(v) : v;
+  if(k==="name" && typeof v10AddExerciseMeta==="function"){
+    const enriched=v10AddExerciseMeta(trainingDraft[i]);
+    Object.assign(trainingDraft[i],enriched);
+  }
   saveDraftToStorage();
 };
 window.changeActualSets = function(i,v){
