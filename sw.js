@@ -1,6 +1,6 @@
 // Service worker de Prime OS: guarda la app en el dispositivo para abrirla y usarla sin internet.
 // Al publicar una versión nueva, sube CACHE_VERSION (debe coincidir con APP_VERSION en js/config.js).
-const CACHE_VERSION = "9.1";
+const CACHE_VERSION = "10.0";
 const CACHE_NAME = `prime-os-${CACHE_VERSION}`;
 
 const ASSETS = [
@@ -53,6 +53,8 @@ const ASSETS = [
   "js/config.js",
   "js/util.js",
   "js/domain.js",
+  "js/exerciseCatalog.js",
+  "js/volumeEngine.js",
   "js/state.js",
   "js/training.js",
   "js/timer.js",
@@ -64,7 +66,7 @@ const ASSETS = [
 ];
 
 // La versión nueva se activa sola apenas se descarga (la app recarga una vez para no mezclar versiones).
-self.addEventListener("install", event => {
+self.addEventListener("message", event => {\n  if(event.data?.type === "SKIP_WAITING") self.skipWaiting();\n});\n\nself.addEventListener("install", event => {
   // CSS, JS y JSON se guardan con el mismo ?v= que pide la página.
   const urls = ASSETS.map(a => /\.(css|js|json)$/.test(a) && a !== "manifest.json" ? `${a}?v=${CACHE_VERSION}` : a);
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urls)).then(() => self.skipWaiting()));
