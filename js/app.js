@@ -60,8 +60,9 @@ function bindInputs(){
     if(!confirmDiscardDraft()){ e.target.value = state.selectedMode; return; }
     const nextMode = String(e.target.value);
     state.routinesByMode = state.routinesByMode || {};
-    if(String(state.selectedMode)==="2" && typeof applyAdaptiveFullBodySelection==="function"){
-      state.routinesByMode["2"][state.selectedWeek]=clone(state.routine[state.selectedWeek] || {});
+    if(String(state.selectedMode)==="2" && typeof v10AdaptiveStoreWeek==="function"){
+      // 2D: la base se guarda sin los ajustes automáticos (se recalculan al volver; no se acumulan).
+      v10AdaptiveStoreWeek(state.selectedWeek);
     }else{
       state.routinesByMode[String(state.selectedMode)] = clone(state.routine);
     }

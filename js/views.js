@@ -204,7 +204,8 @@ function renderRoutine(){
 function afterRoutineEdit(){
   state.routinesByMode=state.routinesByMode||{};
   const mode=String(state.selectedMode||PLAN.defaultMode||"4");
-  if(mode==="2") state.routinesByMode[mode][state.selectedWeek]=clone(state.routine[state.selectedWeek]||{});
+  // 2D: guarda la edición en la base sin los ajustes automáticos de la semana (evita que se acumulen).
+  if(mode==="2") v10AdaptiveStoreWeek(state.selectedWeek);
   else state.routinesByMode[mode]=clone(state.routine);
   saveState();
   if(!draftHasData()) resetTrainingDraft();
