@@ -1,6 +1,6 @@
 // Service worker de Prime OS: guarda la app en el dispositivo para abrirla y usarla sin internet.
 // Al publicar una versión nueva, sube CACHE_VERSION (debe coincidir con APP_VERSION en js/config.js).
-const CACHE_VERSION = "10.5";
+const CACHE_VERSION = "10.6";
 const CACHE_NAME = `prime-os-${CACHE_VERSION}`;
 
 const ASSETS = [
@@ -8,6 +8,7 @@ const ASSETS = [
   "index.html",
   "styles.css",
   "manifest.json",
+  "version.json",
   "icon.svg",
   "icon-192.png",
   "icon-512.png",
@@ -98,6 +99,12 @@ self.addEventListener("fetch", event => {
         .then(res => res || net)
         .catch(() => cached().then(hit => hit || net))
     );
+    return;
+  }
+
+  // El handshake de versión siempre va a red para detectar una publicación nueva.
+  if(new URL(req.url).pathname.endsWith("/version.json")){
+    event.respondWith(fetch(req,{cache:"no-store"}));
     return;
   }
 
