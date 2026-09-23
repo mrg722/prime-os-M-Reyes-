@@ -186,12 +186,13 @@ function v10WeeklyMuscle(week,muscle,goalMode="mixed"){
 }
 
 function v10TargetRange(week,muscle){
-  const t=state.weeklyTargets?.[week]?.[muscle];
-  if(Number.isFinite(Number(t)) && Number(t)>0) return [Number(t),Number(t)];
   const bands=PLAN.weeklyTargetBandsByMode?.[String(state.selectedMode)]?.[week]||{};
   const raw=bands[muscle];
   const nums=String(raw??"").match(/\d+(?:\.\d+)?/g)?.map(Number)||[];
-  return nums.length>=2?[nums[0],nums[1]]:nums.length===1?[nums[0],nums[0]]:null;
+  if(nums.length>=2)return [nums[0],nums[1]];
+  if(nums.length===1)return [nums[0],nums[0]];
+  const t=state.weeklyTargets?.[week]?.[muscle];
+  return Number.isFinite(Number(t)) && Number(t)>0 ? [Number(t),Number(t)] : null;
 }
 
 function v10WeekResponse(week,muscle){
