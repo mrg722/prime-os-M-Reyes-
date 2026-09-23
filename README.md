@@ -1,4 +1,4 @@
-# Prime OS - Martin Reyes V8.1
+# Prime OS - Martin Reyes V8.2
 
 ## Qué es
 
@@ -8,10 +8,18 @@ Prime OS es una plataforma personal de entrenamiento para registrar rutina, seri
 
 Automatizar el seguimiento del bloque de entrenamiento de Martin Reyes para tomar mejores decisiones de carga, volumen, progreso y recuperación.
 
+## Cambios de V8.2
+
+- **Día y sesión por separado:** arriba eliges el día (Lunes a Domingo) y debajo la sesión (Lower A/B, Upper A/B, Full Body A/B, Cardio suave, Trote opcional, Descanso). Al cambiar el día se propone la sesión habitual de ese día. Las sesiones y ejercicios de cada semana no cambian.
+- **Reloj flotante:** botón "⏱ Reloj" abajo a la derecha; al tocarlo abre un panel pequeño con temporizador o cronómetro y una ✕ para cerrarlo. Mientras corre, el botón muestra el tiempo.
+- **Ejercicio agregado al inicio** (en Registrar y en Rutina Base).
+- **Sistema / Objetivo / Debilidad clave** pasó al final de la página.
+- **Actualizaciones sin mezclas:** al publicar una versión nueva, la app se recarga sola una vez. Antes podía cargar el diseño y el plan viejos junto con la página nueva.
+
 ## Cambios de V8.1
 
-- **Temporizador y cronómetro** en Registrar: accesos rápidos de 1:00 a 4:00 y ajuste de ±15 s. Sigue contando aunque cambies de sección o recargues; al terminar vibra y suena.
-- **Complemento - Full Body A y B** (opcionales): solo suman las series que faltan entre tu objetivo semanal y lo planificado, semana por semana. Prioridad: isquios, luego cuádriceps, glúteo, deltoide lateral, brazos y manguito. Sin cargar espalda ni cuello, sin nórdicos (isquio sensible) y con alternativa si el hombro molesta. La rutina, las series, las reps, el RIR y los objetivos existentes no cambian.
+- **Temporizador y cronómetro** (en V8.2 pasó a ser el botón flotante "Reloj"): accesos rápidos de 1:00 a 4:00 y ajuste de ±15 s. Sigue contando aunque cambies de sección o recargues; al terminar vibra y suena.
+- **Full Body A y B** (sesiones opcionales; en V8.1 se llamaban "Complemento - Full Body"): solo suman las series que faltan entre tu objetivo semanal y lo planificado, semana por semana. Prioridad: isquios, luego cuádriceps, glúteo, deltoide lateral, brazos y manguito. Sin cargar espalda ni cuello, sin nórdicos (isquio sensible) y con alternativa si el hombro molesta. La rutina, las series, las reps, el RIR y los objetivos existentes no cambian.
 - Botón azul con mejor contraste. Revisión visual automática en celular, tablet y escritorio (sin textos invisibles, encimados ni desbordes).
 
 Base de los full body:

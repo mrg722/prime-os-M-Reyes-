@@ -401,7 +401,6 @@ function importRegisterRows(rows, summary){
     const key = `${date}|||${week}|||${day}|||${sessionNote}`;
 
     addIfMissing(state.weeks, week);
-    addIfMissing(state.days, day);
 
     if(!sessionsMap[key]){
       sessionsMap[key] = {

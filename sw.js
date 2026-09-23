@@ -1,6 +1,6 @@
 // Service worker de Prime OS: guarda la app en el dispositivo para abrirla y usarla sin internet.
 // Al publicar una versión nueva, sube CACHE_VERSION (debe coincidir con APP_VERSION en js/config.js).
-const CACHE_VERSION = "8.1";
+const CACHE_VERSION = "8.2";
 const CACHE_NAME = `prime-os-${CACHE_VERSION}`;
 
 const ASSETS = [
@@ -26,8 +26,11 @@ const ASSETS = [
   "vendor/xlsx.full.min.js"
 ];
 
+// La versión nueva se activa sola apenas se descarga (la app recarga una vez para no mezclar versiones).
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
+  // CSS, JS y JSON se guardan con el mismo ?v= que pide la página.
+  const urls = ASSETS.map(a => /\.(css|js|json)$/.test(a) && a !== "manifest.json" ? `${a}?v=${CACHE_VERSION}` : a);
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urls)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", event => {
@@ -36,10 +39,6 @@ self.addEventListener("activate", event => {
       .then(keys => Promise.all(keys.filter(k => k.startsWith("prime-os-") && k !== CACHE_NAME).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
-});
-
-self.addEventListener("message", event => {
-  if(event.data === "skipWaiting") self.skipWaiting();
 });
 
 self.addEventListener("fetch", event => {
@@ -59,14 +58,14 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // Archivos: copia guardada de esta versión; si falta, red y se guarda.
+  // Archivos: la copia exacta (con su ?v=) de la caché de esta versión; si no está, la red.
+  // Sin conexión y sin copia exacta, se usa la copia de cualquier versión como último recurso.
   event.respondWith(
-    caches.match(req, {ignoreSearch: true}).then(hit => hit || fetch(req).then(res => {
-      if(res.ok){
-        const copy = res.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
-      }
-      return res;
-    }))
+    caches.open(CACHE_NAME)
+      .then(cache => cache.match(req).then(hit => hit || fetch(req).then(res => {
+        if(res.ok) cache.put(req, res.clone());
+        return res;
+      })))
+      .catch(() => caches.match(req, {ignoreSearch: true}))
   );
 });

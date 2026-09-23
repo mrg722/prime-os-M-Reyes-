@@ -80,10 +80,16 @@ function applyMuscleFixes(data){
   data.muscleFixVersion = 1;
 }
 
-// Agrega los días Full Body de complemento (V8.1) sin tocar los días ni ejercicios existentes.
+// Agrega las sesiones Full Body A/B sin tocar las sesiones ni ejercicios existentes.
+// V8.1 las llamaba "Complemento - Full Body A/B": se renombran conservando su contenido.
 function addFullBodyDays(data){
   if(data.fullBodyVersion === PLAN.fullBodyVersion) return;
-  const fbDays = PLAN.days.filter(d => d.startsWith("Complemento - "));
+  const renamed = {"Complemento - Full Body A": "Full Body A", "Complemento - Full Body B": "Full Body B"};
+  data.days = data.days.map(d => renamed[d] || d).filter((d, i, arr) => arr.indexOf(d) === i);
+  Object.values(data.routine).forEach(week => Object.entries(renamed).forEach(([oldKey, newKey]) => {
+    if(week[oldKey]){ if(!week[newKey]) week[newKey] = week[oldKey]; delete week[oldKey]; }
+  }));
+  const fbDays = PLAN.days.filter(d => d.startsWith("Full Body "));
   fbDays.forEach(day => {
     if(!data.days.includes(day)) data.days.push(day);
     PLAN.weeks.forEach(w => {
@@ -180,6 +186,8 @@ function normalizeState(data){
     id: s.id || Date.now() + Math.floor(Math.random()*9999),
     date: s.date || new Date().toLocaleString("es-CL"),
     createdAt: s.createdAt || "",
+    session: s.session || "",
+    weekday: s.weekday || "",
     week: s.week || data.selectedWeek,
     day: s.day || data.selectedDay,
     readiness: s.readiness || {status:"Sin dato"},
@@ -198,6 +206,7 @@ function normalizeState(data){
 
   if(!data.selectedWeek || !data.weeks.includes(data.selectedWeek)) data.selectedWeek = data.weeks[0];
   if(!data.selectedDay || !data.days.includes(data.selectedDay)) data.selectedDay = data.days[2] || data.days[0];
+  if(!WEEKDAYS.includes(data.selectedWeekday)) data.selectedWeekday = weekdayOf(data.selectedDay) || WEEKDAYS[0];
   return data;
 }
 
@@ -242,6 +251,7 @@ function saveDraftToStorage(){
   storageSet("localStorage", DRAFT_KEY, JSON.stringify({
     week: state.selectedWeek,
     day: state.selectedDay,
+    weekday: state.selectedWeekday,
     draft: trainingDraft,
     notes: $("#sessionNotes")?.value || "",
     savedAt: new Date().toISOString()

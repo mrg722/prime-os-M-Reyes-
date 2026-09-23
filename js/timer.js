@@ -1,6 +1,6 @@
-// Temporizador (cuenta regresiva) y cronómetro de Registrar. Sigue corriendo al cambiar de sección o recargar.
+// Reloj flotante: temporizador (cuenta regresiva) y cronómetro. Sigue corriendo al cambiar de sección o recargar.
 const TIMER_KEY = "prime_os_timer_v1";
-let timerState = {mode: "countdown", duration: 120, running: false, startedAt: 0, elapsedBefore: 0, finished: false};
+let timerState = {mode: "countdown", duration: 120, running: false, startedAt: 0, elapsedBefore: 0, finished: false, open: false};
 let timerInterval = null;
 let timerAudio = null;
 
@@ -56,9 +56,26 @@ function renderTimer(){
   if(countdown && timerState.running && elapsed >= timerState.duration) finishCountdown();
 
   const shown = countdown ? timerState.duration - timerElapsed() : timerElapsed();
-  $("#timerClock").textContent = countdown && timerState.finished ? "¡Listo!" : formatClock(countdown ? Math.ceil(shown) : shown);
+  const clockText = countdown && timerState.finished ? "¡Listo!" : formatClock(countdown ? Math.ceil(shown) : shown);
+  $("#timerClock").textContent = clockText;
   box.classList.toggle("finished", countdown && timerState.finished);
   box.classList.toggle("running", timerState.running);
+
+  // Botón flotante: visible en Registrar o mientras el reloj corre / terminó; muestra el tiempo.
+  const fab = $("#clockFab");
+  const active = timerState.running || (countdown && timerState.finished);
+  const fabVisible = typeof currentView !== "function" || currentView() === "entrenar" || active || timerState.open;
+  fab.classList.toggle("hidden", !fabVisible);
+  document.body.classList.toggle("clock-visible", fabVisible);
+  fab.classList.toggle("running", timerState.running);
+  fab.classList.toggle("finished", countdown && timerState.finished);
+  // Sin correr dice "Reloj"; corriendo o terminado muestra el tiempo.
+  $("#clockFabLabel").textContent = active ? clockText : "Reloj";
+  fab.title = "Reloj: temporizador y cronómetro";
+  fab.setAttribute("aria-label", active ? `Reloj ${clockText}` : "Abrir reloj");
+  fab.setAttribute("aria-expanded", String(timerState.open));
+  box.classList.toggle("hidden", !timerState.open || !fabVisible);
+  document.body.classList.toggle("clock-open", timerState.open && fabVisible);
   $("#timerStartBtn").textContent = timerState.running ? "Pausar" : (timerElapsed() > 0 && !timerState.finished ? "Seguir" : "Iniciar");
   $$("#timerPanel .timer-mode").forEach(b => b.classList.toggle("active", b.dataset.mode === timerState.mode));
   $$("#timerPanel .timer-preset").forEach(b => b.classList.toggle("active", countdown && Number(b.dataset.seconds) === timerState.duration));
@@ -118,8 +135,16 @@ function adjustTimer(delta){
   renderTimer();
 }
 
+function setTimerOpen(open){
+  timerState.open = open;
+  saveTimer();
+  renderTimer();
+}
+
 function bindTimer(){
   loadTimer();
+  $("#clockFab").addEventListener("click", () => setTimerOpen(!timerState.open));
+  $("#timerCloseBtn").addEventListener("click", () => setTimerOpen(false));
   $$("#timerPanel .timer-mode").forEach(b => b.addEventListener("click", () => setTimerMode(b.dataset.mode)));
   $$("#timerPanel .timer-preset").forEach(b => b.addEventListener("click", () => setTimerDuration(Number(b.dataset.seconds))));
   $("#timerMinusBtn").addEventListener("click", () => adjustTimer(-15));

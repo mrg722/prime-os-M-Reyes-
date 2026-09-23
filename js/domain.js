@@ -26,6 +26,23 @@ function normalizeMuscle(muscle){
   return exact || "general";
 }
 
+/* ---------- Día de la semana y sesión ---------- */
+
+const WEEKDAYS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+const SESSION_ORDER = ["Lower A","Lower B","Upper A","Upper B","Full Body A","Full Body B","Cardio suave","Trote opcional","Descanso"];
+
+// Las rutinas se guardan por sesión con su día habitual ("Martes - Lower A"); los full body no tienen día fijo.
+function sessionLabel(key){
+  const k = String(key ?? "");
+  return WEEKDAYS.some(w => k.startsWith(w + " - ")) ? k.slice(k.indexOf(" - ") + 3) : k;
+}
+function weekdayOf(key){ return WEEKDAYS.find(w => String(key ?? "").startsWith(w + " - ")) || null; }
+function defaultSessionFor(weekday, days){ return days.find(k => weekdayOf(k) === weekday) || null; }
+function sortedSessions(days){
+  const rank = k => { const i = SESSION_ORDER.indexOf(sessionLabel(k)); return i === -1 ? SESSION_ORDER.length : i; };
+  return [...days].sort((a, b) => rank(a) - rank(b) || days.indexOf(a) - days.indexOf(b));
+}
+
 /* ---------- Catálogo de ejercicios ---------- */
 
 let aliasIndex = null;

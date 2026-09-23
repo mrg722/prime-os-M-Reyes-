@@ -30,11 +30,13 @@ async function setup(){
 }
 
 function fillSelectors(){
-  const week = $("#weekSelect"), day = $("#daySelect"), exp = $("#exportWeekSelect");
+  const week = $("#weekSelect"), exp = $("#exportWeekSelect");
   week.innerHTML = state.weeks.map(w=>`<option ${w===state.selectedWeek?"selected":""}>${escapeHtml(w)}</option>`).join("");
   exp.innerHTML = state.weeks.map(w=>`<option ${w===state.selectedWeek?"selected":""}>${escapeHtml(w)}</option>`).join("")
     + `<option value="${ALL_WEEKS}">Todas las semanas</option>`;
-  day.innerHTML = state.days.map(d=>`<option ${d===state.selectedDay?"selected":""}>${escapeHtml(d)}</option>`).join("");
+  $("#weekdaySelect").innerHTML = WEEKDAYS.map(w => `<option ${w===state.selectedWeekday?"selected":""}>${w}</option>`).join("");
+  $("#daySelect").innerHTML = sortedSessions(state.days).map(d =>
+    `<option value="${escapeAttr(d)}" ${d===state.selectedDay?"selected":""}>${escapeHtml(sessionLabel(d))}</option>`).join("");
 }
 
 function bindNav(){
@@ -55,6 +57,15 @@ function bindInputs(){
     if(!confirmDiscardDraft()){ e.target.value = state.selectedWeek; return; }
     state.selectedWeek=e.target.value; $("#exportWeekSelect").value=e.target.value;
     saveState(); resetTrainingDraft(); renderAll();
+  });
+  // Día de la semana: propone la sesión que toca ese día (se puede cambiar abajo).
+  $("#weekdaySelect").addEventListener("change", e => {
+    collectDraftInputs();
+    const session = defaultSessionFor(e.target.value, state.days) || state.selectedDay;
+    if(session !== state.selectedDay && !confirmDiscardDraft()){ e.target.value = state.selectedWeekday; return; }
+    state.selectedWeekday = e.target.value;
+    if(session !== state.selectedDay){ state.selectedDay = session; $("#daySelect").value = session; resetTrainingDraft(); }
+    saveState(); saveDraftToStorage(); renderAll();
   });
   $("#daySelect").addEventListener("change", e => {
     collectDraftInputs();
@@ -91,6 +102,7 @@ function switchView(view){
   $("#sidebar").classList.remove("open");
   document.body.classList.remove("mobile-menu-open");
   renderAll();
+  renderTimer();
   window.scrollTo({top: 0});
 }
 
@@ -156,33 +168,7 @@ function bindMobileDrawer(){
 
 function registerServiceWorker(){
   if(!("serviceWorker" in navigator) || !location.protocol.startsWith("http")) return;
-  navigator.serviceWorker.register("sw.js").then(reg => {
-    reg.addEventListener("updatefound", () => {
-      const worker = reg.installing;
-      worker?.addEventListener("statechange", () => {
-        // Hay una versión nueva lista: se ofrece recargar (el borrador queda guardado).
-        if(worker.state === "installed" && navigator.serviceWorker.controller) showUpdateBanner(worker);
-      });
-    });
-  }).catch(err => console.warn("Service worker no registrado:", err));
-
-  // Solo se recarga cuando el usuario pidió actualizar (no en la primera instalación).
-  navigator.serviceWorker.addEventListener?.("controllerchange", () => {
-    if(!updateRequested) return;
-    updateRequested = false;
-    location.reload();
-  });
-}
-
-let updateRequested = false;
-
-function showUpdateBanner(worker){
-  const banner = $("#updateBanner");
-  banner.classList.remove("hidden");
-  $("#updateReloadBtn").onclick = () => {
-    collectDraftInputs();
-    saveDraftToStorage();
-    updateRequested = true;
-    worker.postMessage("skipWaiting");
-  };
+  // La recarga al llegar una versión nueva la hace el script de index.html; el registro sin
+  // guardar se guarda al salir de la página (pagehide), así que no se pierde.
+  navigator.serviceWorker.register("sw.js").catch(err => console.warn("Service worker no registrado:", err));
 }

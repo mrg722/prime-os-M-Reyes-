@@ -34,8 +34,8 @@
     "Viernes - Lower B",
     "Sábado - Upper B",
     "Domingo - Trote opcional",
-    "Complemento - Full Body A",
-    "Complemento - Full Body B"
+    "Full Body A",
+    "Full Body B"
   ],
   "defaultWeek": "Semana 1",
   "defaultDay": "Miércoles - Upper A",
@@ -433,7 +433,7 @@
           "note": "Peso, dolor, fatiga, PRs, energía."
         }
       ],
-      "Complemento - Full Body A": [
+      "Full Body A": [
         {
           "name": "Curl femoral sentado",
           "sets": 2,
@@ -453,7 +453,7 @@
           "note": "Sin carga en la espalda ni el cuello. Rango completo, sin bloquear rodillas."
         }
       ],
-      "Complemento - Full Body B": [
+      "Full Body B": [
         {
           "name": "Curl femoral tumbado",
           "sets": 2,
@@ -777,7 +777,7 @@
           "note": "Peso, dolor, fatiga, PRs, energía."
         }
       ],
-      "Complemento - Full Body A": [
+      "Full Body A": [
         {
           "name": "Curl femoral sentado",
           "sets": 3,
@@ -824,7 +824,7 @@
           "note": "Codo pegado al cuerpo a 90°. Salud del manguito; técnica antes que carga."
         }
       ],
-      "Complemento - Full Body B": [
+      "Full Body B": [
         {
           "name": "Curl femoral tumbado",
           "sets": 2,
@@ -1112,7 +1112,7 @@
           "note": "Semana 2.5 sin trote."
         }
       ],
-      "Complemento - Full Body A": [
+      "Full Body A": [
         {
           "name": "Curl femoral sentado",
           "sets": 1,
@@ -1150,7 +1150,7 @@
           "note": "Codo pegado al cuerpo a 90°. Salud del manguito; técnica antes que carga."
         }
       ],
-      "Complemento - Full Body B": [
+      "Full Body B": [
         {
           "name": "Patada de glúteo en polea",
           "sets": 1,
@@ -1483,7 +1483,7 @@
           "note": "Peso, dolor, fatiga, PRs, energía."
         }
       ],
-      "Complemento - Full Body A": [
+      "Full Body A": [
         {
           "name": "Curl femoral sentado",
           "sets": 3,
@@ -1557,7 +1557,7 @@
           "note": "Codo pegado al cuerpo a 90°. Salud del manguito; técnica antes que carga."
         }
       ],
-      "Complemento - Full Body B": [
+      "Full Body B": [
         {
           "name": "Curl femoral tumbado",
           "sets": 3,
@@ -1953,7 +1953,7 @@
           "note": "Peso, dolor, fatiga, PRs, energía."
         }
       ],
-      "Complemento - Full Body A": [
+      "Full Body A": [
         {
           "name": "Curl femoral sentado",
           "sets": 3,
@@ -2027,7 +2027,7 @@
           "note": "Codo pegado al cuerpo a 90°. Salud del manguito; técnica antes que carga."
         }
       ],
-      "Complemento - Full Body B": [
+      "Full Body B": [
         {
           "name": "Curl femoral tumbado",
           "sets": 3,
@@ -2423,7 +2423,7 @@
           "note": "Peso, dolor, fatiga, PRs, energía."
         }
       ],
-      "Complemento - Full Body A": [
+      "Full Body A": [
         {
           "name": "Curl femoral sentado",
           "sets": 3,
@@ -2470,7 +2470,7 @@
           "note": "Sobre la cabeza hace crecer más la cabeza larga. Si el hombro molesta, cámbialo por pushdown con cuerda."
         }
       ],
-      "Complemento - Full Body B": [
+      "Full Body B": [
         {
           "name": "Curl femoral tumbado",
           "sets": 2,
@@ -2830,7 +2830,7 @@
           "note": "Peso, dolor, fatiga, PRs, energía."
         }
       ],
-      "Complemento - Full Body A": [
+      "Full Body A": [
         {
           "name": "Curl femoral sentado",
           "sets": 2,
@@ -2868,7 +2868,7 @@
           "note": "Sobre la cabeza hace crecer más la cabeza larga. Si el hombro molesta, cámbialo por pushdown con cuerda."
         }
       ],
-      "Complemento - Full Body B": [
+      "Full Body B": [
         {
           "name": "Curl femoral tumbado",
           "sets": 1,
@@ -3938,5 +3938,5 @@
       "rdl principal / deadlift tecnico solo si verde"
     ]
   },
-  "fullBodyVersion": 1
+  "fullBodyVersion": 2
 }

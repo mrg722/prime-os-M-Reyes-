@@ -124,7 +124,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     await go(page, "entrenar");
     assert(await page.inputValue(R(0,3)) === "11" && await page.inputValue(W(0,0)) === "27,5", "se perdió al cerrar y reabrir");
     assert(await page.isChecked('[data-ei="0"][data-si="0"][data-field="done"]') && await page.inputValue("#sessionNotes") === "nota", "check o nota perdidos");
-    assert(await page.textContent("#trainTitle") === "Miércoles - Upper A · Semana 3", "no volvió a la semana/día del borrador");
+    assert(await page.textContent("#trainTitle") === "Miércoles · Upper A · Semana 3", "no volvió a la semana/día del borrador: " + await page.textContent("#trainTitle"));
     await page.click("#saveSessionBtn");
     const saved = await page.evaluate(() => state.sessions.at(-1).exercises[0].sets.map(s => [s.weight, s.unit, s.repsDone]));
     assert(JSON.stringify(saved[0]) === '["27.5","kg","7"]' && JSON.stringify(saved[3]) === '["20","kg","11"]', JSON.stringify(saved));
@@ -229,7 +229,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
 
   await test("Full Body A/B: la rutina original no cambia y cubren justo lo que falta", async () => {
     const plan = JSON.parse(fs.readFileSync(path.join(ROOT, "data/plan.json"), "utf8"));
-    const original = plan.days.filter(d => !d.startsWith("Complemento - "));
+    const original = plan.days.filter(d => !d.startsWith("Full Body "));
     assert(original.length === 7, "días originales: " + original.length);
     // Instantánea de la rutina original de V8.0 (sin los full body), tomada del historial de git si está disponible.
     let base = null;
@@ -240,7 +240,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
       const planned = {};
       plan.days.forEach(d => (plan.routine[w][d] || []).forEach(e => { planned[e.muscle] = (planned[e.muscle] || 0) + Number(e.sets); }));
       Object.entries(plan.weeklyTargets[w]).forEach(([m, t]) => {
-        const fb = ["Complemento - Full Body A","Complemento - Full Body B"].flatMap(d => plan.routine[w][d]).filter(e => e.muscle === m).reduce((a, e) => a + e.sets, 0);
+        const fb = ["Full Body A","Full Body B"].flatMap(d => plan.routine[w][d]).filter(e => e.muscle === m).reduce((a, e) => a + e.sets, 0);
         const total = planned[m] || 0;
         assert(total >= t, `${w} ${m}: plan ${total} < objetivo ${t}`);
         if(fb) assert(total === t, `${w} ${m}: los full body se pasan del objetivo (${total} > ${t})`);
@@ -252,31 +252,37 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     const page0 = await open();
     const saved = await page0.evaluate(() => {
       const s = JSON.parse(JSON.stringify(state));
-      s.days = s.days.filter(d => !d.startsWith("Complemento - "));
-      Object.values(s.routine).forEach(w => { delete w["Complemento - Full Body A"]; delete w["Complemento - Full Body B"]; });
+      s.days = s.days.filter(d => !d.startsWith("Full Body "));
+      Object.values(s.routine).forEach(w => { delete w["Full Body A"]; delete w["Full Body B"]; });
       delete s.fullBodyVersion;
       s.routine["Semana 3"]["Martes - Lower A"][0].name = "Editado por mí";
       return JSON.stringify(s);
     });
     await page0.context().close();
     const page = await open({storage: {prime_os_martin_v7_3: saved}});
-    const r = await page.evaluate(() => ({days: state.days, fb: state.routine["Semana 3"]["Complemento - Full Body A"].map(e => e.name), edited: state.routine["Semana 3"]["Martes - Lower A"][0].name}));
-    assert(r.days.at(-2) === "Complemento - Full Body A" && r.days.at(-1) === "Complemento - Full Body B", r.days.join(","));
+    const r = await page.evaluate(() => ({days: state.days, fb: state.routine["Semana 3"]["Full Body A"].map(e => e.name), edited: state.routine["Semana 3"]["Martes - Lower A"][0].name}));
+    assert(r.days.at(-2) === "Full Body A" && r.days.at(-1) === "Full Body B", r.days.join(","));
     assert(r.fb[0] === "Curl femoral sentado", r.fb.join(","));
     assert(r.edited === "Editado por mí", "se pisó una edición: " + r.edited);
     await page.context().close();
   });
 
-  await test("temporizador y cronómetro", async () => {
+  await test("reloj flotante: temporizador y cronómetro", async () => {
     const page = await open({viewport: {width:390, height:844}});
+    assert(await page.locator("#clockFab").isHidden(), "el reloj no debería verse en Inicio si no corre");
     await go(page, "entrenar");
+    assert(await page.locator("#timerPanel").isHidden(), "el panel debe partir cerrado");
+    await page.click("#clockFab");
+    assert(await page.locator("#timerPanel").isVisible(), "no abrió el panel");
     await page.click('.timer-preset[data-seconds="60"]');
     assert(await page.textContent("#timerClock") === "1:00", "preset 1:00");
     await page.click("#timerPlusBtn");
     assert(await page.textContent("#timerClock") === "1:15", "+15 s");
     await page.evaluate(() => setTimerDuration(5));
     await page.click("#timerStartBtn");
-    await go(page, "progreso"); await go(page, "entrenar");
+    await go(page, "progreso");
+    assert(await page.locator("#clockFab").isVisible() && /^0:0\d$/.test(await page.textContent("#clockFabLabel")), "el botón no muestra la cuenta fuera de Registrar");
+    await go(page, "entrenar");
     await page.waitForTimeout(5600);
     assert(await page.textContent("#timerClock") === "¡Listo!" && await page.evaluate(() => $("#timerPanel").classList.contains("finished")), "no terminó la cuenta regresiva");
     await page.click('.timer-mode[data-mode="stopwatch"]');
@@ -288,6 +294,44 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     await go(page, "entrenar");
     await page.click("#timerResetBtn");
     assert(await page.textContent("#timerClock") === "0:00", "reiniciar");
+    await page.click("#timerCloseBtn");
+    assert(await page.locator("#timerPanel").isHidden() && await page.locator("#clockFab").isVisible(), "la X no cerró el panel");
+    await page.context().close();
+  });
+
+  await test("día de la semana y sesión por separado", async () => {
+    const page = await open({viewport: {width:390, height:844}});
+    const weekdays = await page.$$eval("#weekdaySelect option", o => o.map(x => x.textContent));
+    assert(weekdays.join(",") === "Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo", weekdays.join(","));
+    const sessions = await page.$$eval("#daySelect option", o => o.map(x => x.textContent));
+    assert(sessions.join(",") === "Lower A,Lower B,Upper A,Upper B,Full Body A,Full Body B,Cardio suave,Trote opcional,Descanso", sessions.join(","));
+    await page.selectOption("#weekdaySelect", "Martes");
+    assert(await page.inputValue("#daySelect") === "Martes - Lower A", "Martes no propuso Lower A");
+    await page.selectOption("#weekdaySelect", "Jueves");
+    await page.selectOption("#daySelect", "Full Body A");
+    await go(page, "entrenar");
+    assert(await page.textContent("#trainTitle") === "Jueves · Full Body A · Semana 1", await page.textContent("#trainTitle"));
+    assert((await page.inputValue('[data-ei="0"][data-field="name"]')) === "Curl femoral sentado", "no cargó el Full Body A");
+    await page.fill('[data-ei="0"][data-si="0"][data-field="weight"]', "90 lbs"); await page.fill('[data-ei="0"][data-si="0"][data-field="repsDone"]', "10");
+    await page.click("#saveSessionBtn");
+    const s = await page.evaluate(() => state.sessions.at(-1));
+    assert(s.day === "Jueves - Full Body A" && s.session === "Full Body A" && s.weekday === "Jueves", JSON.stringify([s.day, s.session, s.weekday]));
+    const plan = JSON.parse(fs.readFileSync(path.join(ROOT, "data/plan.json"), "utf8"));
+    assert(await page.evaluate(p => JSON.stringify(state.routine["Semana 1"]["Martes - Lower A"]) === JSON.stringify(p), plan.routine["Semana 1"]["Martes - Lower A"]), "cambió la sesión Lower A");
+    await page.context().close();
+  });
+
+  await test("ejercicio agregado aparece al inicio y la franja Sistema/Objetivo va al final", async () => {
+    const page = await open();
+    await go(page, "entrenar");
+    const first = await page.inputValue('[data-ei="0"][data-field="name"]');
+    await page.click("#addAlternativeBtn");
+    assert(await page.inputValue('[data-ei="0"][data-field="name"]') === "Ejercicio agregado" && await page.inputValue('[data-ei="1"][data-field="name"]') === first, "no quedó primero");
+    await go(page, "rutina");
+    await page.click("#addExerciseBtn");
+    assert((await page.textContent("#routineList .exercise-card h4")) === "Nuevo ejercicio", "Rutina: no quedó primero");
+    const order = await page.evaluate(() => { const main = document.querySelector("main"); const kids = [...main.children]; return kids.indexOf(document.querySelector(".quick-ribbon")) === kids.length - 1; });
+    assert(order, "la franja no está al final");
     await page.context().close();
   });
 

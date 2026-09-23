@@ -1115,7 +1115,7 @@ body.launch-active{
 /* ===== Prime OS V8 - componentes nuevos ===== */
 
 .alerts-box{ display:grid; gap:10px; margin-bottom:18px; }
-.alerts-box.hidden, .update-banner.hidden, .chart-wrap.hidden{ display:none; }
+.alerts-box.hidden, .chart-wrap.hidden{ display:none; }
 .alert-item{ border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.45; border:1px solid var(--line); }
 .danger-alert{ background:rgba(218,54,51,.12); border-color:rgba(218,54,51,.45); }
 .backup-alert{ background:rgba(47,129,247,.12); border-color:rgba(47,129,247,.45); display:flex; flex-wrap:wrap; align-items:center; gap:10px; justify-content:space-between; }
@@ -1131,41 +1131,45 @@ body.launch-active{
 .history-exercise{ font-size:13px; border-bottom:1px solid var(--line); padding-bottom:8px; }
 .history-exercise > strong{ color:var(--primary); }
 
-.update-banner{
-  position:fixed; top:12px; left:50%; transform:translateX(-50%); z-index:4500;
-  display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:12px;
-  background:var(--panel); border:1px solid var(--primary); box-shadow:var(--shadow);
-  width:max-content; max-width:calc(100% - 24px);
-}
+
 
 .toast-box{ position:fixed; left:50%; bottom:110px; transform:translateX(-50%); z-index:4600; display:grid; gap:8px; width:min(480px, calc(100% - 24px)); pointer-events:none; }
 .toast{ padding:10px 14px; border-radius:10px; background:var(--panel2); border:1px solid var(--line); color:var(--text); font-size:14px; box-shadow:var(--shadow); }
 
 .fatal-error{ max-width:520px; margin:15vh auto; padding:24px; text-align:center; }
 
-/* ===== V8.1 - Temporizador / cronómetro de Registrar ===== */
+/* ===== V8.2 - Reloj flotante (temporizador / cronómetro) ===== */
+.clock-fab{
+  position:fixed; right:16px; bottom:calc(16px + env(safe-area-inset-bottom, 0px)); z-index:1000;
+  display:inline-flex; align-items:center; justify-content:center; gap:6px; min-width:48px; height:48px; padding:0 14px; border-radius:999px;
+  background:var(--panel2); border:1px solid rgba(47,129,247,.55); color:#fff; font-size:14px; font-weight:800;
+  box-shadow:var(--shadow); font-variant-numeric:tabular-nums;
+}
+.clock-fab.running{ background:var(--primary); border-color:var(--primary2); }
+.clock-fab.finished{ background:var(--green); border-color:#2ea043; }
+.clock-fab.hidden, .timer-panel.hidden, .timer-presets.hidden{ display:none; }
+.clock-fab-icon{ font-size:16px; line-height:1; }
 .timer-panel{
-  display:grid; gap:12px; margin:0 0 18px; padding:14px 16px;
-  border:1px solid var(--line); border-radius:var(--radius); background:rgba(13,17,23,.6);
+  position:fixed; right:16px; bottom:calc(72px + env(safe-area-inset-bottom, 0px)); z-index:1000;
+  width:min(300px, calc(100vw - 32px)); display:grid; gap:10px; padding:12px;
+  border:1px solid var(--line); border-radius:14px; background:#0d1117 !important; box-shadow:0 16px 40px rgba(0,0,0,.75);
+  backdrop-filter:none !important; opacity:1 !important;
 }
-.timer-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
-.timer-modes{ display:inline-flex; gap:4px; padding:3px; border-radius:10px; background:var(--panel2); border:1px solid var(--line); }
-.timer-modes .timer-mode{ background:transparent; border:0; padding:7px 12px; font-size:13px; color:var(--muted); }
+.timer-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.timer-modes{ display:inline-flex; gap:2px; padding:3px; border-radius:10px; background:var(--panel2); border:1px solid var(--line); }
+.timer-modes .timer-mode{ background:transparent; border:0; padding:6px 10px; font-size:12px; color:var(--muted); box-shadow:none; }
 .timer-modes .timer-mode.active{ background:var(--primary); color:#fff; }
-.timer-body{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
-.timer-clock{ font-size:44px; line-height:1; font-variant-numeric:tabular-nums; color:#fff; min-width:4ch; }
-.timer-presets{ display:flex; flex-wrap:wrap; gap:6px; }
-.timer-presets.hidden{ display:none; }
-.timer-preset, .timer-adjust{ padding:7px 10px; font-size:13px; }
+.timer-close{ width:34px; height:34px; padding:0; border-radius:10px; font-size:16px; line-height:1; flex:0 0 auto; }
+.timer-clock{ font-size:36px; line-height:1.1; text-align:center; font-variant-numeric:tabular-nums; color:#fff; }
+.timer-presets{ display:grid; grid-template-columns:repeat(4, 1fr); gap:5px; }
+.timer-preset, .timer-adjust{ padding:6px 0; font-size:12px; min-width:0; }
 .timer-preset.active{ border-color:var(--primary); color:#fff; background:rgba(47,129,247,.25); }
-.timer-actions{ display:flex; gap:8px; flex-wrap:wrap; }
-.timer-actions button{ min-width:110px; }
-.timer-panel.running{ border-color:rgba(47,129,247,.6); }
-.timer-panel.finished{ border-color:var(--green); background:rgba(35,134,54,.16); }
+.timer-actions{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.timer-actions button{ padding:9px 0; }
+.timer-panel.finished{ border-color:var(--green); }
 .timer-panel.finished .timer-clock{ color:#3fb950; }
-@media (max-width: 640px){
-  .timer-clock{ font-size:40px; width:100%; text-align:center; }
-  .timer-body{ justify-content:center; }
-  .timer-presets{ justify-content:center; }
-  .timer-actions button{ flex:1 1 0; }
-}
+body.launch-active .clock-fab, body.launch-active .timer-panel, body.mobile-menu-open .clock-fab, body.mobile-menu-open .timer-panel{ display:none; }
+/* Espacio al final para que el botón del reloj no tape el último contenido. */
+body.clock-visible main::after{ content:""; display:block; height:72px; }
+/* Con el panel abierto, espacio extra para poder deslizar todo el contenido por encima de él. */
+body.clock-open main::after{ height:380px; }

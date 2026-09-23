@@ -21,9 +21,11 @@ function resetTrainingDraft(){
 // Recupera el registro sin guardar (si se cerró la app o se recargó la página).
 function restoreDraft(){
   const d = loadDraftFromStorage();
+  if(d) d.day = String(d.day || "").replace(/^Complemento - /, "");
   if(!d || !state.weeks.includes(d.week) || !state.days.includes(d.day)) return false;
   state.selectedWeek = d.week;
   state.selectedDay = d.day;
+  if(WEEKDAYS.includes(d.weekday)) state.selectedWeekday = d.weekday;
   trainingDraft = d.draft;
   const notes = $("#sessionNotes");
   if(notes) notes.value = d.notes || "";
@@ -85,7 +87,7 @@ function bindTrainingForm(){
 }
 
 function renderTraining(){
-  $("#trainTitle").textContent = `${state.selectedDay} · ${state.selectedWeek}`;
+  $("#trainTitle").textContent = `${state.selectedWeekday} · ${sessionLabel(state.selectedDay)} · ${state.selectedWeek}`;
   $("#trainingForm").innerHTML = trainingDraft.map((e,ei)=> renderExerciseRegister(e,ei)).join("");
 }
 
@@ -187,7 +189,7 @@ window.removeDraftExercise = function(i){
 
 function addAddedExercise(){
   collectDraftInputs();
-  trainingDraft.push({
+  trainingDraft.unshift({
     name:"Ejercicio agregado",
     sets:3,
     actualSets:3,
@@ -203,6 +205,7 @@ function addAddedExercise(){
   });
   renderTraining();
   saveDraftToStorage();
+  $("#trainingForm .exercise-card")?.scrollIntoView({behavior: "smooth", block: "start"});
 }
 
 function saveSession(){
@@ -227,7 +230,9 @@ function saveSession(){
     date: new Date().toLocaleString("es-CL", {dateStyle:"short", timeStyle:"short"}),
     createdAt: new Date().toISOString(),
     week: state.selectedWeek,
-    day: state.selectedDay,
+    day: `${state.selectedWeekday} - ${sessionLabel(state.selectedDay)}`,
+    weekday: state.selectedWeekday,
+    session: state.selectedDay,
     readiness: {
       sleep: $("#sleepInput").value,
       energy: $("#energyInput").value,

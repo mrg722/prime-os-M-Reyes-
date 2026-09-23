@@ -74,8 +74,7 @@ function drawChart(id, config, fallbackId){
 /* ---------- Inicio ---------- */
 
 function renderHome(){
-  const dayName = state.selectedDay.split(" - ")[1] || state.selectedDay;
-  $("#todayRoutineTitle").textContent = `${dayName} · ${state.selectedWeek}`;
+  $("#todayRoutineTitle").textContent = `${state.selectedWeekday} · ${sessionLabel(state.selectedDay)} · ${state.selectedWeek}`;
   $("#todaySummary").textContent = selectedRoutine().map(e=>e.name).join(" / ") || "Sin carga de ejercicios planificada.";
   $("#totalSessions").textContent = state.sessions.length;
   $("#weekCompletion").textContent = `${weeklyCompletion(state.selectedWeek)}%`;
@@ -215,8 +214,9 @@ window.removeExercise = function(i){
 };
 function addExercise(){
   collectDraftInputs();
-  state.routine[state.selectedWeek][state.selectedDay].push({name:"Nuevo ejercicio", sets:3, reps:"8-10", load:"—", target:"RIR 2", muscle:"general", note:""});
+  state.routine[state.selectedWeek][state.selectedDay].unshift({name:"Nuevo ejercicio", sets:3, reps:"8-10", load:"—", target:"RIR 2", muscle:"general", note:""});
   afterRoutineEdit();
+  $("#routineList .exercise-card")?.scrollIntoView({behavior: "smooth", block: "start"});
 }
 
 /* ---------- Historial ---------- */
