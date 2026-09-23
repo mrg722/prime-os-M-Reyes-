@@ -2,7 +2,7 @@ name: Prime OS V10 tests
 
 on:
   push:
-    branches: ["prime-os-volume-engine-v10"]
+    branches: ["main"]
   pull_request:
     branches: ["main"]
 
