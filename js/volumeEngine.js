@@ -72,6 +72,9 @@ function v10RirFactor(rir,goalMode="mixed"){
 }
 
 function v10ExerciseClassification(ex){
+  const raw=String(ex?.name||"").toLowerCase();
+  if(/biceps.*triceps|triceps.*biceps|curl.*triceps|triceps.*curl/.test(raw)) return {id:null,name:ex?.name||"Bíceps + tríceps",sourceMuscle:ex?.muscle||"Brazos",normalizedMuscle:"bíceps",primaryMuscles:["bíceps","tríceps"],secondaryMuscles:[],volumeWeights:{"bíceps":1,"tríceps":1},movementPattern:"flexion_extension_codo",category:"aislamiento",countsAsVolume:true,custom:true};
+  if(/laterales.*posterior|posterior.*laterales/.test(raw)) return {id:null,name:ex?.name||"Laterales + posterior",sourceMuscle:ex?.muscle||"Deltoides",normalizedMuscle:"deltoide_lateral",primaryMuscles:["deltoide_lateral"],secondaryMuscles:[{muscle:"deltoide_posterior",weight:.5}],volumeWeights:{"deltoide_lateral":1,"deltoide_posterior":.5},movementPattern:"abduccion_hombro",category:"aislamiento",countsAsVolume:true,custom:true};
   const meta=ex?.v10Meta || v10ExerciseMeta(ex?.name);
   if(meta) return {
     id:meta.id,name:meta.name,sourceMuscle:ex?.muscle||meta.sourceMuscle,
@@ -296,15 +299,17 @@ function v10AdaptiveKey(ex){
   return exerciseKeyBase(src);
 }
 function v10AdaptiveStats(ex,sessions){
-  const key=v10AdaptiveKey(ex), matches=[];
+  const key=v10AdaptiveKey(ex), targetMuscle=v10MuscleKey(ex?.muscle), exact=[], fallback=[];
   sessions.forEach(s=>(s.exercises||[]).forEach(e=>{
-    if(v10AdaptiveKey(e)===key){ const sets=(e.sets||[]).filter(setHasData); if(sets.length) matches.push({session:s,exercise:e,sets}); }
+    const sets=(e.sets||[]).filter(setHasData); if(!sets.length) return;
+    if(v10AdaptiveKey(e)===key) exact.push({session:s,exercise:e,sets});
+    else if(v10MuscleKey(e?.muscle)===targetMuscle) fallback.push({session:s,exercise:e,sets});
   }));
-  if(!matches.length) return null;
+  const matches=exact.length?exact:fallback; if(!matches.length) return null;
   const sets=matches.flatMap(x=>x.sets), rirs=sets.map(s=>v10RirFromSet(s)).filter(Number.isFinite), pain=sets.map(s=>setPain(s)).filter(Number.isFinite);
   const bests=matches.map(x=>bestSet(x.sets)).filter(Boolean), e1rms=bests.map(estimate1RM).filter(Number.isFinite), reps=sets.map(s=>repsCount(s.repsDone)).filter(Number.isFinite);
   const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
-  return {sets:sets.length,sessions:matches.length,avgRir:avg(rirs),pain:avg(pain),bestE1RM:e1rms.length?Math.max(...e1rms):null,maxReps:reps.length?Math.max(...reps):null,fatigue:v10Readiness(matches.map(x=>x.session)).fatigue};
+  return {sets:sets.length,sessions:matches.length,avgRir:avg(rirs),pain:avg(pain),bestE1RM:e1rms.length?Math.max(...e1rms):null,maxReps:reps.length?Math.max(...reps):null,fatigue:v10Readiness(matches.map(x=>x.session)).fatigue,sameExercise:exact.length>0};
 }
 function v10AdaptiveLoadText(load,direction){
   const s=String(load||"").trim(), nums=s.match(/\d+(?:[.,]\d+)?/g)?.map(x=>Number(x.replace(",",".")))||[]; if(!nums.length) return s;
@@ -323,7 +328,7 @@ function v10AdaptiveApplyProgression(ex,stats,weekStatus){
   else if(rir!==null && rir<=1){ action="mantener por proximidad al fallo"; }
   out.sets=sets; out.adaptiveApplied=true; out.adaptiveAction=action;
   out.note=[out.note,"V10 adaptativo: "+action+"."].filter(Boolean).join(" ");
-  if(action==="progresar por reps/carga" && out.load && !/bw|peso corporal|suave|moderad|ligero/i.test(String(out.load))){
+  if(action==="progresar por reps/carga" && stats.sameExercise && out.load && !/bw|peso corporal|suave|moderad|ligero/i.test(String(out.load))){
     out.load=v10AdaptiveLoadText(out.load,1); out.progression=[out.progression,"V10: +2,5% tras RIR >=3 sin dolor relevante."].filter(Boolean).join(" ");
   }else if(action==="reducir 1 serie por recuperación"){
     out.progression=[out.progression,"V10: -1 serie hasta recuperar rendimiento/dolor."].filter(Boolean).join(" ");
@@ -341,7 +346,7 @@ function v10AdaptiveVolumePlan(week,routine){
   Object.entries(targets).forEach(([m,range])=>{
     const observed=previous[m]?.weightedSets||0, fatigue=previous[m]?.fatigue??0, pain=previous[m]?.pain??0, trend=previous[m]?.performanceTrend||"→";
     const productive=trend!=="↓" && fatigue<6 && pain<5;
-    const candidates=flat.filter(e=>v10MuscleKey(e?.muscle)===m || normalizeMuscle(e?.muscle)===normalizeMuscle(m));
+    const candidates=flat.filter(e=>v10MuscleKey(e?.muscle)===v10MuscleKey(m) || normalizeMuscle(e?.muscle)===normalizeMuscle(m));
     if(!candidates.length) return;
     if(observed<range[0] && productive){ const target=candidates[0]; target.sets=Math.min((Number(target.sets)||1)+1,4); target.note=[target.note,"V10 volumen: +1 serie para acercarse al rango operativo."].filter(Boolean).join(" "); actions.push({muscle:m,action:"+1 serie",observed,range}); }
     else if(observed>range[1] && (fatigue>=6 || pain>=5 || trend==="↓")){ const target=candidates[candidates.length-1]; target.sets=Math.max(1,(Number(target.sets)||1)-1); target.note=[target.note,"V10 volumen: -1 serie por recuperación/rendimiento."].filter(Boolean).join(" "); actions.push({muscle:m,action:"-1 serie",observed,range}); }
