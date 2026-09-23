@@ -69,7 +69,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
   await test("arranca sin errores y con librerías locales", async () => {
     const page = await open();
     assert(await page.evaluate(() => typeof XLSX !== "undefined" && typeof Chart !== "undefined"), "XLSX o Chart no cargaron");
-    for(const v of ["inicio","rutina","entrenar","historial","progreso","cardio","nutricion","ajustes"]) await go(page, v);
+    for(const v of ["inicio","rutina","entrenar","historial","progreso","one-rm","cardio","nutricion","ajustes"]) await go(page, v);
     assert(!page.errors.length, page.errors.join(" | "));
     await page.context().close();
   });
@@ -93,7 +93,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
       soleo: state.sessions.find(s => s.id === 250001).exercises.find(e => e.name.startsWith("Sóleo")).muscle,
       trabajo: normalizeMuscle("trabajo"), abs: normalizeMuscle("abs"),
       alias: canonicalExercise("Press inclinado manc.") === canonicalExercise("Press inclinado mancuernas top/backoff"),
-      e1rm: estimate1RM({weight:"100", unit:"kg", repsDone:"5"}),
+      e1rm: estimate1RM({weight:"100", unit:"kg", repsDone:"5"}), epley: epley1RM(100,5),
       lbs: estimate1RM({weight:"100", unit:"lbs", repsDone:"1"}),
       noReps: estimate1RM({weight:"40", unit:"kg", repsDone:"similar S1"}),
       rir: [parseRir("RIR 2-3"), parseRir("@7"), parseRir("RPE 8"), parseRir("muchos")]
@@ -101,7 +101,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     assert(r.soleo === "gemelos", "sóleo " + r.soleo);
     assert(r.trabajo === "general" && r.abs === "core/control", "normalizeMuscle");
     assert(r.alias, "alias de ejercicio");
-    assert(Math.abs(r.e1rm - 116.67) < 0.01 && Math.abs(r.lbs - 45.36) < 0.01 && r.noReps === null, "1RM " + JSON.stringify(r));
+    assert(Math.abs(r.e1rm - 115) < 0.01 && Math.abs(r.epley - 115) < 0.01 && Math.abs(r.lbs - 45.36) < 0.01 && r.noReps === null, "1RM " + JSON.stringify(r));
     assert(JSON.stringify(r.rir) === "[2.5,3,2,5]", "RIR " + r.rir);
     await page.context().close();
   });
@@ -196,7 +196,6 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     const snapshot = () => page.evaluate(() => JSON.stringify({s: state.sessions.map(sessionSignature).sort(), r: state.routine, w: state.weightLog.length, c: state.cardio.length},
       (k, x) => x && typeof x === "object" && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().map(key => [key, x[key]])) : x));
     const before = await snapshot();
-    await page.selectOption("#exportWeekSelect", "__all__");
     const [dl] = await Promise.all([page.waitForEvent("download"), page.click("#exportExcelBtn")]);
     const xlsx = path.join(tmp, "export.xlsx"); await dl.saveAs(xlsx);
     await page.setInputFiles("#importInput", xlsx); await page.waitForTimeout(500);
@@ -264,6 +263,32 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     assert(r.days.at(-2) === "Full Body A" && r.days.at(-1) === "Full Body B", r.days.join(","));
     assert(r.fb[0] === "Curl femoral sentado", r.fb.join(","));
     assert(r.edited === "Editado por mí", "se pisó una edición: " + r.edited);
+    await page.context().close();
+  });
+
+  await test("V10.4: calculadora 1RM Epley visible y repertorio ampliado", async () => {
+    const page = await open();
+    await go(page, "one-rm");
+    assert(await page.isVisible("#rmExerciseSelect"), "selector 1RM no visible");
+    const options = await page.locator("#rmExerciseSelect option").count();
+    assert(options >= 80, "repertorio 1RM insuficiente: " + options);
+    await page.fill("#rmLoadInput", "100");
+    await page.fill("#rmRepsInput", "5");
+    assert((await page.textContent("#rmResultValue")).includes("115"), await page.textContent("#rmResultValue"));
+    assert((await page.textContent("#rmResultDetail")).includes("100") && (await page.textContent("#rmResultDetail")).includes("0,03"), await page.textContent("#rmResultDetail"));
+    await page.context().close();
+  });
+
+  await test("V10.4: temporizador conserva ±15 y añade ±1 + ruedas", async () => {
+    const page = await open({viewport:{width:390,height:844}});
+    await page.click("#clockFab");
+    assert(await page.isVisible("#timerMinuteWheel") && await page.isVisible("#timerSecondWheel"), "ruedas del temporizador no visibles");
+    assert(await page.isVisible("#timerMinusBtn") && await page.isVisible("#timerPlusBtn"), "±15 desapareció");
+    assert(await page.isVisible("#timerMinus1Btn") && await page.isVisible("#timerPlus1Btn"), "±1 no existe");
+    await page.click("#timerPlus1Btn");
+    assert((await page.textContent("#timerClock")).includes("2:01"), "±1 no ajustó el temporizador");
+    await page.click('[data-mode="stopwatch"]');
+    assert(await page.isVisible("#timerStartBtn") && !(await page.isVisible("#timerMinuteWheel")), "cronómetro fue alterado");
     await page.context().close();
   });
 
