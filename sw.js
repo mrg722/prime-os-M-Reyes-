@@ -1,6 +1,6 @@
 // Service worker de Prime OS: guarda la app en el dispositivo para abrirla y usarla sin internet.
 // Al publicar una versión nueva, sube CACHE_VERSION (debe coincidir con APP_VERSION en js/config.js).
-const CACHE_VERSION = "10.8.0";
+const CACHE_VERSION = "10.8.1";
 const CACHE_NAME = `prime-os-${CACHE_VERSION}`;
 
 const ASSETS = [

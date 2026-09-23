@@ -13,10 +13,10 @@ function resetTrainingDraft(){
     return {
       ...clone(e),
       unit,
-      actualSets: Number(e.sets)||3,
+      actualSets: resolvedSetCount(e),
       isAdded:false,
       isAlternative:false,
-      setsData: Array.from({length:Number(e.sets)||3}, (_,i)=>blankSet(i+1, unit)),
+      setsData: Array.from({length:resolvedSetCount(e)}, (_,i)=>blankSet(i+1, unit)),
       noteDraft:"",
       secondaryText:""
     };

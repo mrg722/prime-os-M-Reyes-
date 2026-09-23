@@ -43,13 +43,32 @@ async function loadPlan(){
     });
   });
   const weekName = w => /^\d+$/.test(String(w)) ? `Semana ${w}` : String(w);
-  const numericTargets = bands => Object.fromEntries(Object.entries(bands||{}).map(([w,groups])=>[weekName(w),Object.fromEntries(Object.entries(groups||{}).map(([m,v])=>{
-    if(typeof v === "number") return [m,v];
-    const nums = String(v).match(/\d+(?:\.\d+)?/g)?.map(Number) || [];
-    if(nums.length >= 2) return [m,Math.round((nums[0]+nums[1])/2)];
-    if(nums.length === 1) return [m,nums[0]];
-    return [m,0];
-  }))]));
+  // "50-60% S3" es un porcentaje del punto medio de la semana referida (pivot), no un número de series suelto.
+  const numericTargets = bands => {
+    const entries = Object.entries(bands||{});
+    const out = {};
+    entries.forEach(([w,groups])=>{
+      out[weekName(w)] = Object.fromEntries(Object.entries(groups||{}).map(([m,v])=>{
+        if(typeof v === "number") return [m,v];
+        const text = String(v);
+        if(/%/.test(text)){
+          const pct = text.match(/\d+(?:\.\d+)?/g)?.map(Number) || [];
+          const refMatch = text.match(/\bS(?:em(?:ana)?)?\s*(\d+)/i);
+          const refKey = refMatch ? entries.find(([k]) => weekName(k) === `Semana ${refMatch[1]}`)?.[0] : entries[entries.findIndex(([k])=>k===w)-1]?.[0];
+          const refMid = refKey ? out[weekName(refKey)]?.[m] : null;
+          if(refMid !== undefined && refMid !== null && pct.length){
+            const lo = refMid*pct[0]/100, hi = refMid*(pct[1] ?? pct[0])/100;
+            return [m, Math.round((lo+hi)/2)];
+          }
+        }
+        const nums = text.match(/\d+(?:\.\d+)?/g)?.map(Number) || [];
+        if(nums.length >= 2) return [m,Math.round((nums[0]+nums[1])/2)];
+        if(nums.length === 1) return [m,nums[0]];
+        return [m,0];
+      }));
+    });
+    return out;
+  };
   const bandsByWeek = bands => Object.fromEntries(Object.entries(bands||{}).map(([w,g])=>[weekName(w), g]));
   const target3Bands = bandsByWeek(manifest.weeklyTargets3), target4Bands = bandsByWeek(manifest.weeklyTargets4);
   PLAN = {...legacy, ...manifest,

@@ -1,5 +1,5 @@
 {
-  "version": "10.8.0",
+  "version": "10.8.1",
   "app": "Prime OS",
-  "release": "Dashboard 3D/4D, Full Body adaptativo reconstruido, kg/lbs, alarma con vibración"
+  "release": "Corrige series de top+backoff y objetivos de descarga mal calculados"
 }

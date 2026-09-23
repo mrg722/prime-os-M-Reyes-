@@ -103,6 +103,21 @@ function normalizeSetWeight(set){
   return parsed;
 }
 
+// Series reales de un ejercicio del plan: "1 top + 2 backoff" son 3 series, no 1.
+// `sets` en el JSON del plan quedó como el primer número; esto lee `seriesSpec` (el texto completo del Excel) para no perder series.
+function resolvedSetCount(e){
+  const spec = String(e?.seriesSpec ?? "").trim();
+  const fallback = Number(e?.sets) || 3;
+  if(!spec) return fallback;
+  if(/top|backoff|test/i.test(spec)){
+    const nums = [...spec.matchAll(/(\d+)\s*(?:top|backoff|test)/gi)].map(m => Number(m[1]));
+    if(nums.length) return nums.reduce((a,b) => a+b, 0);
+  }
+  const plus = spec.match(/^(\d+)(?:-(\d+))?\s*\+\s*(\d+)/);
+  if(plus) return Number(plus[2] || plus[1]) + Number(plus[3]);
+  return fallback;
+}
+
 function toKg(set){
   const n = parseNumber(set?.weight);
   if(n === null) return null;

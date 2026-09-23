@@ -1,7 +1,7 @@
 {
-  "name": "Prime OS Martin Reyes V10.8.0",
+  "name": "Prime OS Martin Reyes V10.8.1",
   "short_name": "Prime OS",
-  "start_url": "./index.html?v=10.8.0",
+  "start_url": "./index.html?v=10.8.1",
   "display": "standalone",
   "background_color": "#0d1117",
   "theme_color": "#0d1117",
@@ -10,7 +10,7 @@
     {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
     {"src": "icon.svg", "sizes": "any", "type": "image/svg+xml"}
   ],
-  "description": "Prime OS V10.8.0: registro de entrenamiento con respaldo completo e importación/exportación Excel compatible.",
+  "description": "Prime OS V10.8.1: registro de entrenamiento con respaldo completo e importación/exportación Excel compatible.",
   "orientation": "portrait-primary",
   "scope": "./"
 }
