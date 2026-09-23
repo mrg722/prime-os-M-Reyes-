@@ -17,6 +17,7 @@ async function setup(){
   bindNav();
   bindInputs();
   bindTrainingForm();
+  bindTimer();
   bindLaunchScreen();
   bindMobileDrawer();
   applySidebarPreference();

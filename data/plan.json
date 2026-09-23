@@ -33,7 +33,9 @@
     "Jueves - Cardio suave",
     "Viernes - Lower B",
     "Sábado - Upper B",
-    "Domingo - Trote opcional"
+    "Domingo - Trote opcional",
+    "Complemento - Full Body A",
+    "Complemento - Full Body B"
   ],
   "defaultWeek": "Semana 1",
   "defaultDay": "Miércoles - Upper A",
@@ -430,6 +432,46 @@
           "muscle": "recuperación",
           "note": "Peso, dolor, fatiga, PRs, energía."
         }
+      ],
+      "Complemento - Full Body A": [
+        {
+          "name": "Curl femoral sentado",
+          "sets": 2,
+          "reps": "10-12",
+          "load": "80-95 lbs",
+          "target": "RIR 2-3",
+          "muscle": "isquios",
+          "note": "Prioridad del complemento: el curl sentado estira el isquio y es el que más lo hace crecer. Bajada 3 s, sin rebote. Si el isquio tira, baja la carga; nada de nórdicos."
+        },
+        {
+          "name": "Prensa 45 pies medios (complemento)",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "~70% de la prensa del martes",
+          "target": "RIR 2-3",
+          "muscle": "cuádriceps",
+          "note": "Sin carga en la espalda ni el cuello. Rango completo, sin bloquear rodillas."
+        }
+      ],
+      "Complemento - Full Body B": [
+        {
+          "name": "Curl femoral tumbado",
+          "sets": 2,
+          "reps": "12-15",
+          "load": "Moderado",
+          "target": "RIR 2-3",
+          "muscle": "isquios",
+          "note": "Segundo estímulo de isquio sin cargar la lumbar. Cadera pegada al banco, excéntrica controlada."
+        },
+        {
+          "name": "Face pull",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero",
+          "target": "RIR 2-3",
+          "muscle": "escápula/manguito",
+          "note": "Tira hacia la frente con rotación externa. Escápulas atrás y abajo."
+        }
       ]
     },
     "Semana 2": {
@@ -734,6 +776,109 @@
           "muscle": "recuperación",
           "note": "Peso, dolor, fatiga, PRs, energía."
         }
+      ],
+      "Complemento - Full Body A": [
+        {
+          "name": "Curl femoral sentado",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "85-100 lbs",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Prioridad del complemento: el curl sentado estira el isquio y es el que más lo hace crecer. Bajada 3 s, sin rebote. Si el isquio tira, baja la carga; nada de nórdicos."
+        },
+        {
+          "name": "Prensa 45 pies medios (complemento)",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "~70% de la prensa del martes",
+          "target": "RIR 1-2",
+          "muscle": "cuádriceps",
+          "note": "Sin carga en la espalda ni el cuello. Rango completo, sin bloquear rodillas."
+        },
+        {
+          "name": "Press en máquina convergente",
+          "sets": 1,
+          "reps": "10-12",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "pecho",
+          "note": "Hombro protegido: agarre neutro si hay molestia, sin llegar al fallo. Si duele >3/10, cambia a aperturas en polea."
+        },
+        {
+          "name": "Curl bayesiano en polea",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Brazo detrás del cuerpo para estirar el bíceps. Codo estable."
+        },
+        {
+          "name": "Rotación externa en polea",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "escápula/manguito",
+          "note": "Codo pegado al cuerpo a 90°. Salud del manguito; técnica antes que carga."
+        }
+      ],
+      "Complemento - Full Body B": [
+        {
+          "name": "Curl femoral tumbado",
+          "sets": 2,
+          "reps": "12-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Segundo estímulo de isquio sin cargar la lumbar. Cadera pegada al banco, excéntrica controlada."
+        },
+        {
+          "name": "Extensión cuádriceps unilateral",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "140-160 lbs (total a dos piernas)",
+          "target": "RIR 1-2",
+          "muscle": "cuádriceps",
+          "note": "Pausa 1 s arriba. Rodilla manda."
+        },
+        {
+          "name": "Patada de glúteo en polea",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero-moderado",
+          "target": "RIR 1-2",
+          "muscle": "glúteo",
+          "note": "Cadera neutra, sin arquear la lumbar."
+        },
+        {
+          "name": "Elevación lateral con mancuerna",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "deltoide lateral",
+          "note": "Controlada, sin balanceo."
+        },
+        {
+          "name": "Pushdown con cuerda",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Sin bloqueo violento."
+        },
+        {
+          "name": "Face pull",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "escápula/manguito",
+          "note": "Tira hacia la frente con rotación externa. Escápulas atrás y abajo."
+        }
       ]
     },
     "Semana 2.5 Pivot": {
@@ -965,6 +1110,73 @@
           "target": "—",
           "muscle": "cardio",
           "note": "Semana 2.5 sin trote."
+        }
+      ],
+      "Complemento - Full Body A": [
+        {
+          "name": "Curl femoral sentado",
+          "sets": 1,
+          "reps": "10-12",
+          "load": "80-90 lbs",
+          "target": "RIR 2-3",
+          "muscle": "isquios",
+          "note": "Prioridad del complemento: el curl sentado estira el isquio y es el que más lo hace crecer. Bajada 3 s, sin rebote. Si el isquio tira, baja la carga; nada de nórdicos."
+        },
+        {
+          "name": "Abducción de cadera en máquina",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 2-3",
+          "muscle": "glúteo",
+          "note": "Glúteo medio/mayor sin fatigar la lumbar. Torso levemente inclinado adelante."
+        },
+        {
+          "name": "Elevación lateral en polea",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Ligero",
+          "target": "RIR 2-3",
+          "muscle": "deltoide lateral",
+          "note": "Polea y mancuerna rinden igual; la polea mantiene tensión abajo. Sin subir más arriba del hombro."
+        },
+        {
+          "name": "Rotación externa en polea",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero",
+          "target": "RIR 2-3",
+          "muscle": "escápula/manguito",
+          "note": "Codo pegado al cuerpo a 90°. Salud del manguito; técnica antes que carga."
+        }
+      ],
+      "Complemento - Full Body B": [
+        {
+          "name": "Patada de glúteo en polea",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero-moderado",
+          "target": "RIR 2-3",
+          "muscle": "glúteo",
+          "note": "Cadera neutra, sin arquear la lumbar."
+        },
+        {
+          "name": "Elevación lateral con mancuerna",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Ligero",
+          "target": "RIR 2-3",
+          "muscle": "deltoide lateral",
+          "note": "Controlada, sin balanceo."
+        },
+        {
+          "name": "Pushdown con cuerda",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Moderado",
+          "target": "RIR 2-3",
+          "muscle": "tríceps",
+          "note": "Sin bloqueo violento."
         }
       ]
     },
@@ -1270,6 +1482,172 @@
           "muscle": "recuperación",
           "note": "Peso, dolor, fatiga, PRs, energía."
         }
+      ],
+      "Complemento - Full Body A": [
+        {
+          "name": "Curl femoral sentado",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "90-105 lbs",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Prioridad del complemento: el curl sentado estira el isquio y es el que más lo hace crecer. Bajada 3 s, sin rebote. Si el isquio tira, baja la carga; nada de nórdicos."
+        },
+        {
+          "name": "Prensa 45 pies medios (complemento)",
+          "sets": 2,
+          "reps": "12-15",
+          "load": "~70% de la prensa del martes",
+          "target": "RIR 1-2",
+          "muscle": "cuádriceps",
+          "note": "Sin carga en la espalda ni el cuello. Rango completo, sin bloquear rodillas."
+        },
+        {
+          "name": "Abducción de cadera en máquina",
+          "sets": 2,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "glúteo",
+          "note": "Glúteo medio/mayor sin fatigar la lumbar. Torso levemente inclinado adelante."
+        },
+        {
+          "name": "Press en máquina convergente",
+          "sets": 1,
+          "reps": "10-12",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "pecho",
+          "note": "Hombro protegido: agarre neutro si hay molestia, sin llegar al fallo. Si duele >3/10, cambia a aperturas en polea."
+        },
+        {
+          "name": "Elevación lateral en polea",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "deltoide lateral",
+          "note": "Polea y mancuerna rinden igual; la polea mantiene tensión abajo. Sin subir más arriba del hombro."
+        },
+        {
+          "name": "Curl bayesiano en polea",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Brazo detrás del cuerpo para estirar el bíceps. Codo estable."
+        },
+        {
+          "name": "Extensión de tríceps sobre la cabeza en polea",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Sobre la cabeza hace crecer más la cabeza larga. Si el hombro molesta, cámbialo por pushdown con cuerda."
+        },
+        {
+          "name": "Rotación externa en polea",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "escápula/manguito",
+          "note": "Codo pegado al cuerpo a 90°. Salud del manguito; técnica antes que carga."
+        }
+      ],
+      "Complemento - Full Body B": [
+        {
+          "name": "Curl femoral tumbado",
+          "sets": 3,
+          "reps": "12-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Segundo estímulo de isquio sin cargar la lumbar. Cadera pegada al banco, excéntrica controlada."
+        },
+        {
+          "name": "Extensión cuádriceps unilateral",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "150-170 lbs (total a dos piernas)",
+          "target": "RIR 1-2",
+          "muscle": "cuádriceps",
+          "note": "Pausa 1 s arriba. Rodilla manda."
+        },
+        {
+          "name": "Patada de glúteo en polea",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero-moderado",
+          "target": "RIR 1-2",
+          "muscle": "glúteo",
+          "note": "Cadera neutra, sin arquear la lumbar."
+        },
+        {
+          "name": "Aperturas en polea / pec deck",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero-moderado",
+          "target": "RIR 1-2",
+          "muscle": "pecho",
+          "note": "Rango cómodo para el hombro."
+        },
+        {
+          "name": "Remo en polea sentado agarre neutro",
+          "sets": 1,
+          "reps": "10-12",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Pausa 1 s atrás. Pecho alto, sin tirar con la lumbar."
+        },
+        {
+          "name": "Elevación lateral con mancuerna",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "deltoide lateral",
+          "note": "Controlada, sin balanceo."
+        },
+        {
+          "name": "Curl martillo",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Muñeca neutra."
+        },
+        {
+          "name": "Pushdown con cuerda",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Sin bloqueo violento."
+        },
+        {
+          "name": "Gemelos sentado (sóleo)",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Pausa abajo 1 s. Si hay calambre, descanso real."
+        },
+        {
+          "name": "Face pull",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "escápula/manguito",
+          "note": "Tira hacia la frente con rotación externa. Escápulas atrás y abajo."
+        }
       ]
     },
     "Semana 4": {
@@ -1573,6 +1951,172 @@
           "target": "Honesto",
           "muscle": "recuperación",
           "note": "Peso, dolor, fatiga, PRs, energía."
+        }
+      ],
+      "Complemento - Full Body A": [
+        {
+          "name": "Curl femoral sentado",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "95-110 lbs",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Prioridad del complemento: el curl sentado estira el isquio y es el que más lo hace crecer. Bajada 3 s, sin rebote. Si el isquio tira, baja la carga; nada de nórdicos."
+        },
+        {
+          "name": "Prensa 45 pies medios (complemento)",
+          "sets": 2,
+          "reps": "12-15",
+          "load": "~70% de la prensa del martes",
+          "target": "RIR 1-2",
+          "muscle": "cuádriceps",
+          "note": "Sin carga en la espalda ni el cuello. Rango completo, sin bloquear rodillas."
+        },
+        {
+          "name": "Abducción de cadera en máquina",
+          "sets": 2,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "glúteo",
+          "note": "Glúteo medio/mayor sin fatigar la lumbar. Torso levemente inclinado adelante."
+        },
+        {
+          "name": "Press en máquina convergente",
+          "sets": 1,
+          "reps": "10-12",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "pecho",
+          "note": "Hombro protegido: agarre neutro si hay molestia, sin llegar al fallo. Si duele >3/10, cambia a aperturas en polea."
+        },
+        {
+          "name": "Elevación lateral en polea",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "deltoide lateral",
+          "note": "Polea y mancuerna rinden igual; la polea mantiene tensión abajo. Sin subir más arriba del hombro."
+        },
+        {
+          "name": "Curl bayesiano en polea",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Brazo detrás del cuerpo para estirar el bíceps. Codo estable."
+        },
+        {
+          "name": "Extensión de tríceps sobre la cabeza en polea",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Sobre la cabeza hace crecer más la cabeza larga. Si el hombro molesta, cámbialo por pushdown con cuerda."
+        },
+        {
+          "name": "Rotación externa en polea",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "escápula/manguito",
+          "note": "Codo pegado al cuerpo a 90°. Salud del manguito; técnica antes que carga."
+        }
+      ],
+      "Complemento - Full Body B": [
+        {
+          "name": "Curl femoral tumbado",
+          "sets": 3,
+          "reps": "12-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Segundo estímulo de isquio sin cargar la lumbar. Cadera pegada al banco, excéntrica controlada."
+        },
+        {
+          "name": "Extensión cuádriceps unilateral",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "160-180 lbs (total a dos piernas)",
+          "target": "RIR 1-2",
+          "muscle": "cuádriceps",
+          "note": "Pausa 1 s arriba. Rodilla manda."
+        },
+        {
+          "name": "Patada de glúteo en polea",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero-moderado",
+          "target": "RIR 1-2",
+          "muscle": "glúteo",
+          "note": "Cadera neutra, sin arquear la lumbar."
+        },
+        {
+          "name": "Aperturas en polea / pec deck",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero-moderado",
+          "target": "RIR 1-2",
+          "muscle": "pecho",
+          "note": "Rango cómodo para el hombro."
+        },
+        {
+          "name": "Remo en polea sentado agarre neutro",
+          "sets": 1,
+          "reps": "10-12",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Pausa 1 s atrás. Pecho alto, sin tirar con la lumbar."
+        },
+        {
+          "name": "Elevación lateral con mancuerna",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "deltoide lateral",
+          "note": "Controlada, sin balanceo."
+        },
+        {
+          "name": "Curl martillo",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Muñeca neutra."
+        },
+        {
+          "name": "Pushdown con cuerda",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Sin bloqueo violento."
+        },
+        {
+          "name": "Gemelos sentado (sóleo)",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Pausa abajo 1 s. Si hay calambre, descanso real."
+        },
+        {
+          "name": "Face pull",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "escápula/manguito",
+          "note": "Tira hacia la frente con rotación externa. Escápulas atrás y abajo."
         }
       ]
     },
@@ -1878,6 +2422,109 @@
           "muscle": "recuperación",
           "note": "Peso, dolor, fatiga, PRs, energía."
         }
+      ],
+      "Complemento - Full Body A": [
+        {
+          "name": "Curl femoral sentado",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "95-110 lbs",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Prioridad del complemento: el curl sentado estira el isquio y es el que más lo hace crecer. Bajada 3 s, sin rebote. Si el isquio tira, baja la carga; nada de nórdicos."
+        },
+        {
+          "name": "Prensa 45 pies medios (complemento)",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "~70% de la prensa del martes",
+          "target": "RIR 1-2",
+          "muscle": "cuádriceps",
+          "note": "Sin carga en la espalda ni el cuello. Rango completo, sin bloquear rodillas."
+        },
+        {
+          "name": "Abducción de cadera en máquina",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "glúteo",
+          "note": "Glúteo medio/mayor sin fatigar la lumbar. Torso levemente inclinado adelante."
+        },
+        {
+          "name": "Elevación lateral en polea",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "deltoide lateral",
+          "note": "Polea y mancuerna rinden igual; la polea mantiene tensión abajo. Sin subir más arriba del hombro."
+        },
+        {
+          "name": "Extensión de tríceps sobre la cabeza en polea",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Sobre la cabeza hace crecer más la cabeza larga. Si el hombro molesta, cámbialo por pushdown con cuerda."
+        }
+      ],
+      "Complemento - Full Body B": [
+        {
+          "name": "Curl femoral tumbado",
+          "sets": 2,
+          "reps": "12-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Segundo estímulo de isquio sin cargar la lumbar. Cadera pegada al banco, excéntrica controlada."
+        },
+        {
+          "name": "Extensión cuádriceps unilateral",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "160-180 lbs (total a dos piernas)",
+          "target": "RIR 1-2",
+          "muscle": "cuádriceps",
+          "note": "Pausa 1 s arriba. Rodilla manda."
+        },
+        {
+          "name": "Patada de glúteo en polea",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero-moderado",
+          "target": "RIR 1-2",
+          "muscle": "glúteo",
+          "note": "Cadera neutra, sin arquear la lumbar."
+        },
+        {
+          "name": "Aperturas en polea / pec deck",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero-moderado",
+          "target": "RIR 1-2",
+          "muscle": "pecho",
+          "note": "Rango cómodo para el hombro."
+        },
+        {
+          "name": "Curl martillo",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Muñeca neutra."
+        },
+        {
+          "name": "Face pull",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero",
+          "target": "RIR 1-2",
+          "muscle": "escápula/manguito",
+          "note": "Tira hacia la frente con rotación externa. Escápulas atrás y abajo."
+        }
       ]
     },
     "Semana 6": {
@@ -2181,6 +2828,91 @@
           "target": "Honesto",
           "muscle": "recuperación",
           "note": "Peso, dolor, fatiga, PRs, energía."
+        }
+      ],
+      "Complemento - Full Body A": [
+        {
+          "name": "Curl femoral sentado",
+          "sets": 2,
+          "reps": "10-12",
+          "load": "70-80 lbs",
+          "target": "RIR 3-4",
+          "muscle": "isquios",
+          "note": "Prioridad del complemento: el curl sentado estira el isquio y es el que más lo hace crecer. Bajada 3 s, sin rebote. Si el isquio tira, baja la carga; nada de nórdicos."
+        },
+        {
+          "name": "Abducción de cadera en máquina",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 3-4",
+          "muscle": "glúteo",
+          "note": "Glúteo medio/mayor sin fatigar la lumbar. Torso levemente inclinado adelante."
+        },
+        {
+          "name": "Elevación lateral en polea",
+          "sets": 1,
+          "reps": "12-20",
+          "load": "Ligero",
+          "target": "RIR 3-4",
+          "muscle": "deltoide lateral",
+          "note": "Polea y mancuerna rinden igual; la polea mantiene tensión abajo. Sin subir más arriba del hombro."
+        },
+        {
+          "name": "Extensión de tríceps sobre la cabeza en polea",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 3-4",
+          "muscle": "tríceps",
+          "note": "Sobre la cabeza hace crecer más la cabeza larga. Si el hombro molesta, cámbialo por pushdown con cuerda."
+        }
+      ],
+      "Complemento - Full Body B": [
+        {
+          "name": "Curl femoral tumbado",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Moderado",
+          "target": "RIR 3-4",
+          "muscle": "isquios",
+          "note": "Segundo estímulo de isquio sin cargar la lumbar. Cadera pegada al banco, excéntrica controlada."
+        },
+        {
+          "name": "Extensión cuádriceps unilateral",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "110-130 lbs (total a dos piernas)",
+          "target": "RIR 3-4",
+          "muscle": "cuádriceps",
+          "note": "Pausa 1 s arriba. Rodilla manda."
+        },
+        {
+          "name": "Patada de glúteo en polea",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero-moderado",
+          "target": "RIR 3-4",
+          "muscle": "glúteo",
+          "note": "Cadera neutra, sin arquear la lumbar."
+        },
+        {
+          "name": "Curl martillo",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 3-4",
+          "muscle": "bíceps",
+          "note": "Muñeca neutra."
+        },
+        {
+          "name": "Face pull",
+          "sets": 1,
+          "reps": "12-15",
+          "load": "Ligero",
+          "target": "RIR 3-4",
+          "muscle": "escápula/manguito",
+          "note": "Tira hacia la frente con rotación externa. Escápulas atrás y abajo."
         }
       ]
     }
@@ -3205,5 +3937,6 @@
       "rdl principal o semi-sumo tecnico",
       "rdl principal / deadlift tecnico solo si verde"
     ]
-  }
+  },
+  "fullBodyVersion": 1
 }

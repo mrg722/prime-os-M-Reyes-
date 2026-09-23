@@ -227,6 +227,70 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     await page.context().close();
   });
 
+  await test("Full Body A/B: la rutina original no cambia y cubren justo lo que falta", async () => {
+    const plan = JSON.parse(fs.readFileSync(path.join(ROOT, "data/plan.json"), "utf8"));
+    const original = plan.days.filter(d => !d.startsWith("Complemento - "));
+    assert(original.length === 7, "días originales: " + original.length);
+    // Instantánea de la rutina original de V8.0 (sin los full body), tomada del historial de git si está disponible.
+    let base = null;
+    try { base = JSON.parse(require("child_process").execSync("git show 2364ad7:data/plan.json", {cwd: ROOT, stdio: ["ignore","pipe","ignore"]}).toString()); } catch(e){}
+    if(base) plan.weeks.forEach(w => original.forEach(d => assert(JSON.stringify(plan.routine[w][d]) === JSON.stringify(base.routine[w][d]), `cambió ${w} / ${d}`)));
+    if(base) assert(JSON.stringify(plan.weeklyTargets) === JSON.stringify(base.weeklyTargets), "cambiaron los objetivos semanales");
+    plan.weeks.forEach(w => {
+      const planned = {};
+      plan.days.forEach(d => (plan.routine[w][d] || []).forEach(e => { planned[e.muscle] = (planned[e.muscle] || 0) + Number(e.sets); }));
+      Object.entries(plan.weeklyTargets[w]).forEach(([m, t]) => {
+        const fb = ["Complemento - Full Body A","Complemento - Full Body B"].flatMap(d => plan.routine[w][d]).filter(e => e.muscle === m).reduce((a, e) => a + e.sets, 0);
+        const total = planned[m] || 0;
+        assert(total >= t, `${w} ${m}: plan ${total} < objetivo ${t}`);
+        if(fb) assert(total === t, `${w} ${m}: los full body se pasan del objetivo (${total} > ${t})`);
+      });
+    });
+  });
+
+  await test("Full Body se agrega a datos ya guardados sin tocar lo editado", async () => {
+    const page0 = await open();
+    const saved = await page0.evaluate(() => {
+      const s = JSON.parse(JSON.stringify(state));
+      s.days = s.days.filter(d => !d.startsWith("Complemento - "));
+      Object.values(s.routine).forEach(w => { delete w["Complemento - Full Body A"]; delete w["Complemento - Full Body B"]; });
+      delete s.fullBodyVersion;
+      s.routine["Semana 3"]["Martes - Lower A"][0].name = "Editado por mí";
+      return JSON.stringify(s);
+    });
+    await page0.context().close();
+    const page = await open({storage: {prime_os_martin_v7_3: saved}});
+    const r = await page.evaluate(() => ({days: state.days, fb: state.routine["Semana 3"]["Complemento - Full Body A"].map(e => e.name), edited: state.routine["Semana 3"]["Martes - Lower A"][0].name}));
+    assert(r.days.at(-2) === "Complemento - Full Body A" && r.days.at(-1) === "Complemento - Full Body B", r.days.join(","));
+    assert(r.fb[0] === "Curl femoral sentado", r.fb.join(","));
+    assert(r.edited === "Editado por mí", "se pisó una edición: " + r.edited);
+    await page.context().close();
+  });
+
+  await test("temporizador y cronómetro", async () => {
+    const page = await open({viewport: {width:390, height:844}});
+    await go(page, "entrenar");
+    await page.click('.timer-preset[data-seconds="60"]');
+    assert(await page.textContent("#timerClock") === "1:00", "preset 1:00");
+    await page.click("#timerPlusBtn");
+    assert(await page.textContent("#timerClock") === "1:15", "+15 s");
+    await page.evaluate(() => setTimerDuration(5));
+    await page.click("#timerStartBtn");
+    await go(page, "progreso"); await go(page, "entrenar");
+    await page.waitForTimeout(5600);
+    assert(await page.textContent("#timerClock") === "¡Listo!" && await page.evaluate(() => $("#timerPanel").classList.contains("finished")), "no terminó la cuenta regresiva");
+    await page.click('.timer-mode[data-mode="stopwatch"]');
+    await page.click("#timerStartBtn"); await page.waitForTimeout(2300);
+    assert(await page.textContent("#timerClock") === "0:02", "cronómetro " + await page.textContent("#timerClock"));
+    await page.click("#timerStartBtn");
+    await page.reload(); await page.waitForFunction(() => typeof state !== "undefined" && state);
+    assert(await page.evaluate(() => timerState.mode === "stopwatch" && Math.floor(timerElapsed()) === 2), "no recordó el cronómetro tras recargar");
+    await go(page, "entrenar");
+    await page.click("#timerResetBtn");
+    assert(await page.textContent("#timerClock") === "0:00", "reiniciar");
+    await page.context().close();
+  });
+
   await test("funciona sin internet (service worker)", async () => {
     const ctx = await browser.newContext();
     const page = await ctx.newPage();

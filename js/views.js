@@ -135,6 +135,7 @@ function makeAdvice(status, shoulder, neck, ham){
   if(day.includes("Upper") && shoulder >= 3) return "Hombro en zona amarilla: mantén press en rango cómodo, sin fallo. Usa Agregar si cambias banca/inclinado por máquina, fondos asistidos o variante sin dolor.";
   if(day.includes("Lower") && neck >= 3) return "Cervical/lumbar sensible: evita sentadilla libre pesada. Agrega prensa, hack o pausa liviana si cambias el patrón.";
   if(day.includes("Lower") && ham >= 3) return "Isquio/glúteo sensible: baja tirones fuertes y evita trote intenso. Prioriza técnica y control.";
+  if(day.includes("Full Body")) return "Full body de complemento: solo suma las series que faltan para tu objetivo semanal. Sesión corta, sin fallo y sin cargar espalda ni cuello. Si ese día hay dolor sobre 3/10, sáltalo: es opcional.";
   if(day.includes("Lower B")){
     const hinge = selectedRoutine().find(e => normalizeMuscle(e.muscle) === "posterior/hinge");
     const load = hinge?.load && hinge.load !== "—" ? ` (${hinge.load})` : "";

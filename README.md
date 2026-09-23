@@ -1,4 +1,4 @@
-# Prime OS - Martin Reyes V8.0
+# Prime OS - Martin Reyes V8.1
 
 ## Qué es
 
@@ -7,6 +7,18 @@ Prime OS es una plataforma personal de entrenamiento para registrar rutina, seri
 ## Objetivo
 
 Automatizar el seguimiento del bloque de entrenamiento de Martin Reyes para tomar mejores decisiones de carga, volumen, progreso y recuperación.
+
+## Cambios de V8.1
+
+- **Temporizador y cronómetro** en Registrar: accesos rápidos de 1:00 a 4:00 y ajuste de ±15 s. Sigue contando aunque cambies de sección o recargues; al terminar vibra y suena.
+- **Complemento - Full Body A y B** (opcionales): solo suman las series que faltan entre tu objetivo semanal y lo planificado, semana por semana. Prioridad: isquios, luego cuádriceps, glúteo, deltoide lateral, brazos y manguito. Sin cargar espalda ni cuello, sin nórdicos (isquio sensible) y con alternativa si el hombro molesta. La rutina, las series, las reps, el RIR y los objetivos existentes no cambian.
+- Botón azul con mejor contraste. Revisión visual automática en celular, tablet y escritorio (sin textos invisibles, encimados ni desbordes).
+
+Base de los full body:
+- El volumen semanal es lo que más influye en el crecimiento; repartirlo en más días funciona igual ([Schoenfeld 2019](https://pubmed.ncbi.nlm.nih.gov/30558493/), [Pelland 2024](https://link.springer.com/article/10.1007/s40279-025-02344-w)).
+- Curl femoral sentado > tumbado o nórdico para isquios ([Maeo 2021](https://doi.org/10.1249/MSS.0000000000002523)).
+- Extensión de tríceps sobre la cabeza para la cabeza larga ([Maeo 2023](https://pubmed.ncbi.nlm.nih.gov/35819335/)).
+- Elevación lateral con polea o mancuerna, mismo resultado ([estudio](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12277279/)).
 
 ## Cambios de V8.0
 

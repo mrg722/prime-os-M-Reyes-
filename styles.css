@@ -521,7 +521,7 @@ main{
   font-size:30px !important;
 }
 .primary{
-  background:linear-gradient(135deg, #4aa3ff, #317ef7) !important;
+  background:linear-gradient(135deg, #3a8cf5, #2f7af0) !important;
   border-color:#377ce6 !important;
   box-shadow:0 12px 24px rgba(47,129,247,.22);
 }
@@ -1142,3 +1142,30 @@ body.launch-active{
 .toast{ padding:10px 14px; border-radius:10px; background:var(--panel2); border:1px solid var(--line); color:var(--text); font-size:14px; box-shadow:var(--shadow); }
 
 .fatal-error{ max-width:520px; margin:15vh auto; padding:24px; text-align:center; }
+
+/* ===== V8.1 - Temporizador / cronómetro de Registrar ===== */
+.timer-panel{
+  display:grid; gap:12px; margin:0 0 18px; padding:14px 16px;
+  border:1px solid var(--line); border-radius:var(--radius); background:rgba(13,17,23,.6);
+}
+.timer-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+.timer-modes{ display:inline-flex; gap:4px; padding:3px; border-radius:10px; background:var(--panel2); border:1px solid var(--line); }
+.timer-modes .timer-mode{ background:transparent; border:0; padding:7px 12px; font-size:13px; color:var(--muted); }
+.timer-modes .timer-mode.active{ background:var(--primary); color:#fff; }
+.timer-body{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.timer-clock{ font-size:44px; line-height:1; font-variant-numeric:tabular-nums; color:#fff; min-width:4ch; }
+.timer-presets{ display:flex; flex-wrap:wrap; gap:6px; }
+.timer-presets.hidden{ display:none; }
+.timer-preset, .timer-adjust{ padding:7px 10px; font-size:13px; }
+.timer-preset.active{ border-color:var(--primary); color:#fff; background:rgba(47,129,247,.25); }
+.timer-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+.timer-actions button{ min-width:110px; }
+.timer-panel.running{ border-color:rgba(47,129,247,.6); }
+.timer-panel.finished{ border-color:var(--green); background:rgba(35,134,54,.16); }
+.timer-panel.finished .timer-clock{ color:#3fb950; }
+@media (max-width: 640px){
+  .timer-clock{ font-size:40px; width:100%; text-align:center; }
+  .timer-body{ justify-content:center; }
+  .timer-presets{ justify-content:center; }
+  .timer-actions button{ flex:1 1 0; }
+}

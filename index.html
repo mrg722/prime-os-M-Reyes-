@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=8.0"/>
+  <link rel="stylesheet" href="styles.css?v=8.1"/>
 </head>
 <body>
   <div class="watermark">MARTIN REYES · PRIME OS</div>
@@ -224,6 +224,31 @@
               <button id="saveSessionBtn" class="primary">Guardar sesión</button>
             </div>
           </div>
+          <section id="timerPanel" class="timer-panel" aria-label="Temporizador y cronómetro">
+            <div class="timer-head">
+              <span class="eyebrow">Descanso</span>
+              <div class="timer-modes" role="tablist">
+                <button type="button" class="timer-mode" data-mode="countdown" role="tab">Temporizador</button>
+                <button type="button" class="timer-mode" data-mode="stopwatch" role="tab">Cronómetro</button>
+              </div>
+            </div>
+            <div class="timer-body">
+              <strong id="timerClock" class="timer-clock" role="timer" aria-live="off">2:00</strong>
+              <div id="timerPresets" class="timer-presets">
+                <button type="button" class="timer-preset" data-seconds="60">1:00</button>
+                <button type="button" class="timer-preset" data-seconds="90">1:30</button>
+                <button type="button" class="timer-preset" data-seconds="120">2:00</button>
+                <button type="button" class="timer-preset" data-seconds="180">3:00</button>
+                <button type="button" class="timer-preset" data-seconds="240">4:00</button>
+                <button type="button" id="timerMinusBtn" class="timer-adjust" aria-label="Restar 15 segundos">−15 s</button>
+                <button type="button" id="timerPlusBtn" class="timer-adjust" aria-label="Sumar 15 segundos">+15 s</button>
+              </div>
+            </div>
+            <div class="timer-actions">
+              <button type="button" id="timerStartBtn" class="primary">Iniciar</button>
+              <button type="button" id="timerResetBtn" class="ghost">Reiniciar</button>
+            </div>
+          </section>
           <div id="trainingForm"></div>
           <label class="full-label">Notas generales
             <textarea id="sessionNotes" placeholder="Ej: técnica, molestias, fatiga, sueño, bloqueo, dolor de hombro, etc."></textarea>
@@ -378,15 +403,16 @@
     <button type="button" id="updateReloadBtn" class="primary">Actualizar</button>
   </div>
 
-  <script src="vendor/chart.umd.js?v=8.0"></script>
-  <script src="vendor/xlsx.full.min.js?v=8.0"></script>
-  <script src="js/config.js?v=8.0"></script>
-  <script src="js/util.js?v=8.0"></script>
-  <script src="js/domain.js?v=8.0"></script>
-  <script src="js/state.js?v=8.0"></script>
-  <script src="js/training.js?v=8.0"></script>
-  <script src="js/views.js?v=8.0"></script>
-  <script src="js/io.js?v=8.0"></script>
-  <script src="js/app.js?v=8.0"></script>
+  <script src="vendor/chart.umd.js?v=8.1"></script>
+  <script src="vendor/xlsx.full.min.js?v=8.1"></script>
+  <script src="js/config.js?v=8.1"></script>
+  <script src="js/util.js?v=8.1"></script>
+  <script src="js/domain.js?v=8.1"></script>
+  <script src="js/state.js?v=8.1"></script>
+  <script src="js/training.js?v=8.1"></script>
+  <script src="js/timer.js?v=8.1"></script>
+  <script src="js/views.js?v=8.1"></script>
+  <script src="js/io.js?v=8.1"></script>
+  <script src="js/app.js?v=8.1"></script>
 </body>
 </html>

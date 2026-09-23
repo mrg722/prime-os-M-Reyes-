@@ -80,6 +80,20 @@ function applyMuscleFixes(data){
   data.muscleFixVersion = 1;
 }
 
+// Agrega los días Full Body de complemento (V8.1) sin tocar los días ni ejercicios existentes.
+function addFullBodyDays(data){
+  if(data.fullBodyVersion === PLAN.fullBodyVersion) return;
+  const fbDays = PLAN.days.filter(d => d.startsWith("Complemento - "));
+  fbDays.forEach(day => {
+    if(!data.days.includes(day)) data.days.push(day);
+    PLAN.weeks.forEach(w => {
+      if(!data.routine[w]) return;
+      if(!Array.isArray(data.routine[w][day]) || !data.routine[w][day].length) data.routine[w][day] = clone(PLAN.routine[w][day] || []);
+    });
+  });
+  data.fullBodyVersion = PLAN.fullBodyVersion;
+}
+
 function normalizeSet(set, idx){
   const w = normalizeSetWeight(set);
   const out = {
@@ -140,6 +154,7 @@ function normalizeState(data){
     data.planVersion = PLAN.version;
   }
   applyMuscleFixes(data);
+  addFullBodyDays(data);
   data.ui = { sidebarCompact: false, ...(data.ui || {}) };
 
   data.weeks.forEach(week => {
