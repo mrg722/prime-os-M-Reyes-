@@ -3,9 +3,59 @@ let PLAN = null;
 let state = null;
 
 async function loadPlan(){
-  const res = await fetch(`data/plan.json?v=${APP_VERSION}`);
-  if(!res.ok) throw new Error(`No pude cargar data/plan.json (${res.status})`);
-  PLAN = await res.json();
+  const legacyRes = await fetch(`data/plan.json?v=${APP_VERSION}`);
+  const v9Res = await fetch(`data/v9/manifest.json?v=${APP_VERSION}`);
+  if(!legacyRes.ok || !v9Res.ok) throw new Error(`No pude cargar el plan Prime OS v9`);
+  const legacy = await legacyRes.json();
+  const manifest = await v9Res.json();
+  const fetchJson = async path => {
+    const r = await fetch(`${path}?v=${APP_VERSION}`);
+    if(!r.ok) throw new Error(`No pude cargar ${path} (${r.status})`);
+    return r.json();
+  };
+  const [r3, r4, fb] = await Promise.all([
+    Promise.all(manifest.weeks.map((_,i)=>fetchJson(`data/v9/routine3_${i+1}.json`))),
+    Promise.all(manifest.weeks.map((_,i)=>fetchJson(`data/v9/routine4_${i+1}.json`))),
+    Promise.all(manifest.weeks.map((_,i)=>fetchJson(`data/v9/adaptiveFullBody_${i+1}.json`)))
+  ]);
+  const routineByMode = {"3":{},"4":{},"2":{}};
+  const map3 = {"Martes - Upper A":"Upper A","Miércoles - Lower A":"Lower A","Sábado - Full Body · Excel":"Full Body · Excel","Jueves - Cardio/Abs/Movilidad":"Cardio/Abs/Movilidad"};
+  const map4 = {"Martes - Upper A":"Upper A","Miércoles - Lower A":"Lower A","Viernes - Upper B":"Upper B","Sábado - Lower B":"Lower B","Jueves - Cardio/Abs/Movilidad":"Cardio/Abs/Movilidad"};
+  const map2 = {"Full Body A · Adaptativo 2D":"Full Body A · Adaptativo 2D","Full Body B · Adaptativo 2D":"Full Body B · Adaptativo 2D"};
+  for(let i=0;i<manifest.weeks.length;i++){
+    const w = manifest.weeks[i], a=r3[i][String(i+1)]||{}, b=r4[i][String(i+1)]||{}, f=fb[i][String(i+1)]||{};
+    routineByMode["3"][w] = {}; routineByMode["4"][w] = {}; routineByMode["2"][w] = {};
+    Object.entries(map3).forEach(([label,key])=>{ if(a[key]) routineByMode["3"][w][label]=clone(a[key]); });
+    Object.entries(map4).forEach(([label,key])=>{ if(b[key]) routineByMode["4"][w][label]=clone(b[key]); });
+    Object.entries(map2).forEach(([label,key])=>{ if(f[key]) routineByMode["2"][w][label]=clone(f[key]); });
+  }
+  const weeklyTargets2 = {};
+  manifest.weeks.forEach((w,i)=>{
+    weeklyTargets2[w] = {};
+    Object.values(fb[i][String(i+1)]||{}).flat().forEach(e=>{
+      const m = normalizeMuscle(e.muscle); weeklyTargets2[w][m]=(weeklyTargets2[w][m]||0)+Number(e.sets||0);
+    });
+  });
+  const numericTargets = bands => Object.fromEntries(Object.entries(bands||{}).map(([w,groups])=>[w,Object.fromEntries(Object.entries(groups||{}).map(([m,v])=>{
+    if(typeof v === "number") return [m,v];
+    const nums = String(v).match(/\\d+(?:\\.\\d+)?/g)?.map(Number) || [];
+    if(nums.length >= 2) return [m,Math.round((nums[0]+nums[1])/2)];
+    if(nums.length === 1) return [m,nums[0]];
+    return [m,0];
+  }))]));
+  const target3Bands = clone(manifest.weeklyTargets3), target4Bands = clone(manifest.weeklyTargets4);
+  PLAN = {...legacy, ...manifest,
+    version: manifest.version,
+    routine:clone(routineByMode[String(manifest.defaultMode || "4")]),
+    routineByMode, modeDays,
+    weeklyTargetBandsByMode:{"3":target3Bands,"4":target4Bands},
+    weeklyTargetsByMode:{"2":weeklyTargets2,"3":numericTargets(target3Bands),"4":numericTargets(target4Bands)},
+    weeklyTargets:clone(numericTargets(target4Bands)),
+    legacyRoutine:{normal:{},pivot:{}},
+    seedSessions:legacy.seedSessions||[],
+    cardio:legacy.cardio||manifest.cardio||[], weightLog:legacy.weightLog||manifest.weightLog||[],
+    fullBodyVersion:manifest.version
+  };
   buildAliasIndex();
 }
 
@@ -13,7 +63,8 @@ function seedState(){
   return {
     settings: clone(PLAN.settings),
     selectedWeek: PLAN.defaultWeek,
-    selectedDay: PLAN.defaultDay,
+    selectedMode: String(PLAN.defaultMode || "4"),
+    selectedDay: PLAN.modeDays[String(PLAN.defaultMode || "4")]?.[0] || PLAN.defaultDay,
     weeks: clone(PLAN.weeks),
     days: clone(PLAN.days),
     routine: {},
@@ -32,7 +83,7 @@ function seedState(){
 // Rutina base de versiones anteriores a V7.3 (se usa para detectar rutinas no editadas).
 function baseExercises(day, week){
   const variant = String(week).includes("2.5") ? "pivot" : "normal";
-  return clone(PLAN.legacyRoutine[variant][day] || []);
+  return clone(PLAN.legacyRoutine?.[variant]?.[day] || []);
 }
 
 function loadState(){
@@ -83,6 +134,7 @@ function applyMuscleFixes(data){
 // Agrega las sesiones Full Body A/B sin tocar las sesiones ni ejercicios existentes.
 // V8.1 las llamaba "Complemento - Full Body A/B": se renombran conservando su contenido.
 function addFullBodyDays(data){
+  if(String(PLAN.version||"").startsWith("v9.")) return;
   if(data.fullBodyVersion === PLAN.fullBodyVersion) return;
   const renamed = {"Complemento - Full Body A": "Full Body A", "Complemento - Full Body B": "Full Body B"};
   data.days = data.days.map(d => renamed[d] || d).filter((d, i, arr) => arr.indexOf(d) === i);
@@ -135,26 +187,15 @@ function normalizeState(data){
   data.blockStatus = {...(base.blockStatus || {}), ...(data.blockStatus || {})};
 
   // Datos específicos confirmados de Martín: plan 6 semanas + Semana 2.5 real.
-  if(!data.martinBlockSeeded || data.planVersion !== PLAN.version){
-    PLAN.weeks.forEach((w, i) => {
-      if(!data.weeks.includes(w)){
-        const prev = PLAN.weeks.slice(0, i).reverse().find(p => data.weeks.includes(p));
-        data.weeks.splice(prev ? data.weeks.indexOf(prev) + 1 : 0, 0, w);
-      }
-      // Solo se reemplaza la rutina si no existe o sigue siendo la base antigua sin editar.
-      if(isLegacyDefaultRoutine(data.routine[w], w, data.days)){
-        data.routine[w] = clone(PLAN.routine[w]);
-        data.weeklyTargets[w] = clone(PLAN.weeklyTargets[w]);
-      } else if(!data.weeklyTargets[w]){
-        data.weeklyTargets[w] = clone(PLAN.weeklyTargets[w]);
-      }
-    });
-
-    const existingIds = new Set(data.sessions.map(s => s.id));
-    clone(PLAN.seedSessions).forEach(s => {
-      if(!existingIds.has(s.id)) data.sessions.push(s);
-    });
-
+  if(data.planVersion !== PLAN.version){
+    // V9 reemplaza únicamente la rutina activa; el historial de sesiones, PRs registrados,
+    // peso y cardio existentes se conservan y se migran al nuevo esquema.
+    data.weeks = clone(PLAN.weeks);
+    data.routine = clone(PLAN.routineByMode?.[String(data.selectedMode || PLAN.defaultMode || "4")] || PLAN.routine);
+    data.selectedMode = String(data.selectedMode || PLAN.defaultMode || "4");
+    if(!PLAN.modeDays[data.selectedMode]) data.selectedMode = String(PLAN.defaultMode || "4");
+    data.days = clone(PLAN.modeDays[data.selectedMode]);
+    data.weeklyTargets = clone(PLAN.weeklyTargetsByMode[data.selectedMode] || PLAN.weeklyTargets);
     data.blockStatus = clone(PLAN.blockStatus);
     data.martinBlockSeeded = true;
     data.planVersion = PLAN.version;
@@ -162,6 +203,11 @@ function normalizeState(data){
   applyMuscleFixes(data);
   addFullBodyDays(data);
   data.ui = { sidebarCompact: false, ...(data.ui || {}) };
+  if(!data.selectedMode || !PLAN.modeDays[data.selectedMode]) data.selectedMode = String(PLAN.defaultMode || "4");
+  data.days = clone(PLAN.modeDays[data.selectedMode] || PLAN.days);
+  if(!data.weeklyTargets || !Object.keys(data.weeklyTargets).length){
+    data.weeklyTargets = clone(PLAN.weeklyTargetsByMode?.[data.selectedMode] || PLAN.weeklyTargets || {});
+  }
 
   data.weeks.forEach(week => {
     if(!data.routine[week]) data.routine[week] = {};
@@ -205,7 +251,7 @@ function normalizeState(data){
   }));
 
   if(!data.selectedWeek || !data.weeks.includes(data.selectedWeek)) data.selectedWeek = data.weeks[0];
-  if(!data.selectedDay || !data.days.includes(data.selectedDay)) data.selectedDay = data.days[2] || data.days[0];
+  if(!data.selectedDay || !data.days.includes(data.selectedDay)) data.selectedDay = data.days[0];
   if(!WEEKDAYS.includes(data.selectedWeekday)) data.selectedWeekday = weekdayOf(data.selectedDay) || WEEKDAYS[0];
   return data;
 }

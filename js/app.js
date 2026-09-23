@@ -30,7 +30,10 @@ async function setup(){
 }
 
 function fillSelectors(){
-  const week = $("#weekSelect"), exp = $("#exportWeekSelect");
+  const mode = $("#modeSelect"), week = $("#weekSelect"), exp = $("#exportWeekSelect");
+  if(mode){
+    mode.value = String(state.selectedMode || PLAN.defaultMode || "4");
+  }
   week.innerHTML = state.weeks.map(w=>`<option ${w===state.selectedWeek?"selected":""}>${escapeHtml(w)}</option>`).join("");
   exp.innerHTML = state.weeks.map(w=>`<option ${w===state.selectedWeek?"selected":""}>${escapeHtml(w)}</option>`).join("")
     + `<option value="${ALL_WEEKS}">Todas las semanas</option>`;
@@ -52,6 +55,20 @@ function bindInputs(){
   });
   $("#sidebarCompactBtn").addEventListener("click", toggleSidebarCompact);
   $("#sidebarTopToggle").addEventListener("click", toggleSidebarCompact);
+  $("#modeSelect")?.addEventListener("change", e => {
+    collectDraftInputs();
+    if(!confirmDiscardDraft()){ e.target.value = state.selectedMode; return; }
+    state.selectedMode = String(e.target.value);
+    state.routine = clone(PLAN.routineByMode?.[state.selectedMode] || PLAN.routine);
+    state.days = clone(PLAN.modeDays[state.selectedMode] || PLAN.days);
+    state.weeklyTargets = clone(PLAN.weeklyTargetsByMode[state.selectedMode] || PLAN.weeklyTargets || {});
+    state.selectedDay = state.days[0];
+    state.selectedWeekday = weekdayOf(state.selectedDay) || WEEKDAYS[0];
+    saveState();
+    fillSelectors();
+    resetTrainingDraft();
+    renderAll();
+  });
   $("#weekSelect").addEventListener("change", e => {
     collectDraftInputs();
     if(!confirmDiscardDraft()){ e.target.value = state.selectedWeek; return; }
