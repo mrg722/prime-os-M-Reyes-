@@ -197,6 +197,8 @@ function renderRoutine(){
 
 // Editar la rutina solo reinicia Registrar si no hay datos escritos (para no perder el borrador).
 function afterRoutineEdit(){
+  state.routinesByMode=state.routinesByMode||{};
+  state.routinesByMode[String(state.selectedMode||PLAN.defaultMode||"4")]=clone(state.routine);
   saveState();
   if(!draftHasData()) resetTrainingDraft();
   renderAll();
@@ -317,22 +319,67 @@ function renderTargetsEditor(){
   `;
 }
 window.updateTarget = function(m,v){
-  if(!state.weeklyTargets[state.selectedWeek]) state.weeklyTargets[state.selectedWeek] = {};
-  state.weeklyTargets[state.selectedWeek][m] = Number(v) || 0;
+  const mode=String(state.selectedMode||PLAN.defaultMode||"4");
+  state.weeklyTargetsByMode=state.weeklyTargetsByMode||{};
+  state.weeklyTargetsByMode[mode]=state.weeklyTargetsByMode[mode]||{};
+  if(!state.weeklyTargetsByMode[mode][state.selectedWeek]) state.weeklyTargetsByMode[mode][state.selectedWeek]={};
+  state.weeklyTargetsByMode[mode][state.selectedWeek][m]=Number(v)||0;
+  state.weeklyTargets=state.weeklyTargetsByMode[mode];
   saveState();
   renderHome();
   renderProgress();
 };
 function resetTargetsFromPlan(){
-  state.weeklyTargets[state.selectedWeek] = defaultTargetsFromPlan(state, state.selectedWeek);
+  const mode=String(state.selectedMode||PLAN.defaultMode||"4");
+  state.weeklyTargetsByMode=state.weeklyTargetsByMode||{};
+  state.weeklyTargetsByMode[mode]=state.weeklyTargetsByMode[mode]||{};
+  state.weeklyTargetsByMode[mode][state.selectedWeek]=defaultTargetsFromPlan(state, state.selectedWeek);
+  state.weeklyTargets=state.weeklyTargetsByMode[mode];
   saveState();
   renderProgress();
   renderHome();
 }
 
+function v10StatusLabel(status){
+  return ({
+    BELOW_MEV:"🔵 Por debajo del MEV",MEV_ZONE:"🟢 Zona MEV",MAV_ZONE:"🟢 MAV observado",
+    HIGH_VOLUME:"🟠 Volumen alto",MRV_WARNING:"🔴 Atención: dolor/recuperación",OVERREACH_RISK:"🔴 Riesgo de exceso compatible",
+    INSUFFICIENT_DATA:"⚪ Datos insuficientes"
+  })[status] || status;
+}
+function v10Fmt(n){ return n===null||n===undefined||Number.isNaN(Number(n))?"—":formatNumber(Number(n),1); }
+function renderV10VolumeDashboard(){
+  const root=$("#v10VolumeDashboard"); if(!root||!window.PrimeOSVolume) return;
+  const data=PrimeOSVolume.analyzeWeek(state.selectedWeek,state.settings?.goalMode||"mixed");
+  const rows=Object.entries(data).filter(([m,x])=>m!=="cardio" && (x.rawSets>0 || x.targetRange || x.mev!==null)).sort((a,b)=>b[1].weightedSets-a[1].weightedSets);
+  if(!rows.length){root.innerHTML="<p class='small-muted'>Registra sesiones para activar el motor de volumen.</p>";return;}
+  root.innerHTML=rows.map(([m,x])=>{
+    const label=PrimeOSVolume.labels[m]||m;
+    const range=x.targetRange ? x.targetRange.map(v10Fmt).join("–") : "sin objetivo";
+    const bands=x.mev!==null ? `MEV ${v10Fmt(x.mev)} · MAV ${v10Fmt(x.mavLow)}–${v10Fmt(x.mavHigh)} · MRV obs. ${v10Fmt(x.mrv)}` : "MEV/MAV/MRV: insuficiente";
+    return `<div class="v10-volume-row">
+      <div class="v10-volume-main"><strong>${escapeHtml(label)}</strong><span class="v10-status">${escapeHtml(v10StatusLabel(x.status))}</span></div>
+      <div class="v10-volume-grid">
+        <span>Directo <b>${v10Fmt(x.directSets)}</b></span>
+        <span>Indirecto <b>${v10Fmt(x.indirectSets)}</b></span>
+        <span>Ponderado <b>${v10Fmt(x.weightedSets)}</b></span>
+        <span>Rango <b>${escapeHtml(range)}</b></span>
+        <span>RIR medio <b>${v10Fmt(x.rirMean)}</b></span>
+        <span>Exposiciones <b>${x.exposures}</b></span>
+        <span>Rendimiento <b>${escapeHtml(x.performanceTrend)}</b></span>
+        <span>Fatiga <b>${escapeHtml(x.fatigueLevel)}</b></span>
+        <span>Dolor <b>${v10Fmt(x.pain)}/10</b></span>
+        <span>Confianza <b>${escapeHtml(x.confidence)}</b></span>
+      </div>
+      <div class="small-muted v10-bands">${escapeHtml(bands)}</div>
+      <p class="v10-explanation">${escapeHtml(x.explanation)}</p>
+    </div>`;
+  }).join("");
+}
 function renderProgress(){
   renderTargetsEditor();
   $("#weeklyMuscleProgress").innerHTML = muscleBarsHTML(state.selectedWeek);
+  renderV10VolumeDashboard();
   renderPRs();
   renderFatigue();
   renderExerciseProgress();

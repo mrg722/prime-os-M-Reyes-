@@ -14,7 +14,8 @@ function resetTrainingDraft(){
     isAdded:false,
     isAlternative:false,
     setsData: Array.from({length:Number(e.sets)||3}, (_,i)=>blankSet(i+1)),
-    noteDraft:""
+    noteDraft:"",
+    secondaryText:""
   }));
 }
 
@@ -44,7 +45,7 @@ function collectDraftInputs(){
   if(!document.getElementById("trainingForm")) return;
   trainingDraft.forEach((e,ei)=>{
     const read = field => document.querySelector(`[data-ei="${ei}"][data-field="${field}"]:not([data-si])`);
-    const map = {name:"name", muscle:"muscle", reps:"reps", target:"target", load:"load", note:"noteDraft"};
+    const map = {name:"name", muscle:"muscle", reps:"reps", target:"target", load:"load", note:"noteDraft", secondary:"secondaryText"};
     Object.entries(map).forEach(([field, key]) => {
       const el = read(field);
       if(el) e[key] = field === "muscle" ? normalizeMuscle(el.value) : el.value;
@@ -144,6 +145,7 @@ function renderExerciseRegister(e, ei){
         <label>Carga sugerida
           <input data-ei="${ei}" data-field="load" value="${escapeAttr(e.load || "")}" onchange="updateDraftField(${ei}, 'load', this.value)">
         </label>
+        ${v10AddedFields(e,ei)}
       </div>
 
       ${compare}
@@ -160,6 +162,10 @@ function renderExerciseRegister(e, ei){
 }
 
 
+function v10AddedFields(e,ei){
+  if(!e.isAdded) return "";
+  return '<label class="wide">Sinergias personalizadas (ej: bíceps:0.5, deltoide_anterior:0.25) <input data-ei="'+ei+'" data-field="secondary" value="'+escapeAttr(e.secondaryText||"")+'" placeholder="músculo:peso, músculo:peso"></label>';
+}
 function formatBestSet(prev){
   const best = bestSet(prev.sets);
   if(!best) return "sin series registradas";
@@ -169,6 +175,10 @@ function formatBestSet(prev){
 window.updateDraftField = function(i,k,v){
   collectDraftInputs();
   trainingDraft[i][k] = k === "muscle" ? normalizeMuscle(v) : v;
+  if(k==="name" && typeof v10AddExerciseMeta==="function"){
+    const enriched=v10AddExerciseMeta(trainingDraft[i]);
+    Object.assign(trainingDraft[i],enriched);
+  }
   saveDraftToStorage();
 };
 window.changeActualSets = function(i,v){
@@ -208,18 +218,33 @@ function addAddedExercise(){
   $("#trainingForm .exercise-card")?.scrollIntoView({behavior: "smooth", block: "start"});
 }
 
+function v10ParseSecondary(text){
+  return String(text||"").split(",").map(x=>x.trim()).filter(Boolean).map(x=>{
+    const [muscle,w]=x.split(":");
+    return {muscle:v10MuscleKey(muscle),weight:Number(w||0.5)};
+  }).filter(x=>x.muscle && Number.isFinite(x.weight) && x.weight>0 && x.weight<=1);
+}
 function saveSession(){
   collectDraftInputs();
   const exercises = trainingDraft.map(e=>{
     ensureSetsLength(e);
+    const secondaryMuscles=v10ParseSecondary(e.secondaryText);
+    const enriched=typeof v10AddExerciseMeta==="function" ? v10AddExerciseMeta({
+      name:e.name,muscle:normalizeMuscle(e.muscle),secondaryMuscles
+    }) : {};
     return {
       name:e.name,
       muscle:normalizeMuscle(e.muscle),
+      sourceMuscle:e.sourceMuscle || e.muscle || "",
+      normalizedMuscle:enriched.normalizedMuscle || normalizeMuscle(e.muscle),
+      primaryMuscles:enriched.primaryMuscles || [normalizeMuscle(e.muscle)],
+      secondaryMuscles:enriched.secondaryMuscles || secondaryMuscles,
+      volumeWeights:enriched.volumeWeights || {[normalizeMuscle(e.muscle)]:1},
+      v10Meta:enriched.v10Meta || null,
       target:e.target || "",
       actualSets:e.actualSets,
       isAdded:Boolean(e.isAdded),
       isAlternative:Boolean(e.isAdded),
-      // El peso se escribe libre ("80", "80 lbs", "27,5 por mano") y se guarda como número + unidad.
       sets:e.setsData.map((s,i) => normalizeSet({...s, set:i+1}, i)),
       note:e.noteDraft || ""
     };
@@ -230,6 +255,7 @@ function saveSession(){
     date: new Date().toLocaleString("es-CL", {dateStyle:"short", timeStyle:"short"}),
     createdAt: new Date().toISOString(),
     week: state.selectedWeek,
+    mode: String(state.selectedMode || PLAN.defaultMode || "4"),
     day: `${state.selectedWeekday} - ${sessionLabel(state.selectedDay)}`,
     weekday: state.selectedWeekday,
     session: state.selectedDay,

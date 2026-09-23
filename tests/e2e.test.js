@@ -299,25 +299,43 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     await page.context().close();
   });
 
-  await test("día de la semana y sesión por separado", async () => {
+  await test("día de la semana y sesión por separado + modos 2D/3D/4D", async () => {
     const page = await open({viewport: {width:390, height:844}});
-    const weekdays = await page.$$eval("#weekdaySelect option", o => o.map(x => x.textContent));
-    assert(weekdays.join(",") === "Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo", weekdays.join(","));
-    const sessions = await page.$$eval("#daySelect option", o => o.map(x => x.textContent));
-    assert(sessions.join(",") === "Lower A,Lower B,Upper A,Upper B,Full Body A,Full Body B,Cardio suave,Trote opcional,Descanso", sessions.join(","));
+    const assertOptions = async expected => {
+      const labels = await page.$$eval("#daySelect option", o => o.map(x => x.textContent));
+      assert(labels.join("|") === expected.join("|"), labels.join("|"));
+    };
+
+    // 3D: Upper A + Lower A + Full Body Excel + cardio.
+    assert(await page.inputValue("#modeSelect") === "3", "modo inicial");
+    await assertOptions(["Lower A","Upper A","Full Body · Excel","Cardio/Abs/Movilidad"]);
     await page.selectOption("#weekdaySelect", "Martes");
-    assert(await page.inputValue("#daySelect") === "Martes - Lower A", "Martes no propuso Lower A");
+    assert(await page.inputValue("#daySelect") === "Martes - Upper A", "3D: Martes no propuso Upper A");
+
+    // 4D: Upper/Lower completos + cardio.
+    await page.selectOption("#modeSelect", "4");
+    await assertOptions(["Lower A","Lower B","Upper A","Upper B","Cardio/Abs/Movilidad"]);
     await page.selectOption("#weekdaySelect", "Jueves");
-    await page.selectOption("#daySelect", "Full Body A");
+    await page.selectOption("#daySelect", "Jueves - Cardio/Abs/Movilidad");
     await go(page, "entrenar");
-    assert(await page.textContent("#trainTitle") === "Jueves · Full Body A · Semana 1", await page.textContent("#trainTitle"));
-    assert((await page.inputValue('[data-ei="0"][data-field="name"]')) === "Curl femoral sentado", "no cargó el Full Body A");
-    await page.fill('[data-ei="0"][data-si="0"][data-field="weight"]', "90 lbs"); await page.fill('[data-ei="0"][data-si="0"][data-field="repsDone"]', "10");
+    assert(await page.textContent("#trainTitle") === "Jueves · Cardio/Abs/Movilidad · Semana 1", await page.textContent("#trainTitle"));
+
+    // 2D: dos Full Body adaptativos + cardio placeholder.
+    await page.selectOption("#modeSelect", "2");
+    await assertOptions(["Full Body A · Adaptativo 2D","Full Body B · Adaptativo 2D","Cardio/Abs/Movilidad · Adaptativo 2D"]);
+    await page.selectOption("#daySelect", "Full Body A · Adaptativo 2D");
+    await go(page, "entrenar");
+    assert((await page.inputValue('[data-ei="0"][data-field="name"]')) === "Press banco plano", "no cargó el Full Body A 2D");
+
+    // El modo queda registrado en sesiones nuevas y no mezcla rutinas entre modos.
+    await page.fill('[data-ei="0"][data-si="0"][data-field="weight"]', "90");
+    await page.fill('[data-ei="0"][data-si="0"][data-field="repsDone"]', "8");
     await page.click("#saveSessionBtn");
-    const s = await page.evaluate(() => state.sessions.at(-1));
-    assert(s.day === "Jueves - Full Body A" && s.session === "Full Body A" && s.weekday === "Jueves", JSON.stringify([s.day, s.session, s.weekday]));
-    const plan = JSON.parse(fs.readFileSync(path.join(ROOT, "data/plan.json"), "utf8"));
-    assert(await page.evaluate(p => JSON.stringify(state.routine["Semana 1"]["Martes - Lower A"]) === JSON.stringify(p), plan.routine["Semana 1"]["Martes - Lower A"]), "cambió la sesión Lower A");
+    const saved = await page.evaluate(() => state.sessions.at(-1));
+    assert(saved.mode === "2" && saved.day === "Full Body A · Adaptativo 2D", JSON.stringify(saved));
+
+    await page.selectOption("#modeSelect", "3");
+    assert(await page.inputValue("#modeSelect") === "3", "no volvió a 3D");
     await page.context().close();
   });
 
