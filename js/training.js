@@ -212,14 +212,22 @@ function saveSession(){
   collectDraftInputs();
   const exercises = trainingDraft.map(e=>{
     ensureSetsLength(e);
+    const enriched=typeof v10AddExerciseMeta==="function" ? v10AddExerciseMeta({
+      name:e.name,muscle:normalizeMuscle(e.muscle),secondaryMuscles:Array.isArray(e.secondaryMuscles)?e.secondaryMuscles:[]
+    }) : {};
     return {
       name:e.name,
       muscle:normalizeMuscle(e.muscle),
+      sourceMuscle:e.sourceMuscle || e.muscle || "",
+      normalizedMuscle:enriched.normalizedMuscle || normalizeMuscle(e.muscle),
+      primaryMuscles:enriched.primaryMuscles || [normalizeMuscle(e.muscle)],
+      secondaryMuscles:enriched.secondaryMuscles || e.secondaryMuscles || [],
+      volumeWeights:enriched.volumeWeights || {[normalizeMuscle(e.muscle)]:1},
+      v10Meta:enriched.v10Meta || null,
       target:e.target || "",
       actualSets:e.actualSets,
       isAdded:Boolean(e.isAdded),
       isAlternative:Boolean(e.isAdded),
-      // El peso se escribe libre ("80", "80 lbs", "27,5 por mano") y se guarda como número + unidad.
       sets:e.setsData.map((s,i) => normalizeSet({...s, set:i+1}, i)),
       note:e.noteDraft || ""
     };
