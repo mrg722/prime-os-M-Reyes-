@@ -320,11 +320,14 @@ function v10AdaptiveLoadText(load,direction){
 function v10AdaptiveApplyProgression(ex,stats,weekStatus){
   if(!stats) return {exercise:ex,reason:"Sin historial comparable: conservar base."};
   const out={...ex}, pain=stats.pain??0, fatigue=stats.fatigue??0, rir=stats.avgRir, baseSets=Math.max(1,Number(ex.sets)||1);
+  const repNums=String(ex.reps||"").match(/\d+(?:\.\d+)?/g)?.map(Number)||[], repUpper=repNums.length?Math.max(...repNums):null;
+  const repReady=repUpper===null || stats.maxReps>=repUpper;
   const hardStop=pain>=5 || (fatigue>=6 && rir!==null && rir<=1);
   let sets=baseSets, action="mantener";
   if(weekStatus==="pivot"){ sets=Math.max(1,Math.min(baseSets,2)); action="pivot"; }
   else if(hardStop){ sets=Math.max(1,baseSets-1); action="reducir 1 serie por recuperación"; }
-  else if(rir!==null && rir>=3 && pain<3 && fatigue<5){ action="progresar por reps/carga"; }
+  else if(rir!==null && rir>=3 && repReady && pain<3 && fatigue<5){ action="progresar por reps/carga"; }
+  else if(rir!==null && rir>=3 && !repReady){ action="mantener hasta completar rango"; }
   else if(rir!==null && rir<=1){ action="mantener por proximidad al fallo"; }
   out.sets=sets; out.adaptiveApplied=true; out.adaptiveAction=action;
   out.note=[out.note,"V10 adaptativo: "+action+"."].filter(Boolean).join(" ");
