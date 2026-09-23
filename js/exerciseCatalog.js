@@ -149,6 +149,36 @@ const V10_ALIAS = {
   "curl-femoral-sentado":["curl femoral","curl femoral moderado","curl femoral o back extension","curl femoral/back extension"]
 };
 
+// V10.6 audit overlay: the supplied Excel templates use many human-readable variants.
+// Keep these aliases in one final overlay so duplicate legacy keys cannot hide an audited variant.
+Object.assign(V10_ALIAS, {
+  "fondos":["fondos submax o press maquina","fondos submax/maquina","fondos submaximos opcional"],
+  "semi-sumo":["peso muerto semi-sumo","semi-sumo","semi-sumo opcional","semi-sumo opcional tecnico","semi-sumo tecnico opcional","opcion b: semi-sumo tecnico"],
+  "isometrico-dominada":["isometricos 1 brazo dominada"],
+  "biceps-triceps-combo":["biceps + triceps","curl + triceps"],
+  "curl-pushdown-combo":["curl + pushdown"],
+  "curl-polea":["curl arnold/concentrado unilateral neutro","curl unilateral o polea"],
+  "reverse-pec-deck":["pajarito unilateral polea"],
+  "bulgarian-split-squat":["bulgara","bulgara controlada","bulgara moderada","bulgara o split squat","búlgaras","sentadilla bulgara","split squat/bulgara moderada","split squat o step-up"],
+  "extension-rodilla":["extension cuadriceps"],
+  "press-inclinado-mancuernas":["press inclinado db"],
+  "press-maquina-convergente":["press maquina convergente/plano db","press plano barra/maquina","press plano maquina/barra"],
+  "press-maquina-neutro":["press maquina","press maquina neutro","press maquina neutro/plano db","press maquina/neutro o plano db","press maquina/plano db"],
+  "pushdown":["pushdown triceps"],
+  "rdl":["rdl barra","rdl tecnico","rdl o hip thrust","opcion a: rdl barra"],
+  "curl-femoral-sentado":["curl femoral","curl femoral moderado","curl femoral o back extension","curl femoral/back extension"],
+  "gemelo-de-pie":["gemelo","gemelos"],
+  "dominadas":["dominadas bw o jalon","dominadas peso corporal","jalon/dominada bw","jalon/dominadas bw","jalon neutro o dominadas bw"],
+  "dominadas-lastradas":["dominadas lastradas neutras"],
+  "jalon-neutro":["jalon","jalon neutro","jalon neutro opcional","jalon neutro o dominadas bw","jalon neutro/dominada bw","jalon neutro/dominadas bw","jalon/dominada bw","jalon/dominadas bw"],
+  "remo-polea":["remo cable","remo cable/hammer","remo frontal polea/maquina"],
+  "remo-hammer":["remo frontal/hammer"],
+  "remo-pecho-apoyado":["remo frontal/pecho apoyado","remo pecho apoyado/hammer","remo pecho apoyado/frontal"],
+  "elevacion-lateral":["elevaciones laterales","laterales","bi-serie laterales","laterales + posterior","laterales/posterior"],
+  "prensa":["prensa 45/hack","prensa o hack suave","prensa pies altos suave","prensa pies altos/back ext","prensa pies altos/back extension","prensa pies medios-altos","prensa secundaria","prensa secundaria/hack","prensa/hack","prensa/hack suave"],
+  "extension-sobre-cabeza":["extension triceps trasnuca polea"]
+});
+
 const V10_CATALOG = Object.fromEntries(V10_EXERCISE_DEFS.map(([id,name,primary,secondary,pattern,category])=>{
   const secondaries=(secondary?secondary.split(",").filter(Boolean):[]).map(x=>{const [muscle,w]=x.split(":");return {muscle,weight:Number(w)};});
   const weights=Object.fromEntries([[primary,1],...secondaries.map(x=>[x.muscle,x.weight])]);
