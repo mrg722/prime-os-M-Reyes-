@@ -3,6 +3,7 @@ const charts = {};
 
 const PAGE_META = {
   inicio: { title: "Inicio", subtitle: "Panel principal de control y estado actual del bloque." },
+  dashboard: { title: "Dashboard", subtitle: "Lo que llevas vs lo que pide el bloque de 12 semanas (Excel 3 o 4 días)." },
   rutina: { title: "Rutina Base", subtitle: "Configura la estructura semanal, ejercicios y planificación del bloque." },
   entrenar: { title: "Registrar", subtitle: "Registra la sesión real, cargas, RIR, dolor y observaciones." },
   historial: { title: "Historial", subtitle: "Revisa sesiones pasadas, ejercicios completados y notas previas." },
@@ -28,6 +29,7 @@ function refreshTopMeta(view){
 function renderAll(){
   if(String(state?.selectedMode||"") === "2" && typeof applyAdaptiveFullBodySelection==="function") applyAdaptiveFullBodySelection();
   renderHome();
+  if(typeof renderDashboard === "function") renderDashboard();
   renderRoutine();
   renderTraining();
   renderHistory();

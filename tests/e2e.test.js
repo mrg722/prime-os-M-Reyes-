@@ -76,7 +76,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
   await test("arranca sin errores y con librerías locales", async () => {
     const page = await open();
     assert(await page.evaluate(() => typeof XLSX !== "undefined" && typeof Chart !== "undefined"), "XLSX o Chart no cargaron");
-    for(const v of ["inicio","rutina","entrenar","historial","progreso","one-rm","cardio","nutricion","ajustes"]) await go(page, v);
+    for(const v of ["inicio","dashboard","rutina","entrenar","historial","progreso","one-rm","cardio","nutricion","ajustes"]) await go(page, v);
     assert(!page.errors.length, page.errors.join(" | "));
     await page.context().close();
   });
@@ -438,6 +438,45 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     assert((await page.textContent("#routineList .exercise-card h4")) === "Nuevo ejercicio", "Rutina: no quedó primero");
     const order = await page.evaluate(() => { const main = document.querySelector("main"); const kids = [...main.children]; return kids.indexOf(document.querySelector(".quick-ribbon")) === kids.length - 1; });
     assert(order, "la franja no está al final");
+    await page.context().close();
+  });
+
+  await test("Dashboard: 3D/4D con 12 semanas, cambio de modo y cobertura con sesión guardada", async () => {
+    const page = await open({viewport: {width:390, height:844}});
+    await page.evaluate(() => {
+      state.sessions.push({id: 4242, date:"d", createdAt: new Date().toISOString(), week:"Semana 2", mode:"3", session:"Martes - Upper A", day:"Martes - Upper A", weekday:"Martes",
+        readiness:{energy:"4", status:"Óptimo"}, notes:"", exercises:[{name:"Press inclinado DB", muscle:"Pecho/empuje", sets:[1,2,3].map(() => ({weight:"36", unit:"kg", repsDone:"10", rir:"2", pain:"0", done:true}))}]});
+      saveState();
+    });
+    await go(page, "dashboard");
+    await page.waitForSelector(".dash-weeks tbody tr");
+    const read = () => page.evaluate(() => ({
+      rows: document.querySelectorAll(".dash-weeks tbody tr").length,
+      cov: document.querySelectorAll(".dash-cov-row").length,
+      done: [...document.querySelectorAll('.dash-cov-row[data-week="Semana 2"] .dash-day.done')].map(d => d.textContent.trim()),
+      pecho: document.querySelector('.dash-weeks tr[data-week="2"] td[data-group="pecho"] .dash-act')?.textContent,
+      heads: [...document.querySelectorAll(".dash-weeks thead th")].map(t => t.textContent),
+      active: document.querySelector(".dash-mode-btn.active")?.dataset.dashMode,
+      title: document.querySelector(".dash-title")?.textContent,
+      sw: document.documentElement.scrollWidth
+    }));
+    let r = await read();
+    assert(r.active === "3" && r.rows === 12 && r.cov === 12 && /3 D[IÍ]AS/i.test(r.title), JSON.stringify(r));
+    assert(r.done.length === 1 && r.done[0].includes("Upper A") && r.pecho === "3", "3D: " + JSON.stringify(r));
+    assert(r.sw <= 390, "scroll horizontal: " + r.sw);
+    assert((await page.textContent(".dash-anchors")).includes("36 kg × 10"), "anclaje sin la mejor serie");
+    await page.click('[data-dash-mode="4"]');
+    r = await read();
+    assert(r.active === "4" && r.rows === 12 && /4 D[IÍ]AS/i.test(r.title) && r.heads.includes("Adherencia"), JSON.stringify(r));
+    assert(r.done.length === 0, "4D no debe contar una sesión 3D: " + r.done);
+    await page.reload(); await page.waitForFunction(() => typeof state !== "undefined" && state);
+    await go(page, "dashboard"); await page.waitForSelector(".dash-weeks tbody tr");
+    r = await read();
+    assert(r.active === "4", "no recordó el modo del dashboard");
+    await page.click('[data-dash-mode="3"]');
+    r = await read();
+    assert(r.done.length === 1, "tras recargar se perdió el modo de la sesión: " + JSON.stringify(r));
+    assert(!page.errors.length, page.errors.join(" | "));
     await page.context().close();
   });
 

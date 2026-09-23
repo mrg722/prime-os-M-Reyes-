@@ -126,7 +126,7 @@ function bindInputs(){
   $("#updateAppBtn")?.addEventListener("click", updatePrimeOSNow);
 }
 
-const VIEWS = ["inicio","rutina","entrenar","historial","progreso","one-rm","cardio","nutricion","ajustes"];
+const VIEWS = ["inicio","dashboard","rutina","entrenar","historial","progreso","one-rm","cardio","nutricion","ajustes"];
 
 function switchView(view){
   collectDraftInputs();
