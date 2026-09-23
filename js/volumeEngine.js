@@ -280,8 +280,16 @@ function v10CatalogOptions(){
 }
 
 
-/* ---------- V10.2 Full Body 2D: adaptación real entre semanas ---------- */
+/* ---------- Full Body 2D adaptativo (V10.9): ajuste semanal sin acumulación ----------
+   Base del 2D = state.routinesByMode["2"]: el plan de data/v9/adaptiveFullBody_N.json + las ediciones
+   manuales hechas en Rutina (se guardan ya "limpias", ver v10AdaptiveStripWeek). La adaptación se calcula
+   SIEMPRE desde esa base + lo registrado la semana anterior y se escribe solo en state.routine (vista activa).
+   Nunca se escribe de vuelta en la base, así que recargar o cambiar de modo/semana no acumula ajustes. */
 
+const V10_ADAPTIVE_TRACKED=["sets","load","reps","note","progression"];
+const V10_ADAPTIVE_META=["adaptiveBase","adaptiveOut","adaptiveNote","adaptiveAction","adaptiveApplied"];
+
+function v10AdaptiveWeekStatus(week){ return PLAN?.blockStatus?.[week]?.status || "base"; }
 function v10AdaptiveBaseRoutine(week){
   return clone(state?.routinesByMode?.["2"]?.[week] || PLAN?.routineByMode?.["2"]?.[week] || {});
 }
@@ -298,86 +306,128 @@ function v10AdaptiveKey(ex){
   if(/core|pallof|dead.?bug|hollow|plank|movilidad/.test(src)) return "core";
   return exerciseKeyBase(src);
 }
+// Rango de reps de trabajo: "4 x 8-10" → [8,10]; "1 top 5-8 + 3 backoff 6-8" → [6,8] (manda el backoff).
+function v10AdaptiveRepRange(reps){
+  const s=stripAccents(String(reps||"").toLowerCase()).replace(/\d+\s*x\s*/g," ").replace(/\d+\s*(top|backoff)\b/g," $1");
+  const ranges=[...s.matchAll(/(\d+)\s*-\s*(\d+)/g)].map(m=>[Number(m[1]),Number(m[2])]);
+  if(ranges.length) return ranges[ranges.length-1];
+  const one=s.match(/\d+/); return one?[Number(one[0]),Number(one[0])]:null;
+}
+// RIR objetivo mínimo prescrito: "RIR 2-3" → 2; "Top RIR 1-2; backoff RIR 2" → 1.
+function v10AdaptiveTargetRir(target){
+  const nums=[...stripAccents(String(target||"")).matchAll(/RIR\s*(\d+(?:[.,]\d+)?)/gi)].map(m=>Number(m[1].replace(",",".")));
+  return nums.length?Math.min(...nums):null;
+}
+function v10AdaptiveFirstLoad(load){ const m=String(load||"").match(/\d+(?:[.,]\d+)?/); return m?Number(m[0].replace(",",".")):null; }
 function v10AdaptiveStats(ex,sessions){
-  const key=v10AdaptiveKey(ex), targetMuscle=v10MuscleKey(ex?.muscle), exact=[], fallback=[];
+  const key=v10AdaptiveKey(ex), matches=[];
   sessions.forEach(s=>(s.exercises||[]).forEach(e=>{
-    const sets=(e.sets||[]).filter(setHasData); if(!sets.length) return;
-    if(v10AdaptiveKey(e)===key) exact.push({session:s,exercise:e,sets});
-    else if(v10MuscleKey(e?.muscle)===targetMuscle) fallback.push({session:s,exercise:e,sets});
+    if(v10AdaptiveKey(e)!==key) return;
+    const sets=(e.sets||[]).filter(x=>setHasData(x) && !x.warmup && !/calentamiento|warm.?up/i.test(String(x.feeling||"")));
+    if(sets.length) matches.push({session:s,exercise:e,sets});
   }));
-  const matches=exact.length?exact:fallback; if(!matches.length) return null;
-  const sets=matches.flatMap(x=>x.sets), rirs=sets.map(s=>v10RirFromSet(s)).filter(Number.isFinite), pain=sets.map(s=>setPain(s)).filter(Number.isFinite);
-  const bests=matches.map(x=>bestSet(x.sets)).filter(Boolean), e1rms=bests.map(estimate1RM).filter(Number.isFinite), reps=sets.map(s=>repsCount(s.repsDone)).filter(Number.isFinite);
+  if(!matches.length) return null;
+  const sets=matches.flatMap(x=>x.sets), rirs=sets.map(s=>v10RirFromSet(s)).filter(Number.isFinite);
+  const pains=sets.map(s=>setPain(s)).filter(Number.isFinite), reps=sets.map(s=>repsCount(s.repsDone)).filter(Number.isFinite);
   const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
-  return {sets:sets.length,sessions:matches.length,avgRir:avg(rirs),pain:avg(pain),bestE1RM:e1rms.length?Math.max(...e1rms):null,maxReps:reps.length?Math.max(...reps):null,fatigue:v10Readiness(matches.map(x=>x.session)).fatigue,sameExercise:exact.length>0};
+  return {sets:sets.length,avgRir:avg(rirs),maxPain:pains.length?Math.max(...pains):0,minReps:reps.length?Math.min(...reps):null,
+    maxReps:reps.length?Math.max(...reps):null,target:matches.map(x=>x.exercise.target).find(Boolean)||""};
 }
+// Escala solo cargas de barra/máquina (≥ 80 en la unidad escrita); mancuernas, lastre y peso corporal progresan por reps.
 function v10AdaptiveLoadText(load,direction){
-  const s=String(load||"").trim(), nums=s.match(/\d+(?:[.,]\d+)?/g)?.map(x=>Number(x.replace(",",".")))||[]; if(!nums.length) return s;
+  const s=String(load||"").trim(), first=v10AdaptiveFirstLoad(s);
+  if(first===null || first<80 || /\bbw\b|peso corporal|^\s*\+/i.test(s)) return null;
   const factor=direction>0?1.025:0.95;
-  const out=nums.map(n=>{const v=n*factor,step=v<50?0.5:1.25;return String(Math.round(v/step)*step).replace(/\.0$/,"");});
-  let i=0; return s.replace(/\d+(?:[.,]\d+)?/g,()=>out[i++]);
-}
-function v10AdaptiveApplyProgression(ex,stats,weekStatus){
-  if(!stats) return {exercise:ex,reason:"Sin historial comparable: conservar base."};
-  const out={...ex}, pain=stats.pain??0, fatigue=stats.fatigue??0, rir=stats.avgRir, baseSets=Math.max(1,Number(ex.sets)||1);
-  const repNums=String(ex.reps||"").match(/\d+(?:\.\d+)?/g)?.map(Number)||[], repUpper=repNums.length?Math.max(...repNums):null;
-  const repReady=repUpper===null || stats.maxReps>=repUpper;
-  const hardStop=pain>=5 || (fatigue>=6 && rir!==null && rir<=1);
-  let sets=baseSets, action="mantener";
-  if(weekStatus==="pivot"){ sets=Math.max(1,Math.min(baseSets,2)); action="pivot"; }
-  else if(hardStop){ sets=Math.max(1,baseSets-1); action="reducir 1 serie por recuperación"; }
-  else if(rir!==null && rir>=3 && repReady && pain<3 && fatigue<5){ action="progresar por reps/carga"; }
-  else if(rir!==null && rir>=3 && !repReady){ action="mantener hasta completar rango"; }
-  else if(rir!==null && rir<=1){ action="mantener por proximidad al fallo"; }
-  out.sets=sets; out.adaptiveApplied=true; out.adaptiveAction=action;
-  out.note=[out.note,"V10 adaptativo: "+action+"."].filter(Boolean).join(" ");
-  if(action==="progresar por reps/carga" && stats.sameExercise && out.load && !/bw|peso corporal|suave|moderad|ligero/i.test(String(out.load))){
-    out.load=v10AdaptiveLoadText(out.load,1); out.progression=[out.progression,"V10: +2,5% tras RIR >=3 sin dolor relevante."].filter(Boolean).join(" ");
-  }else if(action==="reducir 1 serie por recuperación"){
-    out.progression=[out.progression,"V10: -1 serie hasta recuperar rendimiento/dolor."].filter(Boolean).join(" ");
-  }
-  return {exercise:out,reason:action};
-}
-function v10AdaptiveVolumePlan(week,routine){
-  const idx=state?.weeks?.indexOf(week); if(idx===undefined || idx<=0) return {routine,actions:[]};
-  const prev=state.weeks[idx-1], sessions=(state.sessions||[]).filter(s=>s.week===prev && (!s.mode || String(s.mode)==="2"));
-  if(!sessions.length) return {routine,actions:[]};
-  const targets={pecho:[8,10],"espalda/dorsal":[8,10],"cuádriceps":[8,10],isquios:[8,10],deltoide_lateral:[4,6],"bíceps":[4,6],"tríceps":[4,6],gemelos:[4,6]};
-  const flat=Object.values(routine||{}).flat(), previous={};
-  Object.keys(targets).forEach(m=>previous[m]=v10WeeklyMuscle(prev,m));
-  const actions=[];
-  Object.entries(targets).forEach(([m,range])=>{
-    const observed=previous[m]?.weightedSets||0, fatigue=previous[m]?.fatigue??0, pain=previous[m]?.pain??0, trend=previous[m]?.performanceTrend||"→";
-    const productive=trend!=="↓" && fatigue<6 && pain<5;
-    const candidates=flat.filter(e=>v10MuscleKey(e?.muscle)===v10MuscleKey(m) || normalizeMuscle(e?.muscle)===normalizeMuscle(m));
-    if(!candidates.length) return;
-    if(observed<range[0] && productive){ const target=candidates[0]; target.sets=Math.min((Number(target.sets)||1)+1,4); target.note=[target.note,"V10 volumen: +1 serie para acercarse al rango operativo."].filter(Boolean).join(" "); actions.push({muscle:m,action:"+1 serie",observed,range}); }
-    else if(observed>range[1] && (fatigue>=6 || pain>=5 || trend==="↓")){ const target=candidates[candidates.length-1]; target.sets=Math.max(1,(Number(target.sets)||1)-1); target.note=[target.note,"V10 volumen: -1 serie por recuperación/rendimiento."].filter(Boolean).join(" "); actions.push({muscle:m,action:"-1 serie",observed,range}); }
+  return s.replace(/\d+(?:[.,]\d+)?/g,raw=>{
+    const n=Number(raw.replace(",",".")); if(n<40) return raw;
+    const v=n*factor, step=2.5, r=direction>0?Math.ceil(v/step)*step:Math.floor(v/step)*step;
+    return String(Number(r.toFixed(1))).replace(/\.0$/,"");
   });
-  return {routine,actions};
+}
+// Decide el ajuste de UN ejercicio comparando lo registrado vs lo prescrito la semana anterior.
+function v10AdaptiveDecide(ex,stats,ctx){
+  if(!stats) return {exercise:ex,action:null};
+  const prevTarget=stats.target||ctx.prevEx?.target||"", targetRir=v10AdaptiveTargetRir(prevTarget);
+  const range=v10AdaptiveRepRange(ctx.prevEx?.reps||ex.reps), rir=stats.avgRir, rirTxt=rir===null?"sin RIR":`RIR medio ${Number(rir.toFixed(1))}`;
+  let kind="hold", text="";
+  if(stats.maxPain>=4){ kind="down"; text=`dolor ${stats.maxPain}/10 la semana pasada: −5% y técnica limpia`; }
+  else if(ctx.deloadNow){ kind="hold"; text="semana pivot: se respeta la descarga del plan"; }
+  else if(ctx.deloadPrev){ kind="hold"; text="la semana anterior fue pivot: parte desde la carga del plan"; }
+  else if(rir!==null && targetRir!==null && rir<targetRir-1){ kind="down"; text=`${rirTxt} bajo el objetivo (RIR ${targetRir}): −5%`; }
+  else if(rir!==null && targetRir!==null && rir<targetRir){ kind="hold"; text=`${rirTxt} bajo el objetivo (RIR ${targetRir}): repetir carga`; }
+  else if(range && stats.minReps!==null && stats.minReps>=range[1]){
+    if(rir===null){ kind="reps"; text="tope de reps sin RIR anotado: +1 rep por serie (anota el RIR)"; }
+    else if(ctx.planRises){ kind="hold"; text=`tope de reps con ${rirTxt}: el plan ya sube la carga esta semana`; }
+    else { kind="up"; text=`tope de reps con ${rirTxt}: +2,5%`; }
+  }
+  else if(range && stats.minReps!==null && stats.minReps<range[0]){ kind="hold"; text=`no llegaste a ${range[0]} reps: repetir carga`; }
+  else { kind="hold"; text="dentro del rango: repetir carga y sumar reps"; }
+  const out={...ex};
+  if(kind==="up" || kind==="down"){
+    const next=v10AdaptiveLoadText(ex.load,kind==="up"?1:-1);
+    if(next && next!==ex.load) out.load=next;
+    else if(kind==="up"){ kind="reps"; text=text.replace("+2,5%","+1 rep por serie"); }
+    else text=text.replace("−5%","bajar un escalón de carga");
+  }
+  out.adaptiveAction=kind; out.adaptiveNote=text;
+  out.note=[ex.note,`Ajuste ${ctx.prevWeek}: ${text}.`].filter(Boolean).join(" · ");
+  out.adaptiveBase=Object.fromEntries(V10_ADAPTIVE_TRACKED.filter(k=>k in ex).map(k=>[k,ex[k]]));
+  out.adaptiveOut=Object.fromEntries(V10_ADAPTIVE_TRACKED.filter(k=>k in out).map(k=>[k,out[k]]));
+  return {exercise:out,action:kind,text};
 }
 function v10AdaptiveFullBodyRoutine(week){
   const base=v10AdaptiveBaseRoutine(week); if(!base || !Object.keys(base).length) return {routine:base,actions:[],sourceWeek:null};
   const idx=state?.weeks?.indexOf(week); if(idx===undefined || idx<=0) return {routine:base,actions:[],sourceWeek:null};
-  const prevSessions=v10AdaptivePrevSessions(week), status=PLAN.blockStatus?.[week]?.status||"base", out={}, actions=[];
+  const prevWeek=state.weeks[idx-1], prevFlat=Object.values(v10AdaptiveBaseRoutine(prevWeek)).flat();
+  const sessions=v10AdaptivePrevSessions(week), out={}, actions=[];
+  const ctxBase={prevWeek,deloadNow:v10AdaptiveWeekStatus(week)==="pivot",deloadPrev:v10AdaptiveWeekStatus(prevWeek)==="pivot"};
   Object.entries(base).forEach(([day,exercises])=>{
-    out[day]=(exercises||[]).map(ex=>{const r=v10AdaptiveApplyProgression(ex,v10AdaptiveStats(ex,prevSessions),status); if(r.reason!=="Sin historial comparable: conservar base.") actions.push({day,exercise:ex.name,action:r.reason}); return r.exercise;});
+    out[day]=(exercises||[]).map(ex=>{
+      const key=v10AdaptiveKey(ex), prevEx=prevFlat.find(p=>v10AdaptiveKey(p)===key)||null;
+      const a=v10AdaptiveFirstLoad(ex.load), b=v10AdaptiveFirstLoad(prevEx?.load);
+      const r=v10AdaptiveDecide(ex,v10AdaptiveStats(ex,sessions),{...ctxBase,prevEx,planRises:a!==null&&b!==null&&a>b});
+      if(r.action) actions.push({day,exercise:ex.name,action:r.action,detail:r.text});
+      return r.exercise;
+    });
   });
-  const vol=v10AdaptiveVolumePlan(week,out); return {routine:vol.routine,actions:[...actions,...vol.actions],sourceWeek:state.weeks[idx-1]};
+  return {routine:out,actions,sourceWeek:prevWeek};
 }
+// Devuelve la lista sin los ajustes automáticos: los campos que el usuario no tocó vuelven al valor base.
+function v10AdaptiveStripList(list){
+  return (list||[]).map(e=>{
+    if(!e || typeof e!=="object") return e;
+    const o={...e};
+    if(e.adaptiveBase) Object.entries(e.adaptiveBase).forEach(([k,v])=>{ if(!e.adaptiveOut || e[k]===e.adaptiveOut[k]) o[k]=v; });
+    V10_ADAPTIVE_META.forEach(k=>delete o[k]);
+    return o;
+  });
+}
+function v10AdaptiveStripWeek(weekRoutine){
+  return Object.fromEntries(Object.entries(weekRoutine||{}).map(([day,list])=>[day,v10AdaptiveStripList(list)]));
+}
+// Guarda en la base 2D la semana activa (tras editar en Rutina), sin los ajustes automáticos.
+function v10AdaptiveStoreWeek(week=state.selectedWeek){
+  state.routinesByMode=state.routinesByMode||{};
+  state.routinesByMode["2"]=state.routinesByMode["2"]||clone(PLAN.routineByMode?.["2"]||{});
+  state.routinesByMode["2"][week]=v10AdaptiveStripWeek(clone(state.routine?.[week]||{}));
+}
+// Se recalcula en cada render/carga (es barato y determinista): sin atajos persistidos que dejen la vista obsoleta.
 function applyAdaptiveFullBodySelection(){
   if(!state || String(state.selectedMode||"")!=="2") return;
   const week=state.selectedWeek;
-  state.meta=state.meta||{}; state.meta.adaptive2D=state.meta.adaptive2D||{};
-  const activeKey="2|"+week;
-  if(state.meta.adaptive2D.activeKey===activeKey) return;
+  state.routinesByMode=state.routinesByMode||{};
+  if(!state.routinesByMode["2"]) state.routinesByMode["2"]=clone(PLAN.routineByMode?.["2"]||{});
   const generated=v10AdaptiveFullBodyRoutine(week);
-  state.routine=clone(state.routinesByMode?.["2"]||PLAN.routineByMode?.["2"]||{});
+  state.routine=clone(state.routinesByMode["2"]);
   state.routine[week]=clone(generated.routine);
-  state.meta.adaptive2D[week]={sourceWeek:generated.sourceWeek,actions:generated.actions,updatedAt:new Date().toISOString()};
-  state.meta.adaptive2D.activeKey=activeKey;
+  state.meta=state.meta||{}; state.meta.adaptive2D=state.meta.adaptive2D||{};
+  delete state.meta.adaptive2D.activeKey;
+  const prev=state.meta.adaptive2D[week];
+  if(!prev || JSON.stringify(prev.actions)!==JSON.stringify(generated.actions) || prev.sourceWeek!==generated.sourceWeek){
+    state.meta.adaptive2D[week]={sourceWeek:generated.sourceWeek,actions:generated.actions,updatedAt:new Date().toISOString()};
+  }
 }
 
-window.PrimeOSVolume={muscles:V10_MUSCLES,labels:V10_MUSCLE_LABELS,classify:v10ExerciseClassification,contributions:v10Contributions,analyzeWeek:v10AnalyzeWeek,summary:v10MuscleSummary,addMeta:v10AddExerciseMeta,catalog:v10CatalogOptions,rirFactor:v10RirFactor,observedBands:v10ObservedBands,adaptiveFullBodyRoutine:v10AdaptiveFullBodyRoutine,applyAdaptiveFullBodySelection};
+window.PrimeOSVolume={muscles:V10_MUSCLES,labels:V10_MUSCLE_LABELS,classify:v10ExerciseClassification,contributions:v10Contributions,analyzeWeek:v10AnalyzeWeek,summary:v10MuscleSummary,addMeta:v10AddExerciseMeta,catalog:v10CatalogOptions,rirFactor:v10RirFactor,observedBands:v10ObservedBands,adaptiveFullBodyRoutine:v10AdaptiveFullBodyRoutine,applyAdaptiveFullBodySelection,adaptiveStripWeek:v10AdaptiveStripWeek};
 
 if(typeof module!=="undefined") module.exports={v10RirFactor,v10ExerciseClassification,v10Contributions,v10WeeklyMuscle,v10ObservedBands,v10MuscleSummary,v10AnalyzeWeek};

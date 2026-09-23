@@ -397,7 +397,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     await assertOptions(["Full Body A · Adaptativo 2D","Full Body B · Adaptativo 2D","Cardio/Abs/Movilidad · Adaptativo 2D"]);
     await page.selectOption("#daySelect", "Full Body A · Adaptativo 2D");
     await go(page, "entrenar");
-    assert((await page.inputValue('[data-ei="0"][data-field="name"]')) === "Press banco plano", "no cargó el Full Body A 2D");
+    assert((await page.inputValue('[data-ei="0"][data-field="name"]')) === "Press plano barra", "no cargó el Full Body A 2D");
 
     // El modo queda registrado en sesiones nuevas y no mezcla rutinas entre modos.
     await page.fill('[data-ei="0"][data-si="0"][data-field="weight"]', "90");
@@ -477,6 +477,128 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     r = await read();
     assert(r.done.length === 1, "tras recargar se perdió el modo de la sesión: " + JSON.stringify(r));
     assert(!page.errors.length, page.errors.join(" | "));
+    await page.context().close();
+  });
+
+  await test("2D Full Body A/B: series por grupo dentro de rango las 12 semanas, pivots bajos y piernas en ambas sesiones", async () => {
+    const page = await open();
+    const r = await page.evaluate(() => {
+      const G = {"pecho":"pecho","espalda/dorsal":"espalda","cuádriceps":"cuad","isquios":"femgl","glúteo":"femgl","posterior/hinge":"femgl","deltoide lateral":"delts","bíceps":"brazos","tríceps":"brazos"};
+      const B1 = {pecho:[8,10],espalda:[10,12],cuad:[8,10],femgl:[8,10],delts:[6,8],brazos:[4,6]};
+      const B2 = {pecho:[10,12],espalda:[12,14],cuad:[10,12],femgl:[10,12],delts:[8,10],brazos:[6,8]};
+      const B3 = {pecho:[10,13],espalda:[12,15],cuad:[10,13],femgl:[10,13],delts:[8,11],brazos:[6,9]};
+      const B3b = {...B3, espalda:[13,15], delts:[9,11]};
+      const W12 = {pecho:[6,9],espalda:[8,11],cuad:[6,9],femgl:[6,9],delts:[5,8],brazos:[4,6]};
+      const ranges = {1:B1,2:B1,3:B1,5:B2,6:B2,7:B2,9:B3,10:B3b,11:B3b,12:W12};
+      const A = "Full Body A · Adaptativo 2D", Bs = "Full Body B · Adaptativo 2D", errs = [], vol = {};
+      for(let n = 1; n <= 12; n++){
+        const wk = PLAN.routineByMode["2"][`Semana ${n}`] || {};
+        const g = {pecho:0,espalda:0,cuad:0,femgl:0,delts:0,brazos:0};
+        [A, Bs].forEach(day => {
+          const list = wk[day] || [];
+          if(list.length < 7 || list.length > 9) errs.push(`S${n} ${day}: ${list.length} ejercicios`);
+          const lower = list.filter(e => ["cuádriceps","isquios","glúteo","posterior/hinge"].includes(normalizeMuscle(e.muscle)));
+          if(lower.length < 2 || !lower.some(e => normalizeMuscle(e.muscle) === "cuádriceps") || !lower.some(e => normalizeMuscle(e.muscle) !== "cuádriceps")) errs.push(`S${n} ${day}: piernas ${lower.map(e => e.name)}`);
+          list.forEach(e => {
+            if(!Number.isInteger(e.sets) || e.sets < 1) errs.push(`S${n} ${e.name}: sets ${e.sets}`);
+            const m = String(e.reps).match(/^(\d+) x /), tb = String(e.reps).match(/^1 top .+ \+ (\d+) backoff/);
+            if(!(m && Number(m[1]) === e.sets) && !(tb && 1 + Number(tb[1]) === e.sets)) errs.push(`S${n} ${e.name}: reps "${e.reps}" ≠ ${e.sets} series`);
+            if(e.adaptiveSession !== (day === A ? "A" : "B")) errs.push(`S${n} ${e.name}: sesión ${e.adaptiveSession}`);
+            const k = G[normalizeMuscle(e.muscle)];
+            if(!k) errs.push(`S${n} ${e.name}: músculo ${e.muscle}`); else g[k] += e.sets;
+          });
+        });
+        vol[n] = g;
+        const rg = ranges[n];
+        if(rg) Object.entries(rg).forEach(([k,[lo,hi]]) => { if(g[k] < lo || g[k] > hi) errs.push(`S${n} ${k}=${g[k]} fuera de ${lo}-${hi}`); });
+      }
+      // Pivots: 50-60% de la semana previa (deltoides/brazos hasta 70%); S12: 60-75% de S11.
+      [[4,3],[8,7]].forEach(([d,p]) => Object.keys(vol[d]).forEach(k => {
+        const pct = vol[d][k] / vol[p][k], hi = ["delts","brazos"].includes(k) ? .7 : .6;
+        if(pct < .5 || pct > hi + 1e-9) errs.push(`S${d} ${k}: ${Math.round(pct*100)}% de S${p}`);
+      }));
+      Object.keys(vol[12]).forEach(k => { const pct = vol[12][k] / vol[11][k]; if(pct < .6 || pct > .75) errs.push(`S12 ${k}: ${Math.round(pct*100)}% de S11`); });
+      const tot = n => Object.values(vol[n]).reduce((a,b) => a+b, 0);
+      const avg = ws => ws.reduce((a,w) => a + tot(w), 0) / ws.length;
+      if(!(avg([1,2,3]) < avg([5,6,7]) && avg([5,6,7]) <= avg([9,10,11]))) errs.push("el volumen no sube entre bloques");
+      if(!(tot(4) < tot(3) && tot(8) < tot(7) && tot(12) < tot(11))) errs.push("pivots/S12 no bajan el volumen");
+      // Anclajes estables dentro de cada bloque; dominadas lastradas, hip thrust y prensa todas las semanas.
+      [[1,2,3],[5,6,7],[9,10,11]].forEach(ws => ["Full Body A · Adaptativo 2D","Full Body B · Adaptativo 2D"].forEach(day => {
+        const names = ws.map(n => (PLAN.routineByMode["2"][`Semana ${n}`][day] || []).filter(e => e.type === "Anclaje").map(e => e.name).join("|"));
+        if(new Set(names).size !== 1) errs.push(`anclajes cambian en ${ws} ${day}`);
+      }));
+      for(let n = 1; n <= 12; n++){
+        const all = Object.values(PLAN.routineByMode["2"][`Semana ${n}`]).flat().map(e => e.name);
+        ["Dominadas lastradas","Hip thrust","Prensa 45/hack","RDL barra","Press inclinado DB"].forEach(x => { if(!all.includes(x)) errs.push(`S${n} sin ${x}`); });
+      }
+      return {errs, vol};
+    });
+    assert(!r.errs.length, r.errs.join(" | "));
+    await page.context().close();
+  });
+
+  await test("2D adaptativo: se ajusta según lo registrado, es estable al recargar y no acumula", async () => {
+    const page = await open({viewport: {width:390, height:844}});
+    const A = "Full Body A · Adaptativo 2D", B = "Full Body B · Adaptativo 2D";
+    await page.evaluate(({A, B}) => {
+      const sets = (n, kg, reps, rir, pain = "0") => Array.from({length:n}, () => ({weight:kg, unit:"kg", repsDone:reps, rir, pain, done:true}));
+      state.sessions.push({id: 7001, date:"d", createdAt: new Date().toISOString(), week:"Semana 6", mode:"2", session:A, day:"Martes - " + A, weekday:"Martes", readiness:{}, notes:"",
+        exercises:[{name:"Press plano barra", muscle:"pecho", target:"RIR 1-2", sets:sets(4, "85", "10", "2")}]});
+      state.sessions.push({id: 7002, date:"d", createdAt: new Date().toISOString(), week:"Semana 6", mode:"2", session:B, day:"Viernes - " + B, weekday:"Viernes", readiness:{}, notes:"",
+        exercises:[{name:"Hip thrust", muscle:"glúteo", target:"RIR 1-2", sets:sets(4, "170", "9", "2", "5")},
+                   {name:"Remo frontal/Hammer", muscle:"espalda/dorsal", target:"RIR 1-2", sets:sets(5, "110", "8", "0")}]});
+      saveState();
+    }, {A, B});
+    await page.selectOption("#modeSelect", "2");
+    await page.selectOption("#weekSelect", "Semana 7");
+    const read = () => page.evaluate(({A, B}) => {
+      const w = "Semana 7", fa = state.routine[w][A], fb = state.routine[w][B];
+      const pp = fa.find(e => e.name === "Press plano barra"), ht = fb.find(e => e.name === "Hip thrust"), rh = fb.find(e => e.name === "Remo frontal/Hammer");
+      const base = state.routinesByMode["2"][w][A].find(e => e.name === "Press plano barra");
+      return {pp: pp.load, ht: ht.load, rh: rh.load, rhAction: rh.adaptiveAction, notes: (pp.note.match(/Ajuste/g) || []).length,
+        base: base.load, baseNote: /Ajuste/.test(base.note), baseHasMeta: "adaptiveBase" in base, activeKey: state.meta.adaptive2D?.activeKey};
+    }, {A, B});
+    let r = await read();
+    assert(r.pp === "87.5 kg o maquina equivalente" && r.ht === "160-170 kg" && r.rh === "110-120 kg" && r.rhAction === "hold", "ajuste inicial: " + JSON.stringify(r));
+    assert(r.notes === 1 && r.base === "85 kg o maquina equivalente" && !r.baseNote && !r.baseHasMeta, "la base quedó contaminada: " + JSON.stringify(r));
+    // Recargar, cambiar de modo y de semana varias veces: el ajuste es el mismo (sin +2,5% sobre +2,5%).
+    for(let i = 0; i < 3; i++){
+      await page.reload(); await page.waitForFunction(() => typeof state !== "undefined" && state && document.querySelector("#trainingForm"));
+      await page.selectOption("#modeSelect", "3"); await page.selectOption("#modeSelect", "2");
+      await page.selectOption("#weekSelect", "Semana 6"); await page.selectOption("#weekSelect", "Semana 7");
+    }
+    r = await read();
+    assert(r.pp === "87.5 kg o maquina equivalente" && r.ht === "160-170 kg" && r.notes === 1 && r.base === "85 kg o maquina equivalente" && r.activeKey === undefined, "acumuló tras recargar: " + JSON.stringify(r));
+    // Editar otro campo en Rutina guarda la edición en la base, pero no el ajuste automático.
+    await page.evaluate(({A}) => { state.selectedDay = A; const i = state.routine["Semana 7"][A].findIndex(e => e.name === "Press plano barra"); updateExercise(i, "rest", "4 min"); }, {A});
+    r = await read();
+    const baseRest = await page.evaluate(({A}) => state.routinesByMode["2"]["Semana 7"][A].find(e => e.name === "Press plano barra").rest, {A});
+    assert(r.pp === "87.5 kg o maquina equivalente" && r.base === "85 kg o maquina equivalente" && baseRest === "4 min" && r.notes === 1, "editar en Rutina acumuló: " + JSON.stringify({...r, baseRest}));
+    // Sin datos de la semana previa no hay ajuste.
+    const s2 = await page.evaluate(({A}) => { state.selectedWeek = "Semana 2"; applyAdaptiveFullBodySelection(); return state.routine["Semana 2"][A][0].load; }, {A});
+    assert(s2 === "80-82.5 kg", "semana sin historial cambió: " + s2);
+    assert(!page.errors.length, page.errors.join(" | "));
+    await page.context().close();
+  });
+
+  await test("2D: la migración reinicia semanas 2D contaminadas y no toca 3D/4D", async () => {
+    const page = await open();
+    const before = await page.evaluate(() => {
+      state.routinesByMode["3"]["Semana 1"]["Martes - Upper A"][0].load = "99 kg editado";
+      state.routinesByMode["2"]["Semana 3"]["Full Body A · Adaptativo 2D"][0].load = "999 kg";
+      state.routinesByMode["2"]["Semana 3"]["Full Body A · Adaptativo 2D"][0].note = "x V10 adaptativo: mantener. V10 adaptativo: mantener.";
+      state.meta.fullBodyAdaptiveVersion = 2; state.meta.adaptive2D = {activeKey: "2|Semana 3"};
+      saveState();
+      return {r3: JSON.stringify(state.routinesByMode["3"]), r4: JSON.stringify(state.routinesByMode["4"])};
+    });
+    await page.reload(); await page.waitForFunction(() => typeof state !== "undefined" && state && document.querySelector("#trainingForm"));
+    const after = await page.evaluate(() => ({
+      r3: JSON.stringify(state.routinesByMode["3"]), r4: JSON.stringify(state.routinesByMode["4"]),
+      same2: JSON.stringify(state.routinesByMode["2"]) === JSON.stringify(PLAN.routineByMode["2"]),
+      v: state.meta.fullBodyAdaptiveVersion, key: state.meta.adaptive2D?.activeKey
+    }));
+    assert(after.same2 && after.v === 3 && after.key === undefined, "2D no se reinició: " + JSON.stringify({same2: after.same2, v: after.v, key: after.key}));
+    assert(after.r3 === before.r3 && after.r4 === before.r4, "la migración tocó 3D/4D");
     await page.context().close();
   });
 

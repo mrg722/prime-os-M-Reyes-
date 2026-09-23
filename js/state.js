@@ -282,12 +282,17 @@ function normalizeState(data){
   Object.keys(PLAN.modeDays || {}).forEach(mode => {
     if(!data.routinesByMode[mode]) data.routinesByMode[mode] = clone(PLAN.routineByMode?.[mode] || PLAN.routine || {});
   });
-  // V10.3: refresca solo el modo Full Body 2D cuando cambia su esquema; no toca las rutinas 3D/4D editadas.
-  if(data.meta.fullBodyAdaptiveVersion !== 2){
+  // Refresca solo el modo Full Body 2D cuando cambia su esquema; no toca las rutinas 3D/4D editadas.
+  // Versión 3 (adaptive2DVersion): Full Body A/B rediseñados por bloques. Las semanas 2D guardadas antes
+  // estaban contaminadas con ajustes acumulados, así que se reinician al plan nuevo (el 2D no tiene otro
+  // contenido del usuario que las ediciones en Rutina). Se descarta también el atajo meta.adaptive2D.
+  if(data.meta.fullBodyAdaptiveVersion !== 3){
     data.routinesByMode["2"] = clone(PLAN.routineByMode?.["2"] || {});
     data.weeklyTargetsByMode["2"] = clone(PLAN.weeklyTargetsByMode?.["2"] || {});
     if(activeMode==="2") data.weeklyTargets = clone(data.weeklyTargetsByMode["2"] || {});
-    data.meta.fullBodyAdaptiveVersion = 2;
+    delete data.meta.adaptive2D;
+    data.meta.fullBodyAdaptiveVersion = 3;
+    data.meta.adaptive2DVersion = 3;
   }
   data.routine = clone(data.routinesByMode[activeMode]);
   data.volumeEngineVersion = 1;
