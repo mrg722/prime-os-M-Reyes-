@@ -145,6 +145,7 @@ function renderExerciseRegister(e, ei){
         <label>Tipo / músculo
           <select data-ei="${ei}" data-field="muscle" onchange="updateDraftField(${ei}, 'muscle', this.value)">${muscleOptions(e.muscle)}</select>
         </label>
+        ${e.isAdded ? addedExercisePicker(e, ei) : ""}
         <label>Reps objetivo
           <input data-ei="${ei}" data-field="reps" value="${escapeAttr(e.reps || "")}" onchange="updateDraftField(${ei}, 'reps', this.value)">
         </label>
@@ -171,6 +172,47 @@ function renderExerciseRegister(e, ei){
 }
 
 
+// Ejercicios del catálogo que corresponden al tipo/músculo elegido (para el ejercicio agregado).
+function addedExerciseChoices(group){
+  if(typeof V10_CATALOG === "undefined") return [];
+  const g = normalizeMuscle(group);
+  return Object.values(V10_CATALOG).filter(x => {
+    if(g === "posterior/hinge") return x.movementPattern === "bisagra" || normalizeMuscle(x.sourceMuscle) === g;
+    return normalizeMuscle(x.sourceMuscle) === g || (g === "cardio" && x.category === "cardio");
+  }).sort((a,b) => a.name.localeCompare(b.name, "es"));
+}
+
+function addedExercisePicker(e, ei){
+  const list = addedExerciseChoices(e.muscle);
+  const current = list.find(x => canonicalExercise(x.name) === canonicalExercise(e.name));
+  const opts = list.map(x => `<option value="${escapeAttr(x.name)}" ${current === x ? "selected" : ""}>${escapeHtml(x.name)}</option>`).join("");
+  return `<label>Ejercicio
+          <select data-ei="${ei}" data-role="added-exercise" onchange="pickAddedExercise(${ei}, this.value)">
+            <option value="" ${current ? "" : "selected"}>${list.length ? "Elige un ejercicio…" : "Sin ejercicios en el catálogo"}</option>${opts}
+            <option value="__otro__">Otro (escribo el nombre arriba)</option>
+          </select>
+        </label>`;
+}
+
+window.pickAddedExercise = function(i, name){
+  collectDraftInputs();
+  const e = trainingDraft[i];
+  if(name === "__otro__"){ renderTraining(); saveDraftToStorage(); document.querySelector(`[data-ei="${i}"][data-field="name"]`)?.select(); return; }
+  if(!name) return;
+  e.name = name;
+  const meta = typeof v10ExerciseMeta === "function" ? v10ExerciseMeta(name) : null;
+  if(meta){
+    if(!String(e.reps || "").trim()) e.reps = meta.repRange || "";
+    if(!String(e.target || "").trim()) e.target = meta.recommendedRIR ? `RIR ${meta.recommendedRIR}` : "";
+  }
+  if(typeof v10AddExerciseMeta === "function") Object.assign(e, v10AddExerciseMeta(e));
+  const prev = findPreviousExercise(name);
+  const last = prev && bestSet(prev.sets);
+  if(last?.unit && !e.setsData.some(setHasData)){ e.unit = last.unit; e.setsData.forEach(st => { st.unit = last.unit; }); }
+  renderTraining();
+  saveDraftToStorage();
+};
+
 function v10AddedFields(e,ei){
   if(!e.isAdded) return "";
   return '<label class="wide">Sinergias personalizadas (ej: bíceps:0.5, deltoide_anterior:0.25) <input data-ei="'+ei+'" data-field="secondary" value="'+escapeAttr(e.secondaryText||"")+'" placeholder="músculo:peso, músculo:peso"></label>';
@@ -189,6 +231,8 @@ window.updateDraftField = function(i,k,v){
     Object.assign(trainingDraft[i],enriched);
   }
   saveDraftToStorage();
+  // El músculo cambia la etiqueta y, en un agregado, la lista de ejercicios: se redibuja.
+  if(k === "muscle") renderTraining();
 };
 window.changeActualSets = function(i,v){
   collectDraftInputs();

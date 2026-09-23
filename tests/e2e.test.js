@@ -411,6 +411,22 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     await page.context().close();
   });
 
+  await test("ejercicio agregado: elegir músculo y luego ejercicio del catálogo", async () => {
+    const page = await open({viewport: {width:390, height:844}});
+    await go(page, "entrenar");
+    await page.click("#addAlternativeBtn");
+    await page.selectOption('[data-ei="0"][data-field="muscle"]', "glúteo");
+    assert((await page.textContent(".exercise-card.add-box")).includes("Músculo: glúteo"), "la etiqueta de músculo no se actualizó");
+    const opts = await page.$$eval('[data-role="added-exercise"] option', o => o.map(x => x.value));
+    assert(opts.includes("Hip thrust") && !opts.includes("Press banca"), "lista filtrada: " + opts.join(","));
+    await page.selectOption('[data-role="added-exercise"]', "Hip thrust");
+    await page.fill(W(0,0), "100"); await page.fill(R(0,0), "10");
+    await page.click("#saveSessionBtn");
+    const e = await page.evaluate(() => state.sessions.at(-1).exercises[0]);
+    assert(e.name === "Hip thrust" && e.muscle === "glúteo" && e.primaryMuscles?.[0] === "glúteo", JSON.stringify({name: e.name, muscle: e.muscle}));
+    await page.context().close();
+  });
+
   await test("ejercicio agregado aparece al inicio y la franja Sistema/Objetivo va al final", async () => {
     const page = await open();
     await go(page, "entrenar");
