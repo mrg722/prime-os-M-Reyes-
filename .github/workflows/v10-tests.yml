@@ -16,6 +16,6 @@ jobs:
           node-version: 20
       - name: Syntax check
         run: |
-          for f in js/*.js; do node --check "$f"; done
+          for f in js/*.js sw.js; do node --check "$f"; done
       - name: Volume engine regression suite
         run: node tests/v10_volume_engine.test.js
