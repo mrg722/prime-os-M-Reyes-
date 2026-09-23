@@ -14,7 +14,7 @@ const V10_MUSCLE_LABELS = {
 };
 
 function v10MuscleKey(raw){
-  const s=stripAccents(String(raw||"").toLowerCase()).trim();
+  const s=stripAccents(String(raw||"").toLowerCase()).replace(/_/g," ").trim();
   if(!s) return "general";
   if(s.includes("pecho superior")) return "pecho_superior";
   if(s.includes("pecho")||s.includes("press")) return "pecho";
