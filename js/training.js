@@ -218,12 +218,19 @@ function addAddedExercise(){
   $("#trainingForm .exercise-card")?.scrollIntoView({behavior: "smooth", block: "start"});
 }
 
+function v10ParseSecondary(text){
+  return String(text||"").split(",").map(x=>x.trim()).filter(Boolean).map(x=>{
+    const [muscle,w]=x.split(":");
+    return {muscle:v10MuscleKey(muscle),weight:Number(w||0.5)};
+  }).filter(x=>x.muscle && Number.isFinite(x.weight) && x.weight>0 && x.weight<=1);
+}
 function saveSession(){
   collectDraftInputs();
   const exercises = trainingDraft.map(e=>{
     ensureSetsLength(e);
+    const secondaryMuscles=v10ParseSecondary(e.secondaryText);
     const enriched=typeof v10AddExerciseMeta==="function" ? v10AddExerciseMeta({
-      name:e.name,muscle:normalizeMuscle(e.muscle),secondaryMuscles:Array.isArray(e.secondaryMuscles)?e.secondaryMuscles:[]
+      name:e.name,muscle:normalizeMuscle(e.muscle),secondaryMuscles
     }) : {};
     return {
       name:e.name,
@@ -231,7 +238,7 @@ function saveSession(){
       sourceMuscle:e.sourceMuscle || e.muscle || "",
       normalizedMuscle:enriched.normalizedMuscle || normalizeMuscle(e.muscle),
       primaryMuscles:enriched.primaryMuscles || [normalizeMuscle(e.muscle)],
-      secondaryMuscles:enriched.secondaryMuscles || e.secondaryMuscles || [],
+      secondaryMuscles:enriched.secondaryMuscles || secondaryMuscles,
       volumeWeights:enriched.volumeWeights || {[normalizeMuscle(e.muscle)]:1},
       v10Meta:enriched.v10Meta || null,
       target:e.target || "",
