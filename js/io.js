@@ -14,7 +14,7 @@ const ALL_WEEKS = "__all__";
 
 function exportExcel(){
   collectDraftInputs();
-  const selected = $("#exportWeekSelect").value || state.selectedWeek;
+  const selected = state.selectedWeek;
   const weeks = selected === ALL_WEEKS ? state.weeks : [selected];
   const inWeeks = w => weeks.includes(w);
 
