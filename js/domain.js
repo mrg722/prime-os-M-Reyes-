@@ -1,6 +1,7 @@
 // Reglas de entrenamiento: músculos, catálogo de ejercicios, cargas, 1RM, RIR, sugerencias y alertas.
 const MUSCLE_GROUPS = ["cuádriceps","glúteo","isquios","posterior/hinge","pecho","espalda/dorsal","deltoide lateral","bíceps","tríceps","gemelos","core/control","escápula/manguito","cardio","recuperación","general"];
 const LBS_TO_KG = 0.45359237;
+const LBS_RE = /(?:\d|\b)(?:lbs?|libras?)\b/i;
 const PAIN_ALERT_THRESHOLD = 3;
 const PAIN_ALERT_SESSIONS = 3;
 
@@ -78,7 +79,7 @@ function canonicalExercise(name){
 function parseWeightText(text){
   const s = String(text ?? "").trim();
   if(!s) return {weight:"", unit:"kg", weightNote:""};
-  const unit = /\b(lb|lbs|libras?)\b/i.test(s) ? "lbs" : "kg";
+  const unit = LBS_RE.test(s) ? "lbs" : "kg";
   const m = s.replace(/(\d),(\d)/g, "$1.$2").match(/-?\d+(?:\.\d+)?/);
   if(!m) return {weight:"", unit, weightNote:s};
   const rest = s.replace(/(\d),(\d)/g, "$1.$2")
@@ -97,7 +98,7 @@ function normalizeSetWeight(set){
     return {weight: set.weight === "" ? "" : String(parseNumber(set.weight)), unit: set.unit, weightNote: set.weightNote || ""};
   }
   const parsed = parseWeightText(set.weight);
-  if(hasUnit && !/\b(kg|lb)/i.test(String(set.weight))) parsed.unit = set.unit;
+  if(hasUnit && !/(?:\d|\b)(kg|lb)/i.test(String(set.weight))) parsed.unit = set.unit;
   if(set.weightNote) parsed.weightNote = [parsed.weightNote, set.weightNote].filter(Boolean).join(" ");
   return parsed;
 }
@@ -112,6 +113,14 @@ function formatSetWeight(set){
   const n = parseNumber(set?.weight);
   const main = n === null ? "" : `${formatNumber(n, 2)} ${set.unit || "kg"}`;
   return [main, set?.weightNote].filter(Boolean).join(" ") || "—";
+}
+
+// Unidad inicial de un ejercicio en Registrar: la de la carga planificada si dice lbs,
+// si no la de la última serie registrada de ese ejercicio y, por defecto, kg.
+function defaultExerciseUnit(ex){
+  if(LBS_RE.test(String(ex?.load ?? ""))) return "lbs";
+  const prev = ex?.name ? findPreviousExercise(ex.name) : null;
+  return prev?.sets?.at(-1)?.unit === "lbs" ? "lbs" : "kg";
 }
 
 function setHasData(s){
