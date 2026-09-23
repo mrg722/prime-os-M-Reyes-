@@ -13,7 +13,7 @@ const engine=require("../js/volumeEngine.js");
 global.v10ExerciseMeta=catalog.v10ExerciseMeta;
 
 let stateBackup,planBackup;
-function setup(sessions=[],weeks=["Semana 1"],targets={}){global.state={sessions,weeks,weeklyTargets:targets,selectedMode:"4",settings:{goalMode:"mixed"}};global.PLAN={weeklyTargetBandsByMode:{"4":{}},defaultMode:"4"};}
+function setup(sessions=[],weeks=["Semana 1"],targets={},mode="4"){global.state={sessions,weeks,weeklyTargets:targets,selectedMode:mode,settings:{goalMode:"mixed"}};global.PLAN={weeklyTargetBandsByMode:{"4":{}},defaultMode:"4"};}
 function session(week,exercise){return {id:Math.random(),week,exercises:[exercise],readiness:{energy:"4",sleep:"bueno",motivation:"4"}};}
 function ex(name,muscle,sets){return {name,muscle,sets};}
 function set(rir="2",pain="0"){return {done:true,weight:"80",repsDone:"8",rir,pain};}
@@ -76,9 +76,15 @@ test("Eliminar ejercicio elimina su contribución",()=>{
   const removed=engine.v10Contributions({id:1,week:"Semana 1",exercises:[]});
   assert(kept.length>0); assert.strictEqual(removed.length,0);
 });
-test("3D/4D no se mezclan porque el motor usa la semana/sesión recibida",()=>{
-  setup([session("Semana 1",ex("Curl barra","bíceps",[set()])),session("Semana 2",ex("Press banca","pecho",[set()]))],["Semana 1","Semana 2"]);
-  assert(engine.v10Contributions(state.sessions[0]).every(x=>x.muscle==="bíceps"||x.muscle==="braquial"));
+test("3D/4D no se mezclan en el resumen de volumen",()=>{
+  const a=session("Semana 1",ex("Curl barra","bíceps",[set()])); a.mode="3";
+  const b=session("Semana 1",ex("Press banca","pecho",[set()])); b.mode="4";
+  setup([a,b],["Semana 1"],{}, "3");
+  const s3=engine.v10WeeklyMuscle("Semana 1","bíceps"); assert(s3.rawSets>0);
+  const p3=engine.v10WeeklyMuscle("Semana 1","pecho"); assert.strictEqual(p3.rawSets,0);
+  state.selectedMode="4";
+  const s4=engine.v10WeeklyMuscle("Semana 1","pecho"); assert(s4.rawSets>0);
+  const b4=engine.v10WeeklyMuscle("Semana 1","bíceps"); assert.strictEqual(b4.rawSets,0);
 });
 test("RDL distribuye isquios, glúteo y erectores",()=>{
   const c=engine.v10Contributions(session("Semana 1",ex("RDL","isquios",[set()])));
