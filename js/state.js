@@ -278,6 +278,13 @@ function normalizeState(data){
   Object.keys(PLAN.modeDays || {}).forEach(mode => {
     if(!data.routinesByMode[mode]) data.routinesByMode[mode] = clone(PLAN.routineByMode?.[mode] || PLAN.routine || {});
   });
+  // V10.3: refresca solo el modo Full Body 2D cuando cambia su esquema; no toca las rutinas 3D/4D editadas.
+  if(data.meta.fullBodyAdaptiveVersion !== 2){
+    data.routinesByMode["2"] = clone(PLAN.routineByMode?.["2"] || {});
+    data.weeklyTargetsByMode["2"] = clone(PLAN.weeklyTargetsByMode?.["2"] || {});
+    if(activeMode==="2") data.weeklyTargets = clone(data.weeklyTargetsByMode["2"] || {});
+    data.meta.fullBodyAdaptiveVersion = 2;
+  }
   data.routine = clone(data.routinesByMode[activeMode]);
   data.volumeEngineVersion = 1;
   // Enriquecer ejercicios conocidos sin tocar sourceMuscle.
