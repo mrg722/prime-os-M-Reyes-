@@ -274,3 +274,5 @@ function v10CatalogOptions(){
 }
 
 window.PrimeOSVolume={muscles:V10_MUSCLES,labels:V10_MUSCLE_LABELS,classify:v10ExerciseClassification,contributions:v10Contributions,analyzeWeek:v10AnalyzeWeek,summary:v10MuscleSummary,addMeta:v10AddExerciseMeta,catalog:v10CatalogOptions,rirFactor:v10RirFactor,observedBands:v10ObservedBands};
+
+if(typeof module!=="undefined") module.exports={v10RirFactor,v10ExerciseClassification,v10Contributions,v10WeeklyMuscle,v10ObservedBands,v10MuscleSummary,v10AnalyzeWeek};
