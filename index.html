@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=8.2"/>
+  <link rel="stylesheet" href="styles.css?v=9.0"/>
   <script>
     // Si llega una versión nueva de la app (service worker), recarga una vez para no mezclar
     // archivos de dos versiones. Va aquí porque index.html siempre se descarga nuevo.
@@ -84,6 +84,11 @@
           <h2 id="pageTitle">Inicio</h2><p id="pageSubtitle" class="page-subtitle">Panel principal de control y estado actual del bloque.</p>
         </div>
         <div class="top-actions grouped-toolbar"><button id="sidebarTopToggle" class="hamburger-btn top-hamburger" title="Barra lateral" aria-label="Barra lateral"><span></span><span></span><span></span></button>
+          <select id="modeSelect" aria-label="Modo de entrenamiento" title="Disponibilidad semanal">
+            <option value="4">4 días · Excel PRO</option>
+            <option value="3">3 días · Excel</option>
+            <option value="2">2 días · Full Body adaptativo</option>
+          </select>
           <select id="weekSelect"></select>
           <select id="weekdaySelect" aria-label="Día de la semana" title="Día de la semana"></select>
           <select id="daySelect" aria-label="Sesión" title="Sesión: Lower, Upper, Full Body, cardio o descanso"></select>
@@ -416,16 +421,16 @@
     </div>
   </section>
 
-  <script src="vendor/chart.umd.js?v=8.2"></script>
-  <script src="vendor/xlsx.full.min.js?v=8.2"></script>
-  <script src="js/config.js?v=8.2"></script>
-  <script src="js/util.js?v=8.2"></script>
-  <script src="js/domain.js?v=8.2"></script>
-  <script src="js/state.js?v=8.2"></script>
-  <script src="js/training.js?v=8.2"></script>
-  <script src="js/timer.js?v=8.2"></script>
-  <script src="js/views.js?v=8.2"></script>
-  <script src="js/io.js?v=8.2"></script>
-  <script src="js/app.js?v=8.2"></script>
+  <script src="vendor/chart.umd.js?v=9.0"></script>
+  <script src="vendor/xlsx.full.min.js?v=9.0"></script>
+  <script src="js/config.js?v=9.0"></script>
+  <script src="js/util.js?v=9.0"></script>
+  <script src="js/domain.js?v=9.0"></script>
+  <script src="js/state.js?v=9.0"></script>
+  <script src="js/training.js?v=9.0"></script>
+  <script src="js/timer.js?v=9.0"></script>
+  <script src="js/views.js?v=9.0"></script>
+  <script src="js/io.js?v=9.0"></script>
+  <script src="js/app.js?v=9.0"></script>
 </body>
 </html>
