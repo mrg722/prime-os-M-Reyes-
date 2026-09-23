@@ -209,7 +209,9 @@ function normalizeState(data){
   data.ui = { sidebarCompact: false, ...(data.ui || {}) };
   if(!data.selectedMode || !PLAN.modeDays[data.selectedMode]) data.selectedMode = String(PLAN.defaultMode || "4");
   data.days = clone(PLAN.modeDays[data.selectedMode] || PLAN.days);
-  data.weeklyTargets = clone(PLAN.weeklyTargetsByMode?.[data.selectedMode] || PLAN.weeklyTargets || {});
+  if(!data.weeklyTargets || !Object.keys(data.weeklyTargets).length){
+    data.weeklyTargets = clone(PLAN.weeklyTargetsByMode?.[data.selectedMode] || PLAN.weeklyTargets || {});
+  }
 
   data.weeks.forEach(week => {
     if(!data.routine[week]) data.routine[week] = {};
