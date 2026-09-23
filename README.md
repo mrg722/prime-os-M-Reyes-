@@ -1,6 +1,6 @@
-# Prime OS - Martin Reyes V10.4
+# Prime OS - Martin Reyes V10.5
 
-## V10.4 — 1RM, repertorio, temporizador y actualizaciones
+## V10.5 — 1RM, repertorio, temporizador y actualizaciones
 
 - **Calculadora 1RM Epley:** `1RM = kg + (kg × reps × 0,03)`, con opción independiente en el menú y acceso desde el Dashboard.
 - **Repertorio ampliado:** catálogo y aliases auditados contra las variantes presentes en los Excel de 3 y 4 días; se conservan nombres históricos aunque todavía no tengan alias.
