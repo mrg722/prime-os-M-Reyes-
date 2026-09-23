@@ -66,6 +66,12 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     assets.forEach(a => assert(fs.existsSync(path.join(ROOT, a)), `sw.js guarda un archivo que no existe: ${a}`));
   });
 
+  await test("version.json coincide con APP_VERSION", async () => {
+    const versionFile = JSON.parse(fs.readFileSync(path.join(ROOT, "version.json"), "utf8"));
+    const cfg = fs.readFileSync(path.join(ROOT, "js/config.js"), "utf8").match(/APP_VERSION = "([^"]+)"/)[1];
+    assert(versionFile.version === cfg, `version.json ${versionFile.version} ≠ APP_VERSION ${cfg}`);
+  });
+
   await test("arranca sin errores y con librerías locales", async () => {
     const page = await open();
     assert(await page.evaluate(() => typeof XLSX !== "undefined" && typeof Chart !== "undefined"), "XLSX o Chart no cargaron");
@@ -266,12 +272,14 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     await page.context().close();
   });
 
-  await test("V10.4: calculadora 1RM Epley visible y repertorio ampliado", async () => {
+  await test("V10.6: calculadora 1RM Epley visible y repertorio auditado", async () => {
     const page = await open();
     await go(page, "one-rm");
     assert(await page.isVisible("#rmExerciseSelect"), "selector 1RM no visible");
     const options = await page.locator("#rmExerciseSelect option").count();
-    assert(options >= 80, "repertorio 1RM insuficiente: " + options);
+    assert(options >= 91, "repertorio 1RM insuficiente: " + options);
+    const audited = await page.$eval("#rmExerciseSelect option", opts => opts.map(o => o.textContent));
+    assert(audited.some(x => x.startsWith("Fondos ·")) && audited.some(x => x.startsWith("Peso muerto semi-sumo ·")), "faltan ejercicios auditados en 1RM");
     await page.fill("#rmLoadInput", "100");
     await page.fill("#rmRepsInput", "5");
     assert((await page.textContent("#rmResultValue")).includes("115"), await page.textContent("#rmResultValue"));
@@ -279,7 +287,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     await page.context().close();
   });
 
-  await test("V10.4: temporizador conserva ±15 y añade ±1 + ruedas", async () => {
+  await test("V10.6: temporizador conserva ±15, añade ±1 y rueda táctil", async () => {
     const page = await open({viewport:{width:390,height:844}});
     await page.click("#clockFab");
     assert(await page.isVisible("#timerMinuteWheel") && await page.isVisible("#timerSecondWheel"), "ruedas del temporizador no visibles");
