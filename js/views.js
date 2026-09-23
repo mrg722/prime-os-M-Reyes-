@@ -14,7 +14,7 @@ const PAGE_META = {
 };
 
 function currentView(){
-  return document.body.className.match(/bg-([a-z]+)/)?.[1] || "inicio";
+  return document.body.className.match(/bg-([a-z-]+)/)?.[1] || "inicio";
 }
 
 function refreshTopMeta(view){
