@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=9.1"/>
+  <link rel="stylesheet" href="styles.css?v=10.0"/>
   <script>
     // Si llega una versión nueva de la app (service worker), recarga una vez para no mezclar
     // archivos de dos versiones. Va aquí porque index.html siempre se descarga nuevo.
@@ -272,6 +272,17 @@
         <div class="card">
           <div class="card-head">
             <div>
+              <span class="eyebrow">V10 · Volume Engine</span>
+              <h3>Volumen efectivo por músculo</h3>
+              <p class="small-muted">Directo + indirecto + ponderación por RIR. Los coeficientes son convenciones operativas y evolucionan con el historial.</p>
+            </div>
+          </div>
+          <div id="v10VolumeDashboard"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
               <span class="eyebrow">Por ejercicio</span>
               <h3>1RM estimado y volumen</h3>
               <p id="exerciseProgressSummary" class="small-muted"></p>
@@ -421,16 +432,18 @@
     </div>
   </section>
 
-  <script src="vendor/chart.umd.js?v=9.1"></script>
-  <script src="vendor/xlsx.full.min.js?v=9.1"></script>
-  <script src="js/config.js?v=9.1"></script>
-  <script src="js/util.js?v=9.1"></script>
-  <script src="js/domain.js?v=9.1"></script>
-  <script src="js/state.js?v=9.1"></script>
-  <script src="js/training.js?v=9.1"></script>
-  <script src="js/timer.js?v=9.1"></script>
-  <script src="js/views.js?v=9.1"></script>
-  <script src="js/io.js?v=9.1"></script>
-  <script src="js/app.js?v=9.1"></script>
+  <script src="vendor/chart.umd.js?v=10.0"></script>
+  <script src="vendor/xlsx.full.min.js?v=10.0"></script>
+  <script src="js/config.js?v=10.0"></script>
+  <script src="js/util.js?v=10.0"></script>
+  <script src="js/domain.js?v=10.0"></script>
+  <script src="js/exerciseCatalog.js?v=10.0"></script>
+  <script src="js/volumeEngine.js?v=10.0"></script>
+  <script src="js/state.js?v=10.0"></script>
+  <script src="js/training.js?v=10.0"></script>
+  <script src="js/timer.js?v=10.0"></script>
+  <script src="js/views.js?v=10.0"></script>
+  <script src="js/io.js?v=10.0"></script>
+  <script src="js/app.js?v=10.0"></script>
 </body>
 </html>
