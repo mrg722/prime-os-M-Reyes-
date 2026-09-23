@@ -6,9 +6,11 @@
   <meta name="theme-color" content="#0d1117"/>
   <title>Prime OS · Martin Reyes</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="styles.css?v=7.4"/>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css?v=7.5"/>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 </head>
 <body>
   <div class="watermark">MARTIN REYES · PRIME OS</div>
@@ -75,6 +77,7 @@
           <select id="daySelect"></select>
           <select id="exportWeekSelect" title="Semana a exportar"></select>
           <button id="exportExcelBtn" class="excel">Excel</button>
+          <button class="ghost export-json-btn" title="Respaldo completo de todos los datos">Respaldo</button>
           <a class="ghost template-link" href="Plantilla_Prime_OS_V7.xlsx" download>Plantilla</a>
           <label class="import-label">
             Importar
@@ -344,14 +347,17 @@
           <article class="card danger-zone">
             <span class="eyebrow">Almacenamiento local</span>
             <h3>Gestión de memoria</h3>
-            <p>Los datos persisten en LocalStorage. Exporta antes de borrar caché o cambiar de equipo.</p>
-            <button id="resetBtn" class="danger">Formatear sistema</button>
+            <p>Los datos persisten en LocalStorage. Exporta un respaldo JSON antes de borrar caché o cambiar de equipo, y usa Importar para restaurarlo.</p>
+            <div class="actions-row">
+              <button class="primary export-json-btn">Exportar respaldo JSON</button>
+              <button id="resetBtn" class="danger">Formatear sistema</button>
+            </div>
           </article>
         </div>
       </section>
     </main>
   </div>
 
-  <script src="app.js?v=7.4"></script>
+  <script src="app.js?v=7.5"></script>
 </body>
 </html>

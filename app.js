@@ -86,7 +86,7 @@ function martinSeedSessions(){
         },
         {
           name:"Sóleo sentado + gemelos de pie",
-          muscle:"cuádriceps",
+          muscle:"gemelos",
           target:"RIR 1-2",
           actualSets:2,
           isAdded:true,
@@ -210,10 +210,10 @@ function martinWeek25Routine(){
       ex("Chequeo molestias", 1, "0-10", "—", "Honesto", "recuperación", "Registrar hombro, cuello, lumbar, isquio")
     ],
     "Martes - Lower A": [
-      ex("Prensa 45 / máquina disponible", 3, "Top 6-8 / Back 8-10", "Top 230-240 kg / Back 210-225 kg", "RIR 2", "pierna", "No pasar de 240 si se siente pesada. Sin manos ayudando."),
-      ex("Búlgara", 2, "8-10 por pierna", "26-30 kg por mano", "RIR 2-3", "pierna", "Bajar un poco por lumbar. No repetir fallo cardiaco."),
-      ex("Extensión cuádriceps", 3, "12-15", "150-165 lbs", "RIR 1-2", "pierna", "Pausa 1 s arriba. Rodilla manda."),
-      ex("Gemelos", 3, "10-15", "Moderado", "RIR 1-2", "pierna", "No forzar si aparecen calambres. Descanso real."),
+      ex("Prensa 45 / máquina disponible", 3, "Top 6-8 / Back 8-10", "Top 230-240 kg / Back 210-225 kg", "RIR 2", "cuádriceps", "No pasar de 240 si se siente pesada. Sin manos ayudando."),
+      ex("Búlgara", 2, "8-10 por pierna", "26-30 kg por mano", "RIR 2-3", "cuádriceps", "Bajar un poco por lumbar. No repetir fallo cardiaco."),
+      ex("Extensión cuádriceps", 3, "12-15", "150-165 lbs", "RIR 1-2", "cuádriceps", "Pausa 1 s arriba. Rodilla manda."),
+      ex("Gemelos", 3, "10-15", "Moderado", "RIR 1-2", "gemelos", "No forzar si aparecen calambres. Descanso real."),
       ex("Core anti-extensión", 2, "8-12 o 15-20 s", "Suave", "Técnico", "core", "Calidad antes que carga. No fatigar para Lower B.")
     ],
     "Miércoles - Upper A": [
@@ -223,7 +223,7 @@ function martinWeek25Routine(){
       ex("Press plano barra o máquina", 2, "8-10", "65-70 kg o moderado", "RIR 2", "pecho", "Volumen limpio. Sin batalla."),
       ex("Pushdown tríceps", 2, "10-15", "Carga que no lleve a RIR 0", "RIR 1-2", "tríceps", "No bloquear violento. Tensión continua."),
       ex("Curl bíceps polea/curl", 2, "10-15", "Controlado", "RIR 1-2", "bíceps", "Ajustar para 10-15 reps."),
-      ex("Circuito escapular", 1, "5-8 min", "Ligero", "Técnico", "hombro", "No saltar. Salud de hombro.")
+      ex("Circuito escapular", 1, "5-8 min", "Ligero", "Técnico", "escápula/manguito", "No saltar. Salud de hombro.")
     ],
     "Jueves - Cardio suave": [
       ex("Zona 2", 1, "25-40 min", "—", "Suave", "cardio", "Respiración controlada"),
@@ -234,7 +234,7 @@ function martinWeek25Routine(){
       ex("Hip Thrust", 3, "8-10", "155-165 kg", "RIR 2", "glúteo", "Pausa 1 s arriba. Glúteo, no lumbar."),
       ex("Curl femoral", 3, "10-12", "90-105 lbs", "RIR 1-2", "isquio", "Excéntrica controlada. Sin rest-pause."),
       ex("Prensa pies altos", 2, "10-12", "180-210 kg", "RIR 2", "posterior", "Solo si lumbar está bien. Control y tensión."),
-      ex("Gemelos", 3, "12-20", "Moderado", "RIR 1-2", "pierna", "Evitar calambre: descanso 90 s si hace falta."),
+      ex("Gemelos", 3, "12-20", "Moderado", "RIR 1-2", "gemelos", "Evitar calambre: descanso 90 s si hace falta."),
       ex("Core/carry opcional", 2, "20-30 s", "Suave", "Técnico", "core", "Solo si estás verde.")
     ],
     "Sábado - Upper B": [
@@ -392,7 +392,7 @@ function normalizeMuscle(muscle){
   if(raw.includes("biceps") || raw.includes("curl")) return "bíceps";
   if(raw.includes("triceps") || raw.includes("pushdown") || raw.includes("extension")) return "tríceps";
   if(raw.includes("gemelo") || raw.includes("soleo") || raw.includes("calf")) return "gemelos";
-  if(raw.includes("core") || raw.includes("control") || raw.includes("ab") || raw.includes("carry")) return "core/control";
+  if(raw.includes("core") || raw.includes("control") || /\babs?\b|abdom/.test(raw) || raw.includes("carry")) return "core/control";
   if(raw.includes("escap") || raw.includes("manguito") || raw.includes("rotador")) return "escápula/manguito";
   if(raw.includes("cardio") || raw.includes("trote") || raw.includes("zona")) return "cardio";
   if(raw.includes("recuper") || raw.includes("movilidad") || raw.includes("descanso")) return "recuperación";
@@ -457,7 +457,7 @@ function bindLaunchScreen(){
   const btn = document.getElementById("launchBtn");
   if(!launch || !btn) return;
 
-  const alreadyStarted = sessionStorage.getItem("prime_os_launch_seen") === "1";
+  const alreadyStarted = storageGet("sessionStorage", "prime_os_launch_seen") === "1";
   if(alreadyStarted){
     launch.classList.add("hidden");
     document.body.classList.add("app-started");
@@ -466,7 +466,7 @@ function bindLaunchScreen(){
   }
 
   btn.addEventListener("click", () => {
-    sessionStorage.setItem("prime_os_launch_seen", "1");
+    storageSet("sessionStorage", "prime_os_launch_seen", "1");
     launch.classList.add("hidden");
     document.body.classList.remove("launch-active");
     document.body.classList.add("app-started");
@@ -548,17 +548,27 @@ document.addEventListener("DOMContentLoaded", setup);
 
 function clone(obj){ return JSON.parse(JSON.stringify(obj)); }
 
+function storageGet(store, key){
+  try { return window[store].getItem(key); } catch(e){ return null; }
+}
+function storageSet(store, key, value){
+  try { window[store].setItem(key, value); return true; } catch(e){ return false; }
+}
+function storageRemove(store, key){
+  try { window[store].removeItem(key); } catch(e){}
+}
+
 function loadState(){
-  const direct = localStorage.getItem(STORAGE_KEY);
+  const direct = storageGet("localStorage", STORAGE_KEY);
   if(direct){
     try { return normalizeState(JSON.parse(direct)); } catch(e){}
   }
   for(const key of LEGACY_KEYS){
-    const raw = localStorage.getItem(key);
+    const raw = storageGet("localStorage", key);
     if(raw){
       try {
         const migrated = normalizeState(JSON.parse(raw));
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+        storageSet("localStorage", STORAGE_KEY, JSON.stringify(migrated));
         return migrated;
       } catch(e){}
     }
@@ -583,9 +593,18 @@ function normalizeState(data){
 
   // Datos específicos confirmados de Martín: plan 6 semanas + Semana 2.5 real.
   if(!data.martinBlockSeeded || data.planVersion !== "v7.3-plan-6-semanas"){
-    ["Semana 1","Semana 2","Semana 2.5 Pivot","Semana 3","Semana 4","Semana 5","Semana 6"].forEach(w => {
-      data.routine[w] = martinPlanForWeek(w);
-      data.weeklyTargets[w] = martinTargetsForWeek(w);
+    base.weeks.forEach((w, i) => {
+      if(!data.weeks.includes(w)){
+        const prev = base.weeks.slice(0, i).reverse().find(p => data.weeks.includes(p));
+        data.weeks.splice(prev ? data.weeks.indexOf(prev) + 1 : 0, 0, w);
+      }
+      // Solo se reemplaza la rutina si no existe o sigue siendo la base antigua sin editar.
+      if(isLegacyDefaultRoutine(data.routine[w], w, data.days)){
+        data.routine[w] = martinPlanForWeek(w);
+        data.weeklyTargets[w] = martinTargetsForWeek(w);
+      } else if(!data.weeklyTargets[w]){
+        data.weeklyTargets[w] = martinTargetsForWeek(w);
+      }
     });
 
     const existingIds = new Set((data.sessions || []).map(s => s.id));
@@ -606,6 +625,7 @@ function normalizeState(data){
     data.martinBlockSeeded = true;
     data.planVersion = "v7.3-plan-6-semanas";
   }
+  applyMuscleFixes(data);
   data.ui = { sidebarCompact: false, ...(data.ui || {}) };
 
   data.weeks.forEach(week => {
@@ -660,6 +680,33 @@ function normalizeState(data){
   return data;
 }
 
+function isLegacyDefaultRoutine(weekRoutine, week, days){
+  if(!weekRoutine || !Object.keys(weekRoutine).length) return true;
+  return days.every(day => {
+    const current = weekRoutine[day];
+    if(!Array.isArray(current) || !current.length) return true;
+    const legacy = baseExercises(day, week).map(e => e.name).join("|");
+    return current.map(e => e.name).join("|") === legacy;
+  });
+}
+
+// Corrige músculos mal clasificados en datos V7.3 ya guardados (solo si siguen con el valor erróneo).
+function applyMuscleFixes(data){
+  if(data.muscleFixVersion === 1) return;
+  const pivot = data.routine["Semana 2.5 Pivot"] || {};
+  Object.values(pivot).forEach(list => (list || []).forEach(e => {
+    if(e.name === "Gemelos" && normalizeMuscle(e.muscle) === "cuádriceps") e.muscle = "gemelos";
+    if(e.name === "Circuito escapular" && normalizeMuscle(e.muscle) === "deltoide lateral") e.muscle = "escápula/manguito";
+  }));
+  data.sessions.forEach(s => {
+    if(s.id !== 250001) return;
+    (s.exercises || []).forEach(e => {
+      if(e.name === "Sóleo sentado + gemelos de pie" && normalizeMuscle(e.muscle) === "cuádriceps") e.muscle = "gemelos";
+    });
+  });
+  data.muscleFixVersion = 1;
+}
+
 function defaultTargetsFromPlan(dataObj, week){
   const out = {};
   Object.values(dataObj.routine?.[week] || {}).flat().forEach(e => {
@@ -670,7 +717,15 @@ function defaultTargetsFromPlan(dataObj, week){
   return out;
 }
 
-function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+let storageWarned = false;
+function saveState(){
+  const ok = storageSet("localStorage", STORAGE_KEY, JSON.stringify(state));
+  if(!ok && !storageWarned){
+    storageWarned = true;
+    alert("No pude guardar en este navegador (almacenamiento lleno o bloqueado). Exporta un respaldo JSON para no perder datos.");
+  }
+  if(ok) storageWarned = false;
+}
 
 function applySidebarPreference(){
   document.body.classList.toggle("sidebar-compact", Boolean(state.ui?.sidebarCompact));
@@ -704,7 +759,8 @@ function setup(){
 function fillSelectors(){
   const week = $("#weekSelect"), day = $("#daySelect"), exp = $("#exportWeekSelect");
   week.innerHTML = state.weeks.map(w=>`<option ${w===state.selectedWeek?"selected":""}>${escapeHtml(w)}</option>`).join("");
-  exp.innerHTML = state.weeks.map(w=>`<option ${w===state.selectedWeek?"selected":""}>${escapeHtml(w)}</option>`).join("");
+  exp.innerHTML = state.weeks.map(w=>`<option ${w===state.selectedWeek?"selected":""}>${escapeHtml(w)}</option>`).join("")
+    + `<option value="${ALL_WEEKS}">Todas las semanas</option>`;
   day.innerHTML = state.days.map(d=>`<option ${d===state.selectedDay?"selected":""}>${escapeHtml(d)}</option>`).join("");
 }
 
@@ -725,11 +781,13 @@ function bindInputs(){
   $("#sidebarCompactBtnMobile")?.addEventListener("click", toggleSidebarCompact);
   $("#weekSelect").addEventListener("change", e => {
     collectDraftInputs();
+    if(!confirmDiscardDraft()){ e.target.value = state.selectedWeek; return; }
     state.selectedWeek=e.target.value; $("#exportWeekSelect").value=e.target.value;
     saveState(); resetTrainingDraft(); renderAll();
   });
   $("#daySelect").addEventListener("change", e => {
     collectDraftInputs();
+    if(!confirmDiscardDraft()){ e.target.value = state.selectedDay; return; }
     state.selectedDay=e.target.value; saveState(); resetTrainingDraft(); renderAll();
   });
   ["sleepInput","energyInput","shoulderPainInput","neckPainInput","hamPainInput","motivationInput"].forEach(id => {
@@ -744,7 +802,7 @@ function bindInputs(){
   $("#saveSettingsBtn").addEventListener("click", saveSettings);
   $("#resetBtn").addEventListener("click", resetApp);
   $("#resetTargetsBtn").addEventListener("click", resetTargetsFromPlan);
-  $("#exportJsonBtn")?.addEventListener("click", exportJson);
+  $$(".export-json-btn").forEach(btn => btn.addEventListener("click", exportJson));
   $("#exportExcelBtn").addEventListener("click", exportExcel);
   $("#importInput").addEventListener("change", importData);
   $("#weightChartToggle").addEventListener("change", renderChart);
@@ -773,6 +831,19 @@ function resetTrainingDraft(){
     setsData: Array.from({length:Number(e.sets)||3}, (_,i)=>blankSet(i+1)),
     noteDraft:""
   }));
+}
+
+function draftHasData(){
+  if(($("#sessionNotes")?.value || "").trim()) return true;
+  return trainingDraft.some(e => (e.noteDraft || "").trim() || e.isAdded ||
+    (e.setsData || []).some(s => s.done || ["weight","repsDone","rir","feeling","rest"].some(k => String(s[k] || "").trim()) || (s.pain && s.pain !== "0")));
+}
+
+function confirmDiscardDraft(){
+  if(!draftHasData()) return true;
+  if(!confirm("Tienes datos sin guardar en Registrar. Si cambias de semana o día se perderán. ¿Continuar?")) return false;
+  $("#sessionNotes").value = "";
+  return true;
 }
 
 function blankSet(i){ return {set:i, weight:"", repsDone:"", rir:"", feeling:"", rest:"", pain:"0", done:false}; }
@@ -869,11 +940,11 @@ function getLastWeight(){
 
 function renderReadiness(){
   const sleep = $("#sleepInput").value;
-  const energy = Number($("#energyInput").value);
-  const shoulder = Number($("#shoulderPainInput").value);
-  const neck = Number($("#neckPainInput").value);
-  const ham = Number($("#hamPainInput").value);
-  const motivation = Number($("#motivationInput").value);
+  const energy = readScale("#energyInput", 1, 5, 3);
+  const shoulder = readScale("#shoulderPainInput", 0, 10, 0);
+  const neck = readScale("#neckPainInput", 0, 10, 0);
+  const ham = readScale("#hamPainInput", 0, 10, 0);
+  const motivation = readScale("#motivationInput", 1, 5, 3);
   const maxPain = Math.max(shoulder, neck, ham);
 
   let status = "green", label = "Óptimo", msg = "Sistema nominal. Progresión habilitada según RIR.";
@@ -892,13 +963,24 @@ function renderReadiness(){
   $("#assistantAdvice").textContent = makeAdvice(status, shoulder, neck, ham);
 }
 
+// Campo vacío = valor neutro (evita que el semáforo salte a rojo mientras se escribe).
+function readScale(sel, min, max, fallback){
+  const n = parseNumber($(sel)?.value);
+  if(n === null) return fallback;
+  return Math.min(max, Math.max(min, n));
+}
+
 function makeAdvice(status, shoulder, neck, ham){
   const day = state.selectedDay;
   if(status === "red") return "Hoy no busques PR. Haz técnica, movilidad y top sets controlados. Si algo duele más de 5/10, cambia el patrón por un ejercicio agregado seguro.";
   if(day.includes("Upper") && shoulder >= 3) return "Hombro en zona amarilla: mantén press en rango cómodo, sin fallo. Usa Agregar si cambias banca/inclinado por máquina, fondos asistidos o variante sin dolor.";
   if(day.includes("Lower") && neck >= 3) return "Cervical/lumbar sensible: evita sentadilla libre pesada. Agrega prensa, hack o pausa liviana si cambias el patrón.";
   if(day.includes("Lower") && ham >= 3) return "Isquio/glúteo sensible: baja tirones fuertes y evita trote intenso. Prioriza técnica y control.";
-  if(day.includes("Lower B")) return "Peso muerto: si el calentamiento está sólido, consolida 180-190 kg sin perder bloqueo. Halting deadlift sigue siendo clave.";
+  if(day.includes("Lower B")){
+    const hinge = selectedRoutine().find(e => normalizeMuscle(e.muscle) === "posterior/hinge");
+    const load = hinge?.load && hinge.load !== "—" ? ` (${hinge.load})` : "";
+    return `Bisagra principal: ${hinge?.name || "RDL / peso muerto técnico"}${load}. Una sola bisagra pesada, sin fallo y cuidando el bloqueo final.`;
+  }
   return "Zona buena: busca igualar o mejorar una repetición respecto a la sesión anterior sin romper técnica ni pasar el RIR objetivo.";
 }
 
@@ -977,7 +1059,7 @@ function renderTraining(){
 function renderExerciseRegister(e, ei){
   ensureSetsLength(e);
   const prev = findPreviousExercise(e.name);
-  const compare = prev && !e.isAdded ? `<div class="compare-box">Referencia anterior: ${escapeHtml(formatBestSet(prev))}.</div>` :
+  const compare = prev && !e.isAdded ? `<div class="compare-box">Mejor serie anterior: ${escapeHtml(formatBestSet(prev))}.</div>` :
     `<div class="warning-box">${e.isAdded ? "Agregado: elige músculo/tipo para que sus series sumen al progreso semanal." : "Sin registro previo para este ejercicio."}</div>`;
 
   const rows = e.setsData.map((s,si)=>`
@@ -1008,7 +1090,7 @@ function renderExerciseRegister(e, ei){
         </div>
         <div class="stack-actions">
           <select onchange="changeActualSets(${ei}, this.value)">
-            ${[1,2,3,4,5,6,7,8].map(n=>`<option value="${n}" ${Number(e.actualSets)===n?"selected":""}>${n} series</option>`).join("")}
+            ${[1,2,3,4,5,6,7,8,9,10].map(n=>`<option value="${n}" ${Number(e.actualSets)===n?"selected":""}>${n} series</option>`).join("")}
           </select>
           <button class="ghost" onclick="removeDraftExercise(${ei})">Quitar</button>
         </div>
@@ -1066,11 +1148,30 @@ function findPreviousExercise(name){
   return null;
 }
 
+function formatWeight(w){
+  const txt = String(w ?? "").trim();
+  if(!txt) return "—";
+  return /[a-záéíóúñ]/i.test(txt) ? txt : `${txt} kg`;
+}
+
+function bestSet(sets){
+  const score = v => {
+    const n = parseFloat(String(v ?? "").replace(",", "."));
+    return Number.isFinite(n) ? n : -Infinity;
+  };
+  return sets.reduce((best, s) => {
+    if(!best) return s;
+    const dw = score(s.weight) - score(best.weight);
+    if(dw !== 0) return dw > 0 ? s : best;
+    return score(s.repsDone) > score(best.repsDone) ? s : best;
+  }, null);
+}
+
 function formatBestSet(ex){
   const done = ex.sets.filter(s=>s.done || s.weight || s.repsDone);
   if(!done.length) return "sin series registradas";
-  const best = done[0];
-  return `${best.weight || "—"} kg x ${best.repsDone || "—"} · ${best.rir || "sin RIR/RPE"} · dolor ${best.pain ?? "—"}/10`;
+  const best = bestSet(done);
+  return `${formatWeight(best.weight)} x ${best.repsDone || "—"} · ${best.rir || "sin RIR/RPE"} · dolor ${best.pain ?? "—"}/10`;
 }
 
 function saveSession(){
@@ -1113,7 +1214,6 @@ function saveSession(){
   alert("Sesión guardada en Prime OS ✅");
   resetTrainingDraft();
   renderAll();
-  refreshTopMeta("inicio");
 }
 
 function renderHistory(){
@@ -1126,14 +1226,14 @@ function renderHistory(){
           <h4>${escapeHtml(s.day)}</h4>
           <p class="small-muted">${escapeHtml(s.date)} · ${escapeHtml(s.week)} · Estado: ${escapeHtml(s.readiness?.status || "—")}</p>
         </div>
-        <button class="danger" onclick="deleteSession(${s.id})">Borrar</button>
+        <button class="danger" onclick="deleteSession('${escapeAttr(String(s.id))}')">Borrar</button>
       </div>
       ${s.exercises.map(e => {
         const validSets = e.sets.filter(x => x.done || x.weight || x.repsDone);
         if(validSets.length === 0) return "";
         return `<p style="font-size:13px; border-bottom:1px solid var(--line); padding-bottom:8px;">
           <strong style="color:var(--primary);">${escapeHtml(e.name)}${e.isAdded ? " · agregado" : ""}:</strong>
-          ${validSets.map(x=> `${escapeHtml(x.weight||"-")}kg x ${escapeHtml(x.repsDone||"-")} (${escapeHtml(x.rir||"RIR -")}) · ${escapeHtml(x.feeling||"sin sensación")} · descanso ${escapeHtml(x.rest||"-")} · dolor ${escapeHtml(x.pain||"0")}/10`).join(" | ")}
+          ${validSets.map(x=> `${escapeHtml(formatWeight(x.weight))} x ${escapeHtml(x.repsDone||"-")} (${escapeHtml(x.rir||"RIR -")}) · ${escapeHtml(x.feeling||"sin sensación")} · descanso ${escapeHtml(x.rest||"-")} · dolor ${escapeHtml(x.pain||"0")}/10`).join(" | ")}
           ${e.note ? `<br><span class="small-muted">Nota: ${escapeHtml(e.note)}</span>` : ""}
         </p>`;
       }).join("")}
@@ -1142,7 +1242,10 @@ function renderHistory(){
   `).join("") : `<p class="small-muted">Base de datos vacía.</p>`;
 }
 window.deleteSession = function(id){
-  state.sessions = state.sessions.filter(s=>s.id!==id);
+  const session = state.sessions.find(s => String(s.id) === String(id));
+  if(!session) return;
+  if(!confirm(`¿Borrar la sesión "${session.day}" (${session.week} · ${session.date})? No se puede deshacer.`)) return;
+  state.sessions = state.sessions.filter(s => String(s.id) !== String(id));
   saveState(); renderAll();
 }
 
@@ -1176,7 +1279,7 @@ function weeklyCompletion(week){
   const target = weeklyTargetSets(week);
   const done = completedMuscleSets(week);
   const p = Object.values(target).reduce((a,b)=>a+Number(b||0),0);
-  const d = Object.entries(done).reduce((sum,[m,v]) => sum + Math.min(v, Number(target[m]||0) || v), 0);
+  const d = Object.entries(done).reduce((sum,[m,v]) => sum + Math.min(v, Number(target[m]||0)), 0);
   return p ? Math.min(100, Math.round(d/p*100)) : 0;
 }
 
@@ -1259,7 +1362,10 @@ function renderCardio(){
   `).join("");
 }
 window.updateCardio = (i,k,v)=>{state.cardio[i][k]=v;saveState();};
-window.deleteCardio = i=>{state.cardio.splice(i,1);saveState();renderCardio();};
+window.deleteCardio = i=>{
+  if(!confirm("¿Borrar este registro de cardio?")) return;
+  state.cardio.splice(i,1);saveState();renderCardio();
+};
 function addCardio(){
   state.cardio.push({date:new Date().toLocaleDateString("es-CL"),type:"Zona 2",distance:"",pace:"",time:"",feeling:""});
   saveState();renderCardio();
@@ -1289,6 +1395,7 @@ window.updateWeight = (i,k,v)=>{
   renderChart();
 };
 window.deleteWeight = i=>{
+  if(!confirm("¿Borrar este registro de peso?")) return;
   state.weightLog.splice(i,1);
   saveState();renderWeight();renderHome();
 };
@@ -1324,10 +1431,14 @@ function renderChart(){
   const mode = $("#weightChartToggle")?.value || "week";
 
   if(mode === "day"){
+    // Registros sin fecha primero (en su orden), luego los fechados en orden cronológico.
+    const time = w => { const t = w.date ? new Date(w.date).getTime() : NaN; return Number.isFinite(t) ? t : null; };
     const sorted = valid.sort((a,b)=>{
-      const da = a.date ? new Date(a.date).getTime() : a.idx;
-      const db = b.date ? new Date(b.date).getTime() : b.idx;
-      return da - db;
+      const ta = time(a), tb = time(b);
+      if(ta === null && tb === null) return a.idx - b.idx;
+      if(ta === null) return -1;
+      if(tb === null) return 1;
+      return ta - tb;
     });
     labels = sorted.map(w => w.date || w.week || `Peso ${w.idx+1}`);
     dataPoints = sorted.map(w => w.n);
@@ -1398,8 +1509,8 @@ function saveSettings(){
   saveState(); renderAll(); alert("Perfil actualizado ✅");
 }
 function resetApp(){
-  if(confirm("Esto borrará la base de datos local de Prime OS V4. ¿Proceder?")){
-    localStorage.removeItem(STORAGE_KEY);
+  if(confirm("Esto borrará la base de datos local de Prime OS. Exporta un respaldo JSON antes si quieres conservarla. ¿Proceder?")){
+    storageRemove("localStorage", STORAGE_KEY);
     state = normalizeState(clone(seedData));
     saveState();
     applySidebarPreference();
@@ -1409,33 +1520,47 @@ function resetApp(){
   }
 }
 
-function exportJson(){
-  collectDraftInputs();
-  const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+function downloadBlob(blob, filename){
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "prime_os_martin_reyes_backup.json";
+  a.download = filename;
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(a.href);
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
+
+function exportJson(){
+  collectDraftInputs();
+  const stamp = new Date().toISOString().split("T")[0];
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+  downloadBlob(blob, `prime_os_martin_reyes_respaldo_${stamp}.json`);
+}
+
+const ALL_WEEKS = "__all__";
 
 function exportExcel(){
   collectDraftInputs();
-  const week = $("#exportWeekSelect").value || state.selectedWeek;
+  const selected = $("#exportWeekSelect").value || state.selectedWeek;
+  const weeks = selected === ALL_WEEKS ? state.weeks : [selected];
+  const inWeeks = w => weeks.includes(w);
 
+  // Hojas con los mismos nombres y columnas que la plantilla: el archivo exportado se puede volver a importar.
   const routineRows = [];
-  Object.entries(state.routine[week] || {}).forEach(([day, exercises])=>{
-    exercises.forEach(e=>routineRows.push({
-      Semana: week, Día: day, Ejercicio: e.name, Músculo: e.muscle,
-      "Series planificadas": e.sets, "Reps objetivo": e.reps, "Carga sugerida": e.load,
-      "RIR/RPE objetivo": e.target, Nota: e.note || ""
-    }));
+  weeks.forEach(week => {
+    Object.entries(state.routine[week] || {}).forEach(([day, exercises])=>{
+      exercises.forEach(e=>routineRows.push({
+        Semana: week, Día: day, Ejercicio: e.name, Músculo: e.muscle,
+        Series: Number(e.sets) || 1, Reps: e.reps || "", Carga: e.load || "",
+        "RIR/RPE": e.target || "", Nota: e.note || ""
+      }));
+    });
   });
 
   const exerciseSummaryRows = [];
-  const detailedRows = [];
+  const registerRows = [];
 
-  state.sessions.filter(s=>s.week===week).forEach((s, sessionIndex)=>{
+  state.sessions.filter(s=>inWeeks(s.week)).forEach((s, sessionIndex)=>{
     s.exercises.forEach(e=>{
       const validSets = e.sets.filter(set => set.done || set.weight || set.repsDone);
       if(!validSets.length) return;
@@ -1461,37 +1586,42 @@ function exportExcel(){
       });
 
       validSets.forEach(set=>{
-        detailedRows.push({
-          "Sesión #": sessionIndex + 1,
+        registerRows.push({
           Fecha: s.date,
           Semana: s.week,
           Día: s.day,
-          Estado: s.readiness?.status || "",
           Ejercicio: e.name,
-          Tipo: e.isAdded ? "Agregado" : "Planificado",
           Músculo: e.muscle,
           Serie: set.set,
-          "Peso": set.weight,
-          "Reps": set.repsDone,
+          Peso: set.weight,
+          Reps: set.repsDone,
           "RIR/RPE": set.rir,
-          "Descanso": set.rest,
-          "Sensación": set.feeling,
-          "Dolor": set.pain,
-          "Observaciones": e.note || "",
-          "Nota sesión": s.notes || ""
+          Descanso: set.rest,
+          Sensación: set.feeling,
+          Dolor: set.pain,
+          Check: set.done ? "Sí" : "No",
+          Observaciones: e.note || "",
+          "Nota sesión": s.notes || "",
+          Tipo: e.isAdded ? "Agregado" : "Planificado",
+          Estado: s.readiness?.status || ""
         });
       });
     });
   });
 
-  const target = weeklyTargetSets(week), done = completedMuscleSets(week);
-  const progressRows = Array.from(new Set([...Object.keys(target),...Object.keys(done)])).sort().map(m=>({
-    Semana: week,
-    Músculo: m,
-    "Objetivo semanal": target[m] || 0,
-    "Series registradas": done[m] || 0,
-    "% completado": (target[m] ? Math.min(100, Math.round((done[m]||0)/(target[m]||1)*100)) : 0) + "%"
-  }));
+  const targetRows = [];
+  const progressRows = [];
+  weeks.forEach(week => {
+    const target = weeklyTargetSets(week), done = completedMuscleSets(week);
+    Object.keys(target).sort().forEach(m => targetRows.push({Semana: week, Músculo: m, "Objetivo semanal": Number(target[m] || 0)}));
+    Array.from(new Set([...Object.keys(target),...Object.keys(done)])).sort().forEach(m => progressRows.push({
+      Semana: week,
+      Músculo: m,
+      "Objetivo semanal": target[m] || 0,
+      "Series registradas": done[m] || 0,
+      "% completado": (target[m] ? Math.min(100, Math.round((done[m]||0)/target[m]*100)) : 0) + "%"
+    }));
+  });
 
   const weightRows = state.weightLog.map(w=>({
     Fecha: w.date || "",
@@ -1503,36 +1633,41 @@ function exportExcel(){
     Notas: w.notes || ""
   }));
 
+  const cardioRows = state.cardio.map(c=>({
+    Fecha: c.date || "",
+    Tipo: c.type || "",
+    Distancia: c.distance || "",
+    Ritmo: c.pace || "",
+    Tiempo: c.time || "",
+    Sensación: c.feeling || ""
+  }));
+
+  const sheets = [
+    ["Registros", registerRows],
+    ["Resumen ejercicios", exerciseSummaryRows],
+    ["Rutina_Base", routineRows],
+    ["Objetivos_Semanales", targetRows],
+    ["Progreso", progressRows],
+    ["Peso_Corporal", weightRows],
+    ["Cardio", cardioRows]
+  ];
+  const label = selected === ALL_WEEKS ? "Todas_las_semanas" : selected.replaceAll(" ","_");
+
   if(typeof XLSX === "undefined"){
-    exportCsvFallback(week, exerciseSummaryRows, detailedRows, routineRows, progressRows, weightRows);
-    alert("XLSX no cargó porque no hay internet. Exporté CSV como respaldo.");
+    exportCsvFallback(label, sheets);
+    alert("XLSX no cargó porque no hay internet. Exporté CSV como respaldo (usa el respaldo JSON para restaurar todo).");
     return;
   }
 
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(exerciseSummaryRows), "Resumen ejercicios");
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(detailedRows), "Detalle series");
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(routineRows), "Rutina base");
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(progressRows), "Progreso");
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(weightRows), "Peso corporal");
-  XLSX.writeFile(wb, `Prime_OS_${week.replaceAll(" ","_")}_Martin_Reyes.xlsx`);
+  sheets.forEach(([name, rows]) => XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), name));
+  XLSX.writeFile(wb, `Prime_OS_${label}_Martin_Reyes.xlsx`);
 }
 
-function exportCsvFallback(week, summaryRows, detailedRows, routineRows, progressRows, weightRows){
-  const sheets = [
-    ["Resumen ejercicios", summaryRows],
-    ["Detalle series", detailedRows],
-    ["Rutina base", routineRows],
-    ["Progreso", progressRows],
-    ["Peso corporal", weightRows]
-  ];
+function exportCsvFallback(label, sheets){
   const text = sheets.map(([name, rows]) => `### ${name}\n` + toCsv(rows)).join("\n\n");
   const blob = new Blob([text], {type:"text/csv;charset=utf-8"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `Prime_OS_${week.replaceAll(" ","_")}_Martin_Reyes.csv`;
-  a.click();
-  URL.revokeObjectURL(a.href);
+  downloadBlob(blob, `Prime_OS_${label}_Martin_Reyes.csv`);
 }
 function toCsv(rows){
   if(!rows.length) return "";
@@ -1544,6 +1679,8 @@ function toCsv(rows){
 
 function importData(e){
   const file = e.target.files[0];
+  // Permite volver a elegir el mismo archivo más tarde.
+  e.target.value = "";
   if(!file) return;
 
   const name = file.name.toLowerCase();
@@ -1551,12 +1688,16 @@ function importData(e){
   if(name.endsWith(".json")){
     const reader = new FileReader();
     reader.onload = () => {
+      let parsed;
       try{
-        state = normalizeState(JSON.parse(reader.result));
-        saveState(); fillSelectors(); resetTrainingDraft(); renderAll(); alert("Base JSON importada ✅");
+        parsed = JSON.parse(reader.result);
       } catch(err){
         alert("Archivo JSON inválido o corrupto.");
+        return;
       }
+      if(!confirm("Esto reemplazará todos los datos actuales por el respaldo JSON. ¿Continuar?")) return;
+      state = normalizeState(parsed);
+      saveState(); fillSelectors(); resetTrainingDraft(); renderAll(); alert("Respaldo JSON importado ✅");
     };
     reader.readAsText(file);
     return;
@@ -1564,17 +1705,17 @@ function importData(e){
 
   if(name.endsWith(".xlsx") || name.endsWith(".xls")){
     if(typeof XLSX === "undefined"){
-      alert("Para importar Excel necesitas internet o tener cargada la librería XLSX. Prueba con CSV o abre la app con conexión.");
+      alert("Para importar Excel necesitas internet o tener cargada la librería XLSX. Prueba con JSON o abre la app con conexión.");
       return;
     }
     const reader = new FileReader();
     reader.onload = () => {
       try{
-        const workbook = XLSX.read(reader.result, {type:"array"});
+        const workbook = XLSX.read(reader.result, {type:"array", cellDates:true});
         importWorkbookData(workbook);
       } catch(err){
         console.error(err);
-        alert("No pude leer el Excel. Revisa que uses la plantilla Prime OS V7.");
+        alert("No pude leer el Excel. Revisa que uses la plantilla Prime OS V7 o un Excel exportado desde Prime OS.");
       }
     };
     reader.readAsArrayBuffer(file);
@@ -1589,7 +1730,7 @@ function importData(e){
     const reader = new FileReader();
     reader.onload = () => {
       try{
-        const workbook = XLSX.read(reader.result, {type:"string"});
+        const workbook = XLSX.read(reader.result, {type:"string", cellDates:true});
         importWorkbookData(workbook);
       } catch(err){
         console.error(err);
@@ -1617,9 +1758,18 @@ function normalizeHeader(v){
   return String(v ?? "")
     .trim()
     .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .normalize("NFD").replace(/[̀-ͯ]/g,"")
     .replace(/\s+/g,"_")
     .replace(/[^\w]/g,"");
+}
+
+// Excel entrega fechas como Date (cellDates); se guardan como AAAA-MM-DD.
+function cellValue(v){
+  if(v instanceof Date && !Number.isNaN(v.getTime())){
+    const d = new Date(v.getTime() + 12*3600*1000);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  }
+  return v;
 }
 
 function pick(row, aliases){
@@ -1627,9 +1777,13 @@ function pick(row, aliases){
   Object.keys(row || {}).forEach(k => map[normalizeHeader(k)] = row[k]);
   for(const a of aliases){
     const key = normalizeHeader(a);
-    if(map[key] !== undefined) return map[key];
+    if(map[key] !== undefined && map[key] !== "") return cellValue(map[key]);
   }
   return "";
+}
+
+function pickText(row, aliases){
+  return String(pick(row, aliases) ?? "").trim();
 }
 
 function truthyCheck(v){
@@ -1637,17 +1791,33 @@ function truthyCheck(v){
   return ["si","sí","s","yes","y","1","true","ok","x"].includes(s);
 }
 
+function falsyCheck(v){
+  const s = String(v ?? "").trim().toLowerCase();
+  return ["no","n","0","false"].includes(s);
+}
+
 function addIfMissing(arr, value){
   if(value && !arr.includes(value)) arr.push(value);
 }
 
+// Solo series con datos (igual que el Excel exportado) para detectar sesiones ya importadas.
+function sessionSignature(s){
+  const exercises = (s.exercises || []).map(e => {
+    const sets = (e.sets || []).filter(x => x.done || x.weight || x.repsDone);
+    return sets.length ? `${String(e.name).toLowerCase()}:${sets.map(x => `${x.weight ?? ""}/${x.repsDone ?? ""}`).join(",")}` : "";
+  }).filter(Boolean).sort().join(";");
+  return `${s.date}|${s.week}|${s.day}|${exercises}`;
+}
+
 function importWorkbookData(workbook){
   const rutinaRows = sheetToRows(workbook, ["Rutina_Base","Rutina Base","Rutina"]);
-  const registroRows = sheetToRows(workbook, ["Registros","Registro","Historial"]);
+  const registroRows = sheetToRows(workbook, ["Registros","Registro","Detalle series","Historial"]);
   const objetivoRows = sheetToRows(workbook, ["Objetivos_Semanales","Objetivos Semanales","Objetivos"]);
+  const pesoRows = sheetToRows(workbook, ["Peso_Corporal","Peso corporal","Peso"]);
+  const cardioRows = sheetToRows(workbook, ["Cardio"]);
 
-  if(!rutinaRows.length && !registroRows.length && !objetivoRows.length){
-    alert("No detecté hojas válidas. Usa hojas: Rutina_Base, Registros y Objetivos_Semanales.");
+  if(!rutinaRows.length && !registroRows.length && !objetivoRows.length && !pesoRows.length && !cardioRows.length){
+    alert("No detecté hojas válidas. Usa hojas: Rutina_Base, Registros, Objetivos_Semanales, Peso_Corporal o Cardio.");
     return;
   }
 
@@ -1656,18 +1826,23 @@ function importWorkbookData(workbook){
     `• Rutina_Base: ${rutinaRows.length} filas`,
     `• Registros: ${registroRows.length} filas`,
     `• Objetivos_Semanales: ${objetivoRows.length} filas`,
+    `• Peso_Corporal: ${pesoRows.length} filas`,
+    `• Cardio: ${cardioRows.length} filas`,
     ``,
     `Aceptar = importar y actualizar Prime OS.`,
-    `La rutina de las semanas/días incluidos será reemplazada por lo que venga en el Excel.`
+    `La rutina de las semanas/días incluidos será reemplazada por lo que venga en el Excel.`,
+    `Las sesiones, pesos y cardio ya existentes no se duplican.`
   ].join("\n");
 
   if(!confirm(msg)) return;
 
-  const summary = {rutina:0, registros:0, objetivos:0, weeks:new Set(), days:new Set()};
+  const summary = {rutina:0, registros:0, sesionesOmitidas:0, objetivos:0, pesos:0, cardio:0, weeks:new Set(), days:new Set()};
 
   importRoutineRows(rutinaRows, summary);
   importTargetRows(objetivoRows, summary);
   importRegisterRows(registroRows, summary);
+  importWeightRows(pesoRows, summary);
+  importCardioRows(cardioRows, summary);
 
   state = normalizeState(state);
   saveState();
@@ -1675,7 +1850,15 @@ function importWorkbookData(workbook){
   resetTrainingDraft();
   renderAll();
 
-  alert(`Importación completada ✅\nRutina: ${summary.rutina} ejercicios\nRegistros: ${summary.registros} series\nObjetivos: ${summary.objetivos} filas\nSemanas afectadas: ${Array.from(summary.weeks).join(", ") || "—"}`);
+  alert([
+    `Importación completada ✅`,
+    `Rutina: ${summary.rutina} ejercicios`,
+    `Registros: ${summary.registros} series${summary.sesionesOmitidas ? ` (${summary.sesionesOmitidas} sesiones ya existían y se omitieron)` : ""}`,
+    `Objetivos: ${summary.objetivos} filas`,
+    `Peso corporal: ${summary.pesos} registros nuevos`,
+    `Cardio: ${summary.cardio} registros nuevos`,
+    `Semanas afectadas: ${Array.from(summary.weeks).join(", ") || "—"}`
+  ].join("\n"));
 }
 
 function importRoutineRows(rows, summary){
@@ -1683,9 +1866,9 @@ function importRoutineRows(rows, summary){
 
   const grouped = {};
   rows.forEach(row => {
-    const week = String(pick(row, ["Semana","Week"]) || "").trim();
-    const day = String(pick(row, ["Día","Dia","Day"]) || "").trim();
-    const exercise = String(pick(row, ["Ejercicio","Exercise"]) || "").trim();
+    const week = pickText(row, ["Semana","Week"]);
+    const day = pickText(row, ["Día","Dia","Day"]);
+    const exercise = pickText(row, ["Ejercicio","Exercise"]);
     if(!week || !day || !exercise) return;
 
     addIfMissing(state.weeks, week);
@@ -1698,11 +1881,11 @@ function importRoutineRows(rows, summary){
     grouped[key].push({
       name: exercise,
       muscle: normalizeMuscle(pick(row, ["Músculo","Musculo","Muscle","Tipo"])),
-      sets: Number(pick(row, ["Series","Sets"])) || 1,
-      reps: String(pick(row, ["Reps","Repeticiones","Reps objetivo"]) || "").trim(),
-      load: String(pick(row, ["Carga","Peso","Carga sugerida","Load"]) || "").trim(),
-      target: String(pick(row, ["RIR/RPE","RIR","RPE","RIR RPE","Objetivo"]) || "").trim(),
-      note: String(pick(row, ["Nota","Notas","Observaciones"]) || "").trim()
+      sets: Number(pick(row, ["Series","Series planificadas","Sets"])) || 1,
+      reps: pickText(row, ["Reps","Repeticiones","Reps objetivo"]),
+      load: pickText(row, ["Carga","Peso","Carga sugerida","Load"]),
+      target: pickText(row, ["RIR/RPE","RIR/RPE objetivo","RIR","RPE","RIR RPE","Objetivo"]),
+      note: pickText(row, ["Nota","Notas","Observaciones"])
     });
     summary.rutina++;
   });
@@ -1716,14 +1899,15 @@ function importRoutineRows(rows, summary){
 
 function importTargetRows(rows, summary){
   rows.forEach(row => {
-    const week = String(pick(row, ["Semana","Week"]) || "").trim();
-    const muscle = normalizeMuscle(pick(row, ["Músculo","Musculo","Muscle","Tipo"]));
-    const objective = Number(pick(row, ["Objetivo semanal","Objetivo","Series objetivo","Series semanales","Target"]));
-    if(!week || !muscle || !Number.isFinite(objective)) return;
+    const week = pickText(row, ["Semana","Week"]);
+    const rawMuscle = pickText(row, ["Músculo","Musculo","Muscle","Tipo"]);
+    const rawObjective = pickText(row, ["Objetivo semanal","Objetivo","Series objetivo","Series semanales","Target"]);
+    const objective = parseNumber(rawObjective);
+    if(!week || !rawMuscle || objective === null) return;
 
     addIfMissing(state.weeks, week);
     if(!state.weeklyTargets[week]) state.weeklyTargets[week] = {};
-    state.weeklyTargets[week][muscle] = objective;
+    state.weeklyTargets[week][normalizeMuscle(rawMuscle)] = objective;
     summary.weeks.add(week);
     summary.objetivos++;
   });
@@ -1733,21 +1917,20 @@ function importRegisterRows(rows, summary){
   if(!rows.length) return;
 
   const sessionsMap = {};
+  let setCount = 0;
 
   rows.forEach(row => {
-    const week = String(pick(row, ["Semana","Week"]) || "").trim();
-    const day = String(pick(row, ["Día","Dia","Day"]) || "").trim();
-    const exercise = String(pick(row, ["Ejercicio","Exercise"]) || "").trim();
+    const week = pickText(row, ["Semana","Week"]);
+    const day = pickText(row, ["Día","Dia","Day"]);
+    const exercise = pickText(row, ["Ejercicio","Exercise"]);
     if(!week || !day || !exercise) return;
 
-    const date = String(pick(row, ["Fecha","Date"]) || new Date().toLocaleString("es-CL")).trim();
-    const sessionNote = String(pick(row, ["Nota sesión","Nota sesion","Nota general"]) || "").trim();
+    const date = pickText(row, ["Fecha","Date"]) || new Date().toLocaleString("es-CL");
+    const sessionNote = pickText(row, ["Nota sesión","Nota sesion","Nota general"]);
     const key = `${date}|||${week}|||${day}|||${sessionNote}`;
 
     addIfMissing(state.weeks, week);
     addIfMissing(state.days, day);
-    summary.weeks.add(week);
-    summary.days.add(day);
 
     if(!sessionsMap[key]){
       sessionsMap[key] = {
@@ -1755,14 +1938,15 @@ function importRegisterRows(rows, summary){
         date,
         week,
         day,
-        readiness: {status:"Importado", sleep:"", energy:"", shoulder:"", neck:"", ham:"", motivation:""},
+        readiness: {status: pickText(row, ["Estado"]) || "Importado", sleep:"", energy:"", shoulder:"", neck:"", ham:"", motivation:""},
         exercises: {},
         notes: sessionNote
       };
     }
 
-    const muscle = normalizeMuscle(pick(row, ["Músculo","Musculo","Muscle","Tipo"]));
-    const tipo = String(pick(row, ["Tipo","Origen"]) || "").toLowerCase();
+    // En Registros, "Tipo" indica Planificado/Agregado, no el músculo.
+    const muscle = normalizeMuscle(pick(row, ["Músculo","Musculo","Muscle"]));
+    const tipo = pickText(row, ["Tipo","Origen"]).toLowerCase();
     const exKey = `${exercise}|||${muscle}`;
     if(!sessionsMap[key].exercises[exKey]){
       sessionsMap[key].exercises[exKey] = {
@@ -1773,29 +1957,85 @@ function importRegisterRows(rows, summary){
         isAdded: tipo.includes("agregado"),
         isAlternative: tipo.includes("agregado"),
         sets: [],
-        note: String(pick(row, ["Observaciones","Nota","Notas"]) || "").trim()
+        note: pickText(row, ["Observaciones","Nota","Notas"])
       };
     }
 
+    const weight = pickText(row, ["Peso","Carga","Weight"]);
+    const repsDone = pickText(row, ["Reps","Repeticiones"]);
+    const check = pick(row, ["Check","Hecho","Done"]);
     const setObj = {
       set: Number(pick(row, ["Serie","Set"])) || (sessionsMap[key].exercises[exKey].sets.length + 1),
-      weight: String(pick(row, ["Peso","Carga","Weight"]) || "").trim(),
-      repsDone: String(pick(row, ["Reps","Repeticiones"]) || "").trim(),
-      rir: String(pick(row, ["RIR/RPE","RIR","RPE","RIR RPE"]) || "").trim(),
-      feeling: String(pick(row, ["Sensación","Sensacion","Feeling"]) || "").trim(),
-      rest: String(pick(row, ["Descanso","Rest"]) || "").trim(),
-      pain: String(pick(row, ["Dolor","Pain"]) || "0").trim(),
-      done: truthyCheck(pick(row, ["Check","Hecho","Done"])) || Boolean(pick(row, ["Peso","Reps","Repeticiones"]))
+      weight,
+      repsDone,
+      rir: pickText(row, ["RIR/RPE","RIR","RPE","RIR RPE"]),
+      feeling: pickText(row, ["Sensación","Sensacion","Feeling"]),
+      rest: pickText(row, ["Descanso","Rest"]),
+      pain: pickText(row, ["Dolor","Pain"]) || "0",
+      done: truthyCheck(check) || (!falsyCheck(check) && Boolean(weight || repsDone))
     };
 
     sessionsMap[key].exercises[exKey].sets.push(setObj);
     sessionsMap[key].exercises[exKey].actualSets = sessionsMap[key].exercises[exKey].sets.length;
-    summary.registros++;
+    setCount++;
   });
 
+  const existing = new Set(state.sessions.map(sessionSignature));
   Object.values(sessionsMap).forEach(s => {
     s.exercises = Object.values(s.exercises);
-    if(s.exercises.length) state.sessions.push(s);
+    if(!s.exercises.length) return;
+    const setsInSession = s.exercises.reduce((n, e) => n + e.sets.length, 0);
+    if(existing.has(sessionSignature(s))){
+      summary.sesionesOmitidas++;
+      setCount -= setsInSession;
+      return;
+    }
+    existing.add(sessionSignature(s));
+    state.sessions.push(s);
+    summary.weeks.add(s.week);
+    summary.days.add(s.day);
+  });
+  summary.registros += setCount;
+}
+
+function importWeightRows(rows, summary){
+  const key = w => `${w.date}|${w.week}|${w.avg}|${w.min}|${w.max}`;
+  const existing = new Set(state.weightLog.map(key));
+  rows.forEach(row => {
+    const w = {
+      date: pickText(row, ["Fecha","Date"]),
+      week: pickText(row, ["Semana","Week"]),
+      avg: pickText(row, ["Peso promedio","Peso","Promedio","Weight"]),
+      min: pickText(row, ["Peso mínimo","Peso minimo","Mínimo","Min"]),
+      max: pickText(row, ["Peso máximo","Peso maximo","Máximo","Max"]),
+      waist: pickText(row, ["Cintura","Waist"]),
+      notes: pickText(row, ["Notas","Nota","Notes"])
+    };
+    if(!w.avg && !w.min && !w.max && !w.notes) return;
+    if(existing.has(key(w))) return;
+    existing.add(key(w));
+    state.weightLog.push(w);
+    summary.pesos++;
+  });
+}
+
+function importCardioRows(rows, summary){
+  const key = c => `${c.date}|${c.type}|${c.distance}|${c.time}`;
+  const existing = new Set(state.cardio.map(key));
+  rows.forEach(row => {
+    const c = {
+      date: pickText(row, ["Fecha","Date"]),
+      type: pickText(row, ["Tipo","Type"]),
+      distance: pickText(row, ["Distancia","Distance"]),
+      pace: pickText(row, ["Ritmo","Pace"]),
+      time: pickText(row, ["Tiempo","Time"]),
+      feeling: pickText(row, ["Sensación","Sensacion","Feeling"])
+    };
+    if(!c.type && !c.distance && !c.time) return;
+    if(existing.has(key(c))) return;
+    existing.add(key(c));
+    state.cardio.push(c);
+    summary.cardio++;
   });
 }
 
