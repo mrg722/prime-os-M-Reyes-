@@ -1173,3 +1173,14 @@ body.launch-active .clock-fab, body.launch-active .timer-panel, body.mobile-menu
 body.clock-visible main::after{ content:""; display:block; height:72px; }
 /* Con el panel abierto, espacio extra para poder deslizar todo el contenido por encima de él. */
 body.clock-open main::after{ height:380px; }
+
+
+/* V10 Volume Engine */
+.v10-volume-row{border:1px solid var(--border);border-radius:14px;padding:14px;margin:10px 0;background:rgba(255,255,255,.02)}
+.v10-volume-main{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.v10-status{font-size:.82rem;color:var(--muted)}
+.v10-volume-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.v10-volume-grid span{padding:8px 9px;border-radius:9px;background:rgba(255,255,255,.035);font-size:.8rem;color:var(--muted)}
+.v10-volume-grid b{display:block;color:var(--text);font-size:.95rem;margin-top:2px}
+.v10-bands{margin-top:8px}.v10-explanation{margin:8px 0 0;font-size:.84rem;line-height:1.45;color:var(--text)}
+@media(max-width:700px){.v10-volume-main{align-items:flex-start;flex-direction:column}.v10-volume-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
