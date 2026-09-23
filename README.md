@@ -1,4 +1,10 @@
-# Prime OS - Martin Reyes V8.2
+# Prime OS - Martin Reyes V10
+
+## V10 actual
+
+La versión V10 integra el **Volume Engine adaptativo**, con catálogo muscular, volumen directo e indirecto, sinergias, ponderación operativa por RIR, tendencias de rendimiento, fatiga/dolor y estimación observacional de MEV/MAV/MRV con niveles de confianza. Mantiene los modos 2D, 3D y 4D, la compatibilidad con datos anteriores y las funciones de importación/exportación.
+
+La versión visible aparece en el sidebar de escritorio, la pantalla de inicio y el encabezado móvil.
 
 ## Qué es
 
@@ -48,7 +54,7 @@ Base de los full body:
 - `vendor/` Chart.js 4.4.1 y SheetJS 0.18.5
 - `tests/e2e.test.js` pruebas en Chromium
 
-Al publicar una versión nueva, sube la versión en `js/config.js`, `sw.js` (`CACHE_VERSION`) y los `?v=` de `index.html` (la prueba lo verifica).
+Al publicar una versión nueva, sube la versión en `js/config.js`, `sw.js` (`CACHE_VERSION`) y los `?v=` de `index.html` (la prueba lo verifica). Si cambia `index.html` o cualquier recurso que pueda quedar en caché, también debe cambiar `CACHE_VERSION`.
 
 ## Cambios de V7.5
 
@@ -98,6 +104,12 @@ Sube todos los archivos a la raíz del repositorio y abre:
 ## Guardado
 
 Los datos se guardan en LocalStorage del navegador. Usa `Respaldo` cada cierto tiempo para descargar un JSON con todo; el Excel sirve para revisar y editar datos.
+
+## Diagnóstico de caché / versión visible
+
+Si el repositorio `main` ya contiene `V10` pero el teléfono sigue mostrando una interfaz anterior, deben revisarse dos capas: GitHub Pages/CDN y el Service Worker local. GitHub indica que una publicación de Pages puede tardar hasta 10 minutos. Prime OS además conserva recursos offline mediante Service Worker.
+
+En V10.0, `index.html` se actualizó para mostrar `V10`, pero `sw.js` seguía usando `CACHE_VERSION = "10.0"`. Eso permite que un dispositivo que ya tenía la caché `prime-os-10.0` conserve recursos anteriores. Esta corrección sube la caché a `10.0.1`, obligando al navegador a instalar una caché nueva y eliminar la anterior durante `activate`.
 
 ## Pendiente
 
