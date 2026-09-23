@@ -186,12 +186,18 @@ function normalizeState(data){
   data.days = data.days?.length ? data.days : base.days;
   data.routine = data.routine || {};
   data.routinesByMode = data.routinesByMode || {};
+  const preMode = String(data.selectedMode || PLAN.defaultMode || "4");
+  if(!data.weeklyTargetsByMode[preMode] && Object.keys(data.weeklyTargets).length) data.weeklyTargetsByMode[preMode] = clone(data.weeklyTargets);
+  Object.keys(PLAN.weeklyTargetsByMode || {}).forEach(mode => {
+    if(!data.weeklyTargetsByMode[mode]) data.weeklyTargetsByMode[mode] = clone(PLAN.weeklyTargetsByMode[mode]);
+  });
   data.sessions = Array.isArray(data.sessions) ? data.sessions : [];
   data.cardio = Array.isArray(data.cardio) ? data.cardio : base.cardio;
   data.weightLog = Array.isArray(data.weightLog) ? data.weightLog : [];
   data.prs = {...base.prs, ...(data.prs || {})};
   data.autoPRs = data.autoPRs || {};
   data.weeklyTargets = data.weeklyTargets || {};
+  data.weeklyTargetsByMode = data.weeklyTargetsByMode || {};
   data.meta = {...(data.meta || {})};
   data.blockStatus = {...(base.blockStatus || {}), ...(data.blockStatus || {})};
 
