@@ -197,6 +197,8 @@ function renderRoutine(){
 
 // Editar la rutina solo reinicia Registrar si no hay datos escritos (para no perder el borrador).
 function afterRoutineEdit(){
+  state.routinesByMode=state.routinesByMode||{};
+  state.routinesByMode[String(state.selectedMode||PLAN.defaultMode||"4")]=clone(state.routine);
   saveState();
   if(!draftHasData()) resetTrainingDraft();
   renderAll();
