@@ -25,6 +25,7 @@ async function setup(){
   if(!restored) resetTrainingDraft();
   renderAll();
   refreshTopMeta("inicio");
+  setUpdateStatus("Versión instalada: "+APP_VERSION);
   if(restored) toast("Recuperé tu registro sin guardar. Sigue donde quedaste en Registrar.", "info", 6000);
   registerServiceWorker();
 }
@@ -117,9 +118,15 @@ function bindInputs(){
   $("#importInput").addEventListener("change", importData);
   $("#weightChartToggle").addEventListener("change", renderWeightChart);
   $("#exerciseProgressSelect").addEventListener("change", renderExerciseProgress);
+  $("#rmExerciseSelect")?.addEventListener("change", render1RMCalculator);
+  $("#rmLoadInput")?.addEventListener("input", render1RMCalculator);
+  $("#rmRepsInput")?.addEventListener("input", render1RMCalculator);
+  $("#rmUseLastBtn")?.addEventListener("click", useBestRecordFor1RM);
+  $("#rmClearBtn")?.addEventListener("click", clear1RMCalculator);
+  $("#updateAppBtn")?.addEventListener("click", updatePrimeOSNow);
 }
 
-const VIEWS = ["inicio","rutina","entrenar","historial","progreso","cardio","nutricion","ajustes"];
+const VIEWS = ["inicio","rutina","entrenar","historial","progreso","one-rm","cardio","nutricion","ajustes"];
 
 function switchView(view){
   collectDraftInputs();
@@ -199,6 +206,57 @@ async function registerServiceWorker(){
   try{
     const reg = await navigator.serviceWorker.register("sw.js?v="+APP_VERSION, {updateViaCache:"none"});
     await reg.update();
+    updateAppStatus(reg);
     if(reg.waiting) reg.waiting.postMessage({type:"SKIP_WAITING"});
+    reg.addEventListener("updatefound", ()=>{
+      const worker=reg.installing;
+      if(!worker) return;
+      worker.addEventListener("statechange", ()=>{
+        if(worker.state==="installed"){
+          updateAppStatus(reg);
+          if(navigator.serviceWorker.controller) setUpdateStatus("Actualización lista. Aplicando…");
+          worker.postMessage({type:"SKIP_WAITING"});
+        }
+      });
+    });
+    navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+      if(window.__primeReloading) return;
+      window.__primeReloading=true;
+      setUpdateStatus("Prime OS actualizado. Recargando…");
+      location.reload();
+    });
   }catch(err){ console.warn("Service worker no registrado:", err); }
+}
+
+function setUpdateStatus(message){
+  const el=$("#updateStatus");
+  if(el) el.textContent=message;
+}
+
+function updateAppStatus(reg){
+  if(!reg) return;
+  if(reg.waiting) setUpdateStatus("Nueva versión lista. Aplicando…");
+  else setUpdateStatus("Versión instalada: "+APP_VERSION);
+}
+
+async function updatePrimeOSNow(){
+  const btn=$("#updateAppBtn");
+  if(btn){btn.disabled=true;btn.textContent="Comprobando…";}
+  try{
+    if(!("serviceWorker" in navigator)){ location.reload(); return; }
+    const reg=await navigator.serviceWorker.getRegistration();
+    if(!reg){ location.reload(); return; }
+    setUpdateStatus("Buscando actualización…");
+    await reg.update();
+    if(reg.waiting){
+      reg.waiting.postMessage({type:"SKIP_WAITING"});
+      return;
+    }
+    // GitHub Pages/CDN puede tardar; una recarga normal vuelve a pedir los assets ?v=APP_VERSION.
+    setUpdateStatus("Prime OS ya está en "+APP_VERSION+". Recargando recursos…");
+    setTimeout(()=>location.reload(),250);
+  }catch(err){
+    setUpdateStatus("No se pudo comprobar. Recarga manualmente.");
+    if(btn){btn.disabled=false;btn.textContent="Actualizar Prime OS";}
+  }
 }
