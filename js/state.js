@@ -273,10 +273,11 @@ function normalizeState(data){
 
   // V10: mantiene una rutina independiente por modo para que cambiar 2D/3D/4D no sobrescriba ediciones.
   const activeMode = String(data.selectedMode || PLAN.defaultMode || "4");
+  // Primero conserva la rutina que ya tenía el usuario en el modo activo; después rellena los otros modos con V9.
+  if(!data.routinesByMode[activeMode]) data.routinesByMode[activeMode] = clone(data.routine || PLAN.routineByMode?.[activeMode] || PLAN.routine || {});
   Object.keys(PLAN.modeDays || {}).forEach(mode => {
     if(!data.routinesByMode[mode]) data.routinesByMode[mode] = clone(PLAN.routineByMode?.[mode] || PLAN.routine || {});
   });
-  if(!data.routinesByMode[activeMode]) data.routinesByMode[activeMode] = clone(data.routine || PLAN.routine || {});
   data.routine = clone(data.routinesByMode[activeMode]);
   data.volumeEngineVersion = 1;
   // Enriquecer ejercicios conocidos sin tocar sourceMuscle.
