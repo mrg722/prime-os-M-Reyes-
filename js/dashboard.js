@@ -54,11 +54,13 @@ function parseDashSheet(rows, mode){
   const hIdx = rows.findIndex(r => txt(r?.[0]) === "Semana" && txt(r?.[1]) === "Fase");
   if(hIdx >= 0){
     const head = rows[hIdx].map(txt);
-    out.groupCols = DASH_GROUPS.map(g => ({...g, col: head.findIndex(h => g.match.test(h))})).filter(g => g.col >= 0);
+    out.groupCols = DASH_GROUPS.map(g => ({...g, col: head.findIndex(h => g.match.test(h))})).filter(g => g.col >= 0).map(g => ({...g, head: head[g.col]}));
     const objCol = head.findIndex(h => /objetivo/i.test(h));
+    out.estadoCol = head.indexOf("Estado");
+    out.midCols = head.map((h, c) => ({h, c})).filter(x => /Mid$/.test(x.h));
     for(let i = hIdx+1; i < rows.length && typeof rows[i]?.[0] === "number"; i++){
       const r = rows[i];
-      out.weeks.push({n:r[0], phase:txt(r[1]), objective:objCol >= 0 ? txt(r[objCol]) : "", ranges:Object.fromEntries(out.groupCols.map(g => [g.key, txt(r[g.col])]))});
+      out.weeks.push({n:r[0], phase:txt(r[1]), objective:objCol >= 0 ? txt(r[objCol]) : "", ranges:Object.fromEntries(out.groupCols.map(g => [g.key, txt(r[g.col])])), mids:out.midCols.map(m => r[m.c])});
     }
   }
   const oIdx = rows.findIndex(r => txt(r?.[0]) === "Objetivo" && txt(r?.[3]) === "Pilares");
@@ -81,13 +83,20 @@ function parseDashSheet(rows, mode){
   }
   const cIdx = rows.findIndex(r => txt(r?.[0]) === "Control" && txt(r?.[1]) === "Descripción");
   if(cIdx >= 0){
+    out.auditHead = [0,1,2].map(c => txt(rows[cIdx][c]));
     for(let i = cIdx+1; i < rows.length && txt(rows[i]?.[0]); i++) out.audit.push([txt(rows[i][0]), txt(rows[i][1]), txt(rows[i][2])]);
     const t = rows.findIndex(r => /auditor/i.test(txt(r?.[0])));
     out.auditTitle = t >= 0 ? txt(rows[t][0]) : "Auditoría";
   }
-  const pIdx = rows.findIndex(r => /^PROGRES/i.test(txt(r?.[0])) || /^Progresi[oó]n esperada/i.test(txt(r?.[0])));
+  const pIdx = rows.findIndex(r => /^PROGRESOS ESPERADOS/i.test(txt(r?.[0])) || /^Progresi[oó]n esperada/i.test(txt(r?.[0])));
   out.anchorTitle = pIdx >= 0 ? txt(rows[pIdx][0]) : "Anclajes";
-  out.estTitle = txt(rows[pIdx]?.[7]) || "";
+  out.estTitle = pIdx >= 0 ? (rows[pIdx] || []).map(txt).find(t => /^Volumen estimado/i.test(t)) || "" : "";
+  // Bloque "Calculadora 1RM" del Excel: filas etiqueta/valor hasta el final de la hoja.
+  const kIdx = rows.findIndex(r => /^CALCULADORA/i.test(txt(r?.[0])));
+  if(kIdx >= 0){
+    out.calcTitle = txt(rows[kIdx][0]);
+    out.calc = rows.slice(kIdx+1).map(r => (r || []).map(txt)).filter(r => r.some(Boolean));
+  }
   out.note = txt(rows.find(r => /^Fuentes internas/i.test(txt(r?.[0])))?.[0]);
   return out;
 }
@@ -201,6 +210,8 @@ function renderDashboard(force){
   if(!dashBound){
     dashBound = true;
     root.addEventListener("click", e => {
+      const go = e.target.closest("[data-go]");
+      if(go){ switchView(go.dataset.go); return; }
       const b = e.target.closest("[data-dash-mode]");
       if(!b) return;
       storageSet("localStorage", DASH_MODE_KEY, b.dataset.dashMode);
@@ -253,7 +264,7 @@ function renderDashboard(force){
     }).join("");
     const extra = is4
       ? `<td>${stats.adherence === null ? "—" : Math.round(stats.adherence*100)+"%"}</td><td class="dash-num green-text">${stats.green || (stats.sessions ? 0 : "—")}</td><td class="dash-num red-text">${stats.red || (stats.sessions ? 0 : "—")}</td><td class="dash-num">${stats.painMax === null ? "—" : formatNumber(stats.painMax, 0)+"/10"}</td><td class="dash-num">${stats.energy === null ? "—" : formatNumber(stats.energy)+"/5"}</td>`
-      : `<td class="dash-obj">${escapeHtml(wr.objective)}</td>`;
+      : `<td class="dash-obj">${escapeHtml(wr.objective)}</td>${sheet.estadoCol >= 0 ? `<td class="dash-num">${(() => { const days = dashPlannedDays(w, mode), done = days.filter(d => dashDayDone(w, d, mode)).length; return days.length ? `${done}/${days.length}${done === days.length ? " ✓" : ""}` : "—"; })()}</td>` : ""}${wr.mids.map(v => `<td class="dash-num">${v === null || v === undefined || v === "" ? "—" : formatNumber(Number(v))}</td>`).join("")}`;
     return `<tr class="${w === current ? "current" : ""}${/pivot/i.test(wr.phase) ? " pivot" : ""}" data-week="${wr.n}"><th scope="row">S${wr.n}${w === current ? `<em>actual</em>` : ""}</th><td class="dash-phase">${escapeHtml(wr.phase)}</td>${cells}${extra}</tr>`;
   }).join("");
   const weekTable = `
@@ -264,7 +275,7 @@ function renderDashboard(force){
         <p class="small-muted">Arriba el rango del Excel (series/semana); abajo tus series efectivas directas registradas (ponderadas por RIR, motor V10). Los pivots en % se calculan sobre el punto medio de la semana referida.</p>
       </div></div>
       <div class="dash-legend"><span class="dash-chip ok">En rango</span><span class="dash-chip low">Bajo</span><span class="dash-chip high">Sobre</span><span class="dash-chip none">Sin registro</span></div>
-      ${scroll(`<table class="dash-table dash-weeks"><thead><tr><th>Sem</th><th>Fase</th>${groups.map(g => `<th>${escapeHtml(g.short)}</th>`).join("")}${is4 ? "<th>Adherencia</th><th>Verdes</th><th>Rojos</th><th>Dolor máx</th><th>Energía</th>" : "<th>Objetivo clave</th>"}</tr></thead><tbody>${weekRows}</tbody></table>`)}
+      ${scroll(`<table class="dash-table dash-weeks"><thead><tr><th>Sem</th><th>Fase</th>${groups.map(g => `<th>${escapeHtml(g.head || g.label)}</th>`).join("")}${is4 ? "<th>Adherencia</th><th>Verdes</th><th>Rojos</th><th>Dolor máx</th><th>Energía prom</th>" : `<th>Objetivo clave</th>${sheet.estadoCol >= 0 ? "<th>Estado</th>" : ""}${sheet.midCols.map(m => `<th>${escapeHtml(m.h)}</th>`).join("")}`}</tr></thead><tbody>${weekRows}</tbody></table>`)}
     </div>`;
 
   const anchorTargetCol = () => {
@@ -347,6 +358,7 @@ function renderDashboard(force){
         <span class="eyebrow">Guía</span>
         <h3>${escapeHtml(sheet.auditTitle)}</h3>
       </div></div>
+      ${sheet.auditHead ? `<p class="dash-audit-head"><span>${escapeHtml(sheet.auditHead[2])}</span><span>${escapeHtml(sheet.auditHead[0])} · ${escapeHtml(sheet.auditHead[1])}</span></p>` : ""}
       <ul class="dash-audit">${sheet.audit.map(r => `<li><span class="pill ${/ok/i.test(r[2]) ? "dash-pill-ok" : "alt"}">${escapeHtml(r[2] || "—")}</span><div><b>${escapeHtml(r[0])}</b><span>${escapeHtml(r[1])}</span></div></li>`).join("")}</ul>
     </div>`;
   }
@@ -366,6 +378,14 @@ function renderDashboard(force){
       </div>
     </div>`;
 
+  const calc = sheet.calc?.length ? `
+    <div class="card">
+      <div class="card-head"><div>
+        <span class="eyebrow">Del Excel</span>
+        <h3>${escapeHtml(sheet.calcTitle)}</h3>
+      </div><button type="button" class="primary" data-go="one-rm">Abrir calculadora</button></div>
+      <dl class="dash-calc">${sheet.calc.flatMap(r => /[a-záéíóú]/i.test(r[2] || "") && !/^kg$|^lbs?$|–/i.test(r[2]) && r[3] ? [[r[0], r[1]], [r[2], r[3]]] : [r]).map(r => `<div><dt>${escapeHtml(r[0])}</dt><dd>${r.slice(1).filter(Boolean).map(escapeHtml).join(" · ")}</dd></div>`).join("")}</dl>
+    </div>` : "";
   const note = sheet.note ? `<p class="small-muted dash-note">${escapeHtml(sheet.note)}</p>` : "";
-  root.innerHTML = header + weekTable + coverage + anchors + est + guide + note;
+  root.innerHTML = header + weekTable + coverage + anchors + est + guide + calc + note;
 }

@@ -1364,3 +1364,9 @@ body.timer-alarm .clock-fab,body.timer-alarm .timer-panel{animation:timerAlarmFl
   .dash-cov-row{grid-template-columns:1fr}
   .dash-cov-week{grid-template-columns:auto auto;justify-content:space-between}
 }
+.dash-audit-head{display:flex;gap:10px;margin:0 0 6px;font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.dash-audit-head span:first-child{min-width:44px}
+.dash-calc{display:grid;gap:6px;margin:0}
+.dash-calc div{display:grid;grid-template-columns:118px minmax(0,1fr);gap:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.03);font-size:13px}
+.dash-calc dt{font-weight:800;color:#fff;overflow-wrap:anywhere}
+.dash-calc dd{margin:0;color:var(--muted);overflow-wrap:anywhere}
