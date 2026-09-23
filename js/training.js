@@ -14,7 +14,8 @@ function resetTrainingDraft(){
     isAdded:false,
     isAlternative:false,
     setsData: Array.from({length:Number(e.sets)||3}, (_,i)=>blankSet(i+1)),
-    noteDraft:""
+    noteDraft:"",
+    secondaryText:""
   }));
 }
 
@@ -44,7 +45,7 @@ function collectDraftInputs(){
   if(!document.getElementById("trainingForm")) return;
   trainingDraft.forEach((e,ei)=>{
     const read = field => document.querySelector(`[data-ei="${ei}"][data-field="${field}"]:not([data-si])`);
-    const map = {name:"name", muscle:"muscle", reps:"reps", target:"target", load:"load", note:"noteDraft"};
+    const map = {name:"name", muscle:"muscle", reps:"reps", target:"target", load:"load", note:"noteDraft", secondary:"secondaryText"};
     Object.entries(map).forEach(([field, key]) => {
       const el = read(field);
       if(el) e[key] = field === "muscle" ? normalizeMuscle(el.value) : el.value;
@@ -144,6 +145,7 @@ function renderExerciseRegister(e, ei){
         <label>Carga sugerida
           <input data-ei="${ei}" data-field="load" value="${escapeAttr(e.load || "")}" onchange="updateDraftField(${ei}, 'load', this.value)">
         </label>
+        ${v10AddedFields(e,ei)}
       </div>
 
       ${compare}
@@ -160,6 +162,10 @@ function renderExerciseRegister(e, ei){
 }
 
 
+function v10AddedFields(e,ei){
+  if(!e.isAdded) return "";
+  return '<label class="wide">Sinergias personalizadas (ej: bíceps:0.5, deltoide_anterior:0.25) <input data-ei="'+ei+'" data-field="secondary" value="'+escapeAttr(e.secondaryText||"")+'" placeholder="músculo:peso, músculo:peso"></label>';
+}
 function formatBestSet(prev){
   const best = bestSet(prev.sets);
   if(!best) return "sin series registradas";
