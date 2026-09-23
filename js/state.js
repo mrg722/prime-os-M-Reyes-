@@ -41,11 +41,20 @@ async function loadPlan(){
       const m = normalizeMuscle(e.muscle); weeklyTargets2[w][m]=(weeklyTargets2[w][m]||0)+Number(e.sets||0);
     });
   });
+  const numericTargets = bands => Object.fromEntries(Object.entries(bands||{}).map(([w,groups])=>[w,Object.fromEntries(Object.entries(groups||{}).map(([m,v])=>{
+    if(typeof v === "number") return [m,v];
+    const nums = String(v).match(/\\d+(?:\\.\\d+)?/g)?.map(Number) || [];
+    if(nums.length >= 2) return [m,Math.round((nums[0]+nums[1])/2)];
+    if(nums.length === 1) return [m,nums[0]];
+    return [m,0];
+  }))]));
+  const target3Bands = clone(manifest.weeklyTargets3), target4Bands = clone(manifest.weeklyTargets4);
   PLAN = {...legacy, ...manifest,
     version: manifest.version,
     routine, modeDays,
-    weeklyTargetsByMode:{"2":weeklyTargets2,"3":clone(manifest.weeklyTargets3),"4":clone(manifest.weeklyTargets4)},
-    weeklyTargets:clone(manifest.weeklyTargets4),
+    weeklyTargetBandsByMode:{"3":target3Bands,"4":target4Bands},
+    weeklyTargetsByMode:{"2":weeklyTargets2,"3":numericTargets(target3Bands),"4":numericTargets(target4Bands)},
+    weeklyTargets:clone(numericTargets(target4Bands)),
     legacyRoutine:{normal:{},pivot:{}},
     seedSessions:legacy.seedSessions||[],
     cardio:legacy.cardio||manifest.cardio||[], weightLog:legacy.weightLog||manifest.weightLog||[],
