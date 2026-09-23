@@ -33,7 +33,7 @@ function renderTimerWheels(){
   const total=Math.max(0,Math.round(timerState.duration));
   renderTimerWheel("#timerMinuteWheel",60,Math.floor(total/60));
   renderTimerWheel("#timerSecondWheel",59,total%60);
-  $(".timer-wheel-item").forEach(item=>item.classList.toggle("selected",Number(item.dataset.value)===(item.parentElement.id==="timerMinuteWheel"?Math.floor(total/60):total%60)));
+  $$(".timer-wheel-item").forEach(item=>item.classList.toggle("selected",Number(item.dataset.value)===(item.parentElement.id==="timerMinuteWheel"?Math.floor(total/60):total%60)));
 }
 
 function syncTimerFromWheels(){
@@ -57,7 +57,7 @@ function bindTimerWheel(id){
     raf=requestAnimationFrame(()=>{
       const snapped=Math.round(el.scrollTop/42)*42;
       if(Math.abs(el.scrollTop-snapped)>1) el.scrollTo({top:snapped,behavior:"smooth"});
-      $(".timer-wheel-item",el).forEach(item=>{
+      el.querySelectorAll(".timer-wheel-item").forEach(item=>{
         const selected=Math.abs(Number(item.dataset.value)*42-el.scrollTop)<22;
         item.classList.toggle("selected",selected);
         item.setAttribute("aria-selected",String(selected));
