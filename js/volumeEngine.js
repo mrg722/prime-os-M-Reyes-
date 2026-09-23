@@ -364,11 +364,15 @@ function v10AdaptiveFullBodyRoutine(week){
 }
 function applyAdaptiveFullBodySelection(){
   if(!state || String(state.selectedMode||"")!=="2") return;
-  const week=state.selectedWeek, generated=v10AdaptiveFullBodyRoutine(week);
+  const week=state.selectedWeek;
+  state.meta=state.meta||{}; state.meta.adaptive2D=state.meta.adaptive2D||{};
+  const activeKey="2|"+week;
+  if(state.meta.adaptive2D.activeKey===activeKey) return;
+  const generated=v10AdaptiveFullBodyRoutine(week);
   state.routine=clone(state.routinesByMode?.["2"]||PLAN.routineByMode?.["2"]||{});
   state.routine[week]=clone(generated.routine);
-  state.meta=state.meta||{}; state.meta.adaptive2D=state.meta.adaptive2D||{};
   state.meta.adaptive2D[week]={sourceWeek:generated.sourceWeek,actions:generated.actions,updatedAt:new Date().toISOString()};
+  state.meta.adaptive2D.activeKey=activeKey;
 }
 
 window.PrimeOSVolume={muscles:V10_MUSCLES,labels:V10_MUSCLE_LABELS,classify:v10ExerciseClassification,contributions:v10Contributions,analyzeWeek:v10AnalyzeWeek,summary:v10MuscleSummary,addMeta:v10AddExerciseMeta,catalog:v10CatalogOptions,rirFactor:v10RirFactor,observedBands:v10ObservedBands,adaptiveFullBodyRoutine:v10AdaptiveFullBodyRoutine,applyAdaptiveFullBodySelection};
