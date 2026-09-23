@@ -125,7 +125,8 @@ function v10Contributions(session,goalMode="mixed"){
 function setPain(s){return parseNumber(s?.pain)??0;}
 
 function v10WeekRows(week,goalMode="mixed"){
-  return state.sessions.filter(s=>s.week===week);
+  const activeMode=String(state.selectedMode||PLAN.defaultMode||"4");
+  return state.sessions.filter(s=>s.week===week && (!s.mode || String(s.mode)===activeMode));
 }
 function v10Readiness(sessions){
   const energy=sessions.map(s=>parseNumber(s.readiness?.energy)).filter(Number.isFinite);
