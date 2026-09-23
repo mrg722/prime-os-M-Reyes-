@@ -1,4 +1,10 @@
-# Prime OS - Martin Reyes V8.2
+# Prime OS - Martin Reyes V10
+
+## V10 actual
+
+La rama `main` integra V10 con el **Volume Engine adaptativo**: catálogo muscular, volumen directo e indirecto, sinergias, ponderación operativa por RIR, tendencias de rendimiento, fatiga/dolor y estimación observacional de MEV/MAV/MRV con niveles de confianza. Mantiene los modos 2D, 3D y 4D, la compatibilidad con los datos anteriores, importación/exportación y las rutinas V9.
+
+La versión visible se muestra en el sidebar de escritorio y también en la pantalla de inicio y encabezado móvil.
 
 ## Qué es
 
@@ -48,7 +54,7 @@ Base de los full body:
 - `vendor/` Chart.js 4.4.1 y SheetJS 0.18.5
 - `tests/e2e.test.js` pruebas en Chromium
 
-Al publicar una versión nueva, sube la versión en `js/config.js`, `sw.js` (`CACHE_VERSION`) y los `?v=` de `index.html` (la prueba lo verifica).
+Al publicar una versión nueva, sube la versión en `js/config.js`, `sw.js` (`CACHE_VERSION`) y los `?v=` de `index.html` (la prueba lo verifica). Si cambia `index.html` o su texto visible, también debe cambiar `CACHE_VERSION`; así los dispositivos con un Service Worker V10 instalado reciben una caché nueva y no reutilizan una copia anterior de `index.html`.
 
 ## Cambios de V7.5
 
@@ -98,6 +104,10 @@ Sube todos los archivos a la raíz del repositorio y abre:
 ## Guardado
 
 Los datos se guardan en LocalStorage del navegador. Usa `Respaldo` cada cierto tiempo para descargar un JSON con todo; el Excel sirve para revisar y editar datos.
+
+## Diagnóstico de caché / GitHub Pages
+
+Si GitHub muestra el cambio en `main` pero el teléfono sigue mostrando una interfaz anterior, hay dos capas que pueden retrasarlo: GitHub Pages/CDN y el Service Worker local. GitHub indica que una publicación puede tardar hasta 10 minutos. Prime OS además usa Service Worker para funcionamiento offline; por eso cada cambio de recursos debe acompañarse de una nueva versión de caché. En V10.0 se detectó que el PR que hacía visible `V10` modificaba `index.html` pero mantenía `CACHE_VERSION = "10.0"`, por lo que un dispositivo que ya tenía el caché `prime-os-10.0` podía seguir reutilizando la copia anterior cuando la red tardaba más de 3 segundos.
 
 ## Pendiente
 
