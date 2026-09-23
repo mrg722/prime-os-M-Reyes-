@@ -188,6 +188,7 @@ function v10WeeklyMuscle(week,muscle,goalMode="mixed"){
 function v10TargetRange(week,muscle){
   const bands=PLAN.weeklyTargetBandsByMode?.[String(state.selectedMode)]?.[week]||{};
   const raw=bands[muscle];
+  if(/%/.test(String(raw||""))){ const t=state.weeklyTargets?.[week]?.[muscle]; return Number.isFinite(Number(t))&&Number(t)>0?[Number(t),Number(t)]:null; }
   const nums=String(raw??"").match(/\d+(?:\.\d+)?/g)?.map(Number)||[];
   if(nums.length>=2)return [nums[0],nums[1]];
   if(nums.length===1)return [nums[0],nums[0]];
