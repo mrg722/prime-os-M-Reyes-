@@ -1,0 +1,11 @@
+{
+  "name": "prime-os",
+  "private": true,
+  "description": "Prime OS - registro de entrenamiento de Martin Reyes (sitio estático, sin compilación).",
+  "scripts": {
+    "test": "node tests/e2e.test.js"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}

@@ -8,9 +8,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=7.5"/>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+  <link rel="stylesheet" href="styles.css?v=8.0"/>
 </head>
 <body>
   <div class="watermark">MARTIN REYES · PRIME OS</div>
@@ -105,6 +103,7 @@
 
 
       <section id="view-inicio" class="view active">
+        <div id="alertsBox" class="alerts-box hidden"></div>
         <div class="dashboard">
           <article class="card hero">
             <div class="card-head">
@@ -268,6 +267,18 @@
           <div id="weeklyMuscleProgress"></div>
         </div>
 
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <span class="eyebrow">Por ejercicio</span>
+              <h3>1RM estimado y volumen</h3>
+              <p id="exerciseProgressSummary" class="small-muted"></p>
+            </div>
+            <select id="exerciseProgressSelect" aria-label="Ejercicio"></select>
+          </div>
+          <div class="chart-wrap"><canvas id="exerciseChart"></canvas></div>
+        </div>
+
         <div class="grid two">
           <article class="card">
             <span class="eyebrow">Marcas</span>
@@ -278,6 +289,9 @@
             <span class="eyebrow">Desgaste</span>
             <h3>Tendencia de fatiga</h3>
             <div id="fatigueProgress"></div>
+            <h4 class="sub-title">Semáforo por sesión</h4>
+            <p id="readinessChartEmpty" class="small-muted"></p>
+            <div class="chart-wrap small"><canvas id="readinessChart"></canvas></div>
           </article>
         </div>
       </section>
@@ -312,7 +326,7 @@
             </div>
           </div>
           <div class="chart-wrap">
-            <canvas id="bodyWeightChart" width="400" height="160"></canvas>
+            <canvas id="bodyWeightChart"></canvas>
             <div id="chartFallback" class="small-muted"></div>
           </div>
           <div id="weightList"></div>
@@ -347,7 +361,8 @@
           <article class="card danger-zone">
             <span class="eyebrow">Almacenamiento local</span>
             <h3>Gestión de memoria</h3>
-            <p>Los datos persisten en LocalStorage. Exporta un respaldo JSON antes de borrar caché o cambiar de equipo, y usa Importar para restaurarlo.</p>
+            <p>Los datos se guardan solo en este navegador. Descarga un respaldo JSON seguido (la app te avisa cada 7 días) y usa Importar para restaurarlo en otro equipo.</p>
+            <p id="lastBackupInfo" class="small-muted"></p>
             <div class="actions-row">
               <button class="primary export-json-btn">Exportar respaldo JSON</button>
               <button id="resetBtn" class="danger">Formatear sistema</button>
@@ -358,6 +373,20 @@
     </main>
   </div>
 
-  <script src="app.js?v=7.5"></script>
+  <div id="updateBanner" class="update-banner hidden" role="status">
+    <span>Hay una versión nueva de Prime OS.</span>
+    <button type="button" id="updateReloadBtn" class="primary">Actualizar</button>
+  </div>
+
+  <script src="vendor/chart.umd.js?v=8.0"></script>
+  <script src="vendor/xlsx.full.min.js?v=8.0"></script>
+  <script src="js/config.js?v=8.0"></script>
+  <script src="js/util.js?v=8.0"></script>
+  <script src="js/domain.js?v=8.0"></script>
+  <script src="js/state.js?v=8.0"></script>
+  <script src="js/training.js?v=8.0"></script>
+  <script src="js/views.js?v=8.0"></script>
+  <script src="js/io.js?v=8.0"></script>
+  <script src="js/app.js?v=8.0"></script>
 </body>
 </html>

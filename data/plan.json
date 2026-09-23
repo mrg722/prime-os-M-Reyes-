@@ -1,0 +1,3209 @@
+{
+  "version": "v7.3-plan-6-semanas",
+  "muscleGroups": [
+    "cuádriceps",
+    "glúteo",
+    "isquios",
+    "posterior/hinge",
+    "pecho",
+    "espalda/dorsal",
+    "deltoide lateral",
+    "bíceps",
+    "tríceps",
+    "gemelos",
+    "core/control",
+    "escápula/manguito",
+    "cardio",
+    "recuperación",
+    "general"
+  ],
+  "weeks": [
+    "Semana 1",
+    "Semana 2",
+    "Semana 2.5 Pivot",
+    "Semana 3",
+    "Semana 4",
+    "Semana 5",
+    "Semana 6"
+  ],
+  "days": [
+    "Lunes - Descanso",
+    "Martes - Lower A",
+    "Miércoles - Upper A",
+    "Jueves - Cardio suave",
+    "Viernes - Lower B",
+    "Sábado - Upper B",
+    "Domingo - Trote opcional"
+  ],
+  "defaultWeek": "Semana 1",
+  "defaultDay": "Miércoles - Upper A",
+  "settings": {
+    "ownerName": "Martin Reyes",
+    "goalWeight": "75-76 kg",
+    "mainGoal": "Recomposición + fuerza",
+    "deadliftWeakness": "Bloqueo final",
+    "sensitiveExercises": "Banca plana pesada, sentadilla si molesta cervical, trote fuerte con isquio sensible"
+  },
+  "prs": {
+    "Peso muerto sumo": "210 kg x3, fallo cerca del bloqueo en 3ª",
+    "Press banca": "125 kg single histórico, 115x5 @7, 120x3 con 4ª fallida",
+    "Sentadilla alta": "155x4 reciente, meta previa 170x4",
+    "Dominadas lastradas": "30 kg x8/7/6, previo 27.5x8x2 + 20x9",
+    "Press inclinado mancuernas": "40 kg x5 RIR1; 35 kg x7 RIR1"
+  },
+  "cardio": [
+    {
+      "date": "Registro previo",
+      "type": "Trote calle",
+      "distance": "4.12 km",
+      "pace": "4:46/km",
+      "time": "19:40",
+      "feeling": "Fuerte"
+    },
+    {
+      "date": "Registro previo",
+      "type": "Cinta",
+      "distance": "7 km",
+      "pace": "11.1→13.3 km/h",
+      "time": "—",
+      "feeling": "Controlado"
+    },
+    {
+      "date": "Registro previo",
+      "type": "Spinning",
+      "distance": "—",
+      "pace": "—",
+      "time": "1 h",
+      "feeling": "Zona cardio"
+    }
+  ],
+  "weightLog": [
+    {
+      "date": "",
+      "week": "Histórico",
+      "avg": "77.4",
+      "min": "77.0",
+      "max": "78.5",
+      "waist": "",
+      "notes": "Etapa previa. Peso histórico 77.4-78.5 kg."
+    },
+    {
+      "date": "",
+      "week": "Posterior",
+      "avg": "74.5",
+      "min": "74",
+      "max": "75",
+      "waist": "",
+      "notes": "Etapa posterior indicada: 74-75 kg."
+    }
+  ],
+  "blockStatus": {
+    "Semana 1": {
+      "status": "base",
+      "note": "Reentrada técnica / resensibilización. RIR 2-3."
+    },
+    "Semana 2": {
+      "status": "base",
+      "note": "Acumulación efectiva. RIR 2."
+    },
+    "Semana 2.5 Pivot": {
+      "status": "real",
+      "note": "Registros reales cargados: Lower A, Upper A y Lower B. Sin Upper B ni trote."
+    },
+    "Semana 3": {
+      "status": "base",
+      "note": "Intensificación I. Top sets serios, sin fallo."
+    },
+    "Semana 4": {
+      "status": "base",
+      "note": "Intensificación II. Consolidar pesos altos."
+    },
+    "Semana 5": {
+      "status": "base",
+      "note": "Pico técnico controlado. PR técnico, no ego PR."
+    },
+    "Semana 6": {
+      "status": "base",
+      "note": "Pivot/deload inteligente. Bajar volumen 40-50%."
+    }
+  },
+  "routine": {
+    "Semana 1": {
+      "Lunes - Descanso": [
+        {
+          "name": "Movilidad + caminata",
+          "sets": 1,
+          "reps": "15-25 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Reentrada técnica / resensibilización. No PR, no fallo, no extras. Salir con energía."
+        },
+        {
+          "name": "Chequeo molestias",
+          "sets": 1,
+          "reps": "0-10",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Registrar hombro, cuello/lumbar, isquio, energía y sueño."
+        }
+      ],
+      "Martes - Lower A": [
+        {
+          "name": "Prensa 45 top/backoff",
+          "sets": 3,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "230-240 kg top / 210-220 kg back",
+          "target": "RIR 2-3",
+          "muscle": "cuádriceps",
+          "note": "Profundidad, control, sin manos. Sin back squat por cuello."
+        },
+        {
+          "name": "Variante unilateral / hack / belt / Smith sin cuello",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 2-3",
+          "muscle": "cuádriceps",
+          "note": "Elegir variante que no cargue cervical."
+        },
+        {
+          "name": "Sentadilla búlgara",
+          "sets": 2,
+          "reps": "8-10 por pierna",
+          "load": "26-30 kg c/mano",
+          "target": "RIR 2-3",
+          "muscle": "glúteo",
+          "note": "Control cardiaco, sin fallo técnico."
+        },
+        {
+          "name": "Extensión cuádriceps",
+          "sets": 3,
+          "reps": "12-15",
+          "load": "150-170 lbs",
+          "target": "RIR 2-3",
+          "muscle": "cuádriceps",
+          "note": "Pausa 1 s arriba. Rodilla manda."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 3,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Rango completo y descanso real."
+        },
+        {
+          "name": "Core anti-extensión",
+          "sets": 3,
+          "reps": "10-15 o 20-40 s",
+          "load": "Moderado",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Calidad antes que carga."
+        }
+      ],
+      "Miércoles - Upper A": [
+        {
+          "name": "Dominadas lastradas / jalón neutro",
+          "sets": 3,
+          "reps": "Top 5-8 / Back 6-10",
+          "load": "+20-25 kg",
+          "target": "RIR 2-3",
+          "muscle": "espalda/dorsal",
+          "note": "Barbilla limpia. Si codo/agarre molesta, jalón neutro."
+        },
+        {
+          "name": "Press inclinado mancuernas top/backoff",
+          "sets": 3,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "34-36 kg top / 30-32 kg back",
+          "target": "RIR 2-3",
+          "muscle": "pecho",
+          "note": "Hombro protegido. No pelear dolor."
+        },
+        {
+          "name": "Remo pecho apoyado / Hammer",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "65-75 kg",
+          "target": "RIR 2-3",
+          "muscle": "espalda/dorsal",
+          "note": "Dorsal antes que agarre. Pausa atrás."
+        },
+        {
+          "name": "Press plano máquina neutro",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 2-3",
+          "muscle": "pecho",
+          "note": "Volumen limpio, sin grind."
+        },
+        {
+          "name": "Pushdown tríceps",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Sin bloqueo violento."
+        },
+        {
+          "name": "Curl bíceps",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Controlado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Codo estable."
+        },
+        {
+          "name": "Circuito escapular",
+          "sets": 1,
+          "reps": "5-8 min",
+          "load": "Ligero",
+          "target": "Técnico",
+          "muscle": "escápula/manguito",
+          "note": "No saltar. Salud de hombro."
+        }
+      ],
+      "Jueves - Cardio suave": [
+        {
+          "name": "Zona 2 / trote suave",
+          "sets": 1,
+          "reps": "25-40 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "No convertirlo en test."
+        },
+        {
+          "name": "Movilidad cadera/isquio",
+          "sets": 1,
+          "reps": "10-15 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Preparar Lower B."
+        }
+      ],
+      "Viernes - Lower B": [
+        {
+          "name": "RDL principal / deadlift técnico solo si verde",
+          "sets": 3,
+          "reps": "6-8",
+          "load": "120-130 kg",
+          "target": "RIR 2-3",
+          "muscle": "posterior/hinge",
+          "note": "Una sola bisagra principal. No sumar RDL + DL pesados."
+        },
+        {
+          "name": "Hip thrust",
+          "sets": 3,
+          "reps": "8-10",
+          "load": "150-160 kg",
+          "target": "RIR 2-3",
+          "muscle": "glúteo",
+          "note": "Pausa 1 s arriba. Glúteo, no lumbar."
+        },
+        {
+          "name": "Curl femoral",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "90-110 lbs / moderado",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Excéntrica controlada."
+        },
+        {
+          "name": "Prensa pies altos",
+          "sets": 2,
+          "reps": "10-12",
+          "load": "180-210 kg",
+          "target": "RIR 2-3",
+          "muscle": "glúteo",
+          "note": "Estímulo glúteo/isquio sin otra bisagra pesada."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 3,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Constancia y rango completo."
+        },
+        {
+          "name": "Core/carry opcional",
+          "sets": 2,
+          "reps": "20-40 s",
+          "load": "Moderado",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Solo si agarre/lumbar están bien."
+        }
+      ],
+      "Sábado - Upper B": [
+        {
+          "name": "Incline DB Press",
+          "sets": 3,
+          "reps": "8-10",
+          "load": "30-34 kg",
+          "target": "RIR 2-3",
+          "muscle": "pecho",
+          "note": "4ta serie solo si estás verde."
+        },
+        {
+          "name": "Jalón neutro / dominadas BW",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "170-190 lbs o BW",
+          "target": "RIR 2-3",
+          "muscle": "espalda/dorsal",
+          "note": "Control escapular."
+        },
+        {
+          "name": "Remo polea / pecho apoyado",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "70-85 kg / moderado",
+          "target": "RIR 2-3",
+          "muscle": "espalda/dorsal",
+          "note": "Pausa atrás."
+        },
+        {
+          "name": "Elevaciones laterales",
+          "sets": 3,
+          "reps": "12-18",
+          "load": "7.5-10 kg",
+          "target": "RIR 1-2",
+          "muscle": "deltoide lateral",
+          "note": "Progresar por calidad, no ego."
+        },
+        {
+          "name": "Curl inclinado / polea",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Subir reps antes que peso."
+        },
+        {
+          "name": "Tríceps overhead / pushdown",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Fluido, sin bloqueo agresivo."
+        },
+        {
+          "name": "Calistenia técnica",
+          "sets": 2,
+          "reps": "Submáximo",
+          "load": "Peso corporal",
+          "target": "RIR 3",
+          "muscle": "core/control",
+          "note": "Soporte paralelas, hollow hold, scap pushups."
+        }
+      ],
+      "Domingo - Trote opcional": [
+        {
+          "name": "Trote zona 2 / caminata rápida",
+          "sets": 1,
+          "reps": "20-45 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "Opcional. No fuerte si isquio/lumbar sensible."
+        },
+        {
+          "name": "Chequeo semanal",
+          "sets": 1,
+          "reps": "5 min",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Peso, dolor, fatiga, PRs, energía."
+        }
+      ]
+    },
+    "Semana 2": {
+      "Lunes - Descanso": [
+        {
+          "name": "Movilidad + caminata",
+          "sets": 1,
+          "reps": "15-25 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Acumulación efectiva. Progresar solo si Semana 1 fue verde."
+        },
+        {
+          "name": "Chequeo molestias",
+          "sets": 1,
+          "reps": "0-10",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Registrar hombro, cuello/lumbar, isquio, energía y sueño."
+        }
+      ],
+      "Martes - Lower A": [
+        {
+          "name": "Prensa 45 top/backoff",
+          "sets": 3,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "240-250 kg top / 220-230 kg back",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "cuádriceps",
+          "note": "Profundidad, control, sin manos. Sin back squat por cuello."
+        },
+        {
+          "name": "Variante unilateral / hack / belt / Smith sin cuello",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "cuádriceps",
+          "note": "Elegir variante que no cargue cervical."
+        },
+        {
+          "name": "Sentadilla búlgara",
+          "sets": 2,
+          "reps": "8-10 por pierna",
+          "load": "30-32 kg c/mano",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "glúteo",
+          "note": "Control cardiaco, sin fallo técnico."
+        },
+        {
+          "name": "Extensión cuádriceps",
+          "sets": 3,
+          "reps": "12-15",
+          "load": "160-180 lbs",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "cuádriceps",
+          "note": "Pausa 1 s arriba. Rodilla manda."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 3,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Rango completo y descanso real."
+        },
+        {
+          "name": "Core anti-extensión",
+          "sets": 3,
+          "reps": "10-15 o 20-40 s",
+          "load": "Moderado",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Calidad antes que carga."
+        }
+      ],
+      "Miércoles - Upper A": [
+        {
+          "name": "Dominadas lastradas / jalón neutro",
+          "sets": 3,
+          "reps": "Top 5-8 / Back 6-10",
+          "load": "+25-27.5 kg",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Barbilla limpia. Si codo/agarre molesta, jalón neutro."
+        },
+        {
+          "name": "Press inclinado mancuernas top/backoff",
+          "sets": 3,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "36-38 kg top / 32-34 kg back",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "pecho",
+          "note": "Hombro protegido. No pelear dolor."
+        },
+        {
+          "name": "Remo pecho apoyado / Hammer",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "70-80 kg",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Dorsal antes que agarre. Pausa atrás."
+        },
+        {
+          "name": "Press plano máquina neutro",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "pecho",
+          "note": "Volumen limpio, sin grind."
+        },
+        {
+          "name": "Pushdown tríceps",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Sin bloqueo violento."
+        },
+        {
+          "name": "Curl bíceps",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Controlado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Codo estable."
+        },
+        {
+          "name": "Circuito escapular",
+          "sets": 1,
+          "reps": "5-8 min",
+          "load": "Ligero",
+          "target": "Técnico",
+          "muscle": "escápula/manguito",
+          "note": "No saltar. Salud de hombro."
+        }
+      ],
+      "Jueves - Cardio suave": [
+        {
+          "name": "Zona 2 / trote suave",
+          "sets": 1,
+          "reps": "25-40 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "No convertirlo en test."
+        },
+        {
+          "name": "Movilidad cadera/isquio",
+          "sets": 1,
+          "reps": "10-15 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Preparar Lower B."
+        }
+      ],
+      "Viernes - Lower B": [
+        {
+          "name": "RDL principal / deadlift técnico solo si verde",
+          "sets": 3,
+          "reps": "6-8",
+          "load": "130-135 kg",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "posterior/hinge",
+          "note": "Una sola bisagra principal. No sumar RDL + DL pesados."
+        },
+        {
+          "name": "Hip thrust",
+          "sets": 3,
+          "reps": "8-10",
+          "load": "160-170 kg",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "glúteo",
+          "note": "Pausa 1 s arriba. Glúteo, no lumbar."
+        },
+        {
+          "name": "Curl femoral",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "90-110 lbs / moderado",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Excéntrica controlada."
+        },
+        {
+          "name": "Prensa pies altos",
+          "sets": 2,
+          "reps": "10-12",
+          "load": "200-220 kg",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "glúteo",
+          "note": "Estímulo glúteo/isquio sin otra bisagra pesada."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 3,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Constancia y rango completo."
+        },
+        {
+          "name": "Core/carry opcional",
+          "sets": 2,
+          "reps": "20-40 s",
+          "load": "Moderado",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Solo si agarre/lumbar están bien."
+        }
+      ],
+      "Sábado - Upper B": [
+        {
+          "name": "Incline DB Press",
+          "sets": 3,
+          "reps": "8-10",
+          "load": "32-36 kg",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "pecho",
+          "note": "4ta serie solo si estás verde."
+        },
+        {
+          "name": "Jalón neutro / dominadas BW",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "180-195 lbs o BW",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Control escapular."
+        },
+        {
+          "name": "Remo polea / pecho apoyado",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "70-85 kg / moderado",
+          "target": "RIR 2 / accesorios 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Pausa atrás."
+        },
+        {
+          "name": "Elevaciones laterales",
+          "sets": 3,
+          "reps": "12-18",
+          "load": "7.5-10 kg",
+          "target": "RIR 1-2",
+          "muscle": "deltoide lateral",
+          "note": "Progresar por calidad, no ego."
+        },
+        {
+          "name": "Curl inclinado / polea",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Subir reps antes que peso."
+        },
+        {
+          "name": "Tríceps overhead / pushdown",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Fluido, sin bloqueo agresivo."
+        },
+        {
+          "name": "Calistenia técnica",
+          "sets": 2,
+          "reps": "Submáximo",
+          "load": "Peso corporal",
+          "target": "RIR 3",
+          "muscle": "core/control",
+          "note": "Soporte paralelas, hollow hold, scap pushups."
+        }
+      ],
+      "Domingo - Trote opcional": [
+        {
+          "name": "Trote zona 2 / caminata rápida",
+          "sets": 1,
+          "reps": "20-45 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "Opcional. No fuerte si isquio/lumbar sensible."
+        },
+        {
+          "name": "Chequeo semanal",
+          "sets": 1,
+          "reps": "5 min",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Peso, dolor, fatiga, PRs, energía."
+        }
+      ]
+    },
+    "Semana 2.5 Pivot": {
+      "Lunes - Descanso": [
+        {
+          "name": "Movilidad + caminata suave",
+          "sets": 1,
+          "reps": "15-25 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Pivot/deload: baja 30-40% volumen, sin fallo"
+        },
+        {
+          "name": "Chequeo molestias",
+          "sets": 1,
+          "reps": "0-10",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Registrar hombro, cuello, lumbar, isquio"
+        }
+      ],
+      "Martes - Lower A": [
+        {
+          "name": "Prensa 45 / máquina disponible",
+          "sets": 3,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "Top 230-240 kg / Back 210-225 kg",
+          "target": "RIR 2",
+          "muscle": "cuádriceps",
+          "note": "No pasar de 240 si se siente pesada. Sin manos ayudando."
+        },
+        {
+          "name": "Búlgara",
+          "sets": 2,
+          "reps": "8-10 por pierna",
+          "load": "26-30 kg por mano",
+          "target": "RIR 2-3",
+          "muscle": "cuádriceps",
+          "note": "Bajar un poco por lumbar. No repetir fallo cardiaco."
+        },
+        {
+          "name": "Extensión cuádriceps",
+          "sets": 3,
+          "reps": "12-15",
+          "load": "150-165 lbs",
+          "target": "RIR 1-2",
+          "muscle": "cuádriceps",
+          "note": "Pausa 1 s arriba. Rodilla manda."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 3,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "No forzar si aparecen calambres. Descanso real."
+        },
+        {
+          "name": "Core anti-extensión",
+          "sets": 2,
+          "reps": "8-12 o 15-20 s",
+          "load": "Suave",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Calidad antes que carga. No fatigar para Lower B."
+        }
+      ],
+      "Miércoles - Upper A": [
+        {
+          "name": "Press inclinado manc.",
+          "sets": 3,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "Top 38-40 kg / Back 34-35 kg",
+          "target": "RIR 2",
+          "muscle": "pecho",
+          "note": "Si la top queda RIR 1, backoffs RIR 2-3. Nada de RIR 0."
+        },
+        {
+          "name": "Dominadas lastradas",
+          "sets": 3,
+          "reps": "Top 5-7 / Back 6-8",
+          "load": "Top +22.5 a +25 kg / Back +15-20 kg",
+          "target": "RIR 2",
+          "muscle": "espalda/dorsal",
+          "note": "Barbilla limpia. No grind."
+        },
+        {
+          "name": "Remo frontal / pecho apoyado",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "75-80 kg",
+          "target": "RIR 2",
+          "muscle": "espalda/dorsal",
+          "note": "Dorsal antes que agarre. Pausa 1 s atrás si fácil."
+        },
+        {
+          "name": "Press plano barra o máquina",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "65-70 kg o moderado",
+          "target": "RIR 2",
+          "muscle": "pecho",
+          "note": "Volumen limpio. Sin batalla."
+        },
+        {
+          "name": "Pushdown tríceps",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Carga que no lleve a RIR 0",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "No bloquear violento. Tensión continua."
+        },
+        {
+          "name": "Curl bíceps polea/curl",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Controlado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Ajustar para 10-15 reps."
+        },
+        {
+          "name": "Circuito escapular",
+          "sets": 1,
+          "reps": "5-8 min",
+          "load": "Ligero",
+          "target": "Técnico",
+          "muscle": "escápula/manguito",
+          "note": "No saltar. Salud de hombro."
+        }
+      ],
+      "Jueves - Cardio suave": [
+        {
+          "name": "Zona 2",
+          "sets": 1,
+          "reps": "25-40 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "Respiración controlada"
+        },
+        {
+          "name": "Movilidad cadera/isquio",
+          "sets": 1,
+          "reps": "10-15 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "No estirar agresivo si hay tirón"
+        }
+      ],
+      "Viernes - Lower B": [
+        {
+          "name": "RDL principal o semi-sumo técnico",
+          "sets": 3,
+          "reps": "6-8",
+          "load": "130-135 kg",
+          "target": "RIR 2-3",
+          "muscle": "posterior/hinge",
+          "note": "No subir a 145 todavía. Si lumbar cargada, 120-130."
+        },
+        {
+          "name": "Hip Thrust",
+          "sets": 3,
+          "reps": "8-10",
+          "load": "155-165 kg",
+          "target": "RIR 2",
+          "muscle": "glúteo",
+          "note": "Pausa 1 s arriba. Glúteo, no lumbar."
+        },
+        {
+          "name": "Curl femoral",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "90-105 lbs",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Excéntrica controlada. Sin rest-pause."
+        },
+        {
+          "name": "Prensa pies altos",
+          "sets": 2,
+          "reps": "10-12",
+          "load": "180-210 kg",
+          "target": "RIR 2",
+          "muscle": "posterior/hinge",
+          "note": "Solo si lumbar está bien. Control y tensión."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 3,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Evitar calambre: descanso 90 s si hace falta."
+        },
+        {
+          "name": "Core/carry opcional",
+          "sets": 2,
+          "reps": "20-30 s",
+          "load": "Suave",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Solo si estás verde."
+        }
+      ],
+      "Sábado - Upper B": [
+        {
+          "name": "Upper B no ejecutado",
+          "sets": 1,
+          "reps": "—",
+          "load": "—",
+          "target": "—",
+          "muscle": "recuperación",
+          "note": "Semana 2.5 sin Upper B."
+        }
+      ],
+      "Domingo - Trote opcional": [
+        {
+          "name": "Trote no ejecutado",
+          "sets": 1,
+          "reps": "—",
+          "load": "—",
+          "target": "—",
+          "muscle": "cardio",
+          "note": "Semana 2.5 sin trote."
+        }
+      ]
+    },
+    "Semana 3": {
+      "Lunes - Descanso": [
+        {
+          "name": "Movilidad + caminata",
+          "sets": 1,
+          "reps": "15-25 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Intensificación I. Top sets más serios, sin convertir todo en fallo."
+        },
+        {
+          "name": "Chequeo molestias",
+          "sets": 1,
+          "reps": "0-10",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Registrar hombro, cuello/lumbar, isquio, energía y sueño."
+        }
+      ],
+      "Martes - Lower A": [
+        {
+          "name": "Prensa 45 top/backoff",
+          "sets": 3,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "250-260 kg top / 230-240 kg back",
+          "target": "RIR 1-2",
+          "muscle": "cuádriceps",
+          "note": "Profundidad, control, sin manos. Sin back squat por cuello."
+        },
+        {
+          "name": "Variante unilateral / hack / belt / Smith sin cuello",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "cuádriceps",
+          "note": "Elegir variante que no cargue cervical."
+        },
+        {
+          "name": "Sentadilla búlgara",
+          "sets": 2,
+          "reps": "8-10 por pierna",
+          "load": "32-34 kg c/mano",
+          "target": "RIR 1-2",
+          "muscle": "glúteo",
+          "note": "Control cardiaco, sin fallo técnico."
+        },
+        {
+          "name": "Extensión cuádriceps",
+          "sets": 3,
+          "reps": "12-15",
+          "load": "170-190 lbs",
+          "target": "RIR 1-2",
+          "muscle": "cuádriceps",
+          "note": "Pausa 1 s arriba. Rodilla manda."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 3,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Rango completo y descanso real."
+        },
+        {
+          "name": "Core anti-extensión",
+          "sets": 3,
+          "reps": "10-15 o 20-40 s",
+          "load": "Moderado",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Calidad antes que carga."
+        }
+      ],
+      "Miércoles - Upper A": [
+        {
+          "name": "Dominadas lastradas / jalón neutro",
+          "sets": 3,
+          "reps": "Top 5-8 / Back 6-10",
+          "load": "+27.5-30 kg",
+          "target": "RIR 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Barbilla limpia. Si codo/agarre molesta, jalón neutro."
+        },
+        {
+          "name": "Press inclinado mancuernas top/backoff",
+          "sets": 3,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "38-40 kg top / 34-36 kg back",
+          "target": "RIR 1-2",
+          "muscle": "pecho",
+          "note": "Hombro protegido. No pelear dolor."
+        },
+        {
+          "name": "Remo pecho apoyado / Hammer",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "75-85 kg",
+          "target": "RIR 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Dorsal antes que agarre. Pausa atrás."
+        },
+        {
+          "name": "Press plano máquina neutro",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "pecho",
+          "note": "Volumen limpio, sin grind."
+        },
+        {
+          "name": "Pushdown tríceps",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Sin bloqueo violento."
+        },
+        {
+          "name": "Curl bíceps",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Controlado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Codo estable."
+        },
+        {
+          "name": "Circuito escapular",
+          "sets": 1,
+          "reps": "5-8 min",
+          "load": "Ligero",
+          "target": "Técnico",
+          "muscle": "escápula/manguito",
+          "note": "No saltar. Salud de hombro."
+        }
+      ],
+      "Jueves - Cardio suave": [
+        {
+          "name": "Zona 2 / trote suave",
+          "sets": 1,
+          "reps": "25-40 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "No convertirlo en test."
+        },
+        {
+          "name": "Movilidad cadera/isquio",
+          "sets": 1,
+          "reps": "10-15 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Preparar Lower B."
+        }
+      ],
+      "Viernes - Lower B": [
+        {
+          "name": "RDL principal / deadlift técnico solo si verde",
+          "sets": 3,
+          "reps": "6-8",
+          "load": "RDL 135-145 kg o DL 170-180 si verde",
+          "target": "RIR 1-2",
+          "muscle": "posterior/hinge",
+          "note": "Una sola bisagra principal. No sumar RDL + DL pesados."
+        },
+        {
+          "name": "Hip thrust",
+          "sets": 3,
+          "reps": "8-10",
+          "load": "170-180 kg",
+          "target": "RIR 1-2",
+          "muscle": "glúteo",
+          "note": "Pausa 1 s arriba. Glúteo, no lumbar."
+        },
+        {
+          "name": "Curl femoral",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "90-110 lbs / moderado",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Excéntrica controlada."
+        },
+        {
+          "name": "Prensa pies altos",
+          "sets": 2,
+          "reps": "10-12",
+          "load": "210-230 kg",
+          "target": "RIR 1-2",
+          "muscle": "glúteo",
+          "note": "Estímulo glúteo/isquio sin otra bisagra pesada."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 3,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Constancia y rango completo."
+        },
+        {
+          "name": "Core/carry opcional",
+          "sets": 2,
+          "reps": "20-40 s",
+          "load": "Moderado",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Solo si agarre/lumbar están bien."
+        }
+      ],
+      "Sábado - Upper B": [
+        {
+          "name": "Incline DB Press",
+          "sets": 3,
+          "reps": "8-10",
+          "load": "34-38 kg",
+          "target": "RIR 1-2",
+          "muscle": "pecho",
+          "note": "4ta serie solo si estás verde."
+        },
+        {
+          "name": "Jalón neutro / dominadas BW",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "190-205 lbs o BW",
+          "target": "RIR 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Control escapular."
+        },
+        {
+          "name": "Remo polea / pecho apoyado",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "70-85 kg / moderado",
+          "target": "RIR 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Pausa atrás."
+        },
+        {
+          "name": "Elevaciones laterales",
+          "sets": 3,
+          "reps": "12-18",
+          "load": "10-12.5 kg",
+          "target": "RIR 1-2",
+          "muscle": "deltoide lateral",
+          "note": "Progresar por calidad, no ego."
+        },
+        {
+          "name": "Curl inclinado / polea",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Subir reps antes que peso."
+        },
+        {
+          "name": "Tríceps overhead / pushdown",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Fluido, sin bloqueo agresivo."
+        },
+        {
+          "name": "Calistenia técnica",
+          "sets": 2,
+          "reps": "Submáximo",
+          "load": "Peso corporal",
+          "target": "RIR 3",
+          "muscle": "core/control",
+          "note": "Soporte paralelas, hollow hold, scap pushups."
+        }
+      ],
+      "Domingo - Trote opcional": [
+        {
+          "name": "Trote zona 2 / caminata rápida",
+          "sets": 1,
+          "reps": "20-45 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "Opcional. No fuerte si isquio/lumbar sensible."
+        },
+        {
+          "name": "Chequeo semanal",
+          "sets": 1,
+          "reps": "5 min",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Peso, dolor, fatiga, PRs, energía."
+        }
+      ]
+    },
+    "Semana 4": {
+      "Lunes - Descanso": [
+        {
+          "name": "Movilidad + caminata",
+          "sets": 1,
+          "reps": "15-25 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Intensificación II. Consolidar pesos altos sin agregar volumen basura."
+        },
+        {
+          "name": "Chequeo molestias",
+          "sets": 1,
+          "reps": "0-10",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Registrar hombro, cuello/lumbar, isquio, energía y sueño."
+        }
+      ],
+      "Martes - Lower A": [
+        {
+          "name": "Prensa 45 top/backoff",
+          "sets": 3,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "260-270 kg top / 240-250 kg back",
+          "target": "RIR 1",
+          "muscle": "cuádriceps",
+          "note": "Profundidad, control, sin manos. Sin back squat por cuello."
+        },
+        {
+          "name": "Variante unilateral / hack / belt / Smith sin cuello",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 1",
+          "muscle": "cuádriceps",
+          "note": "Elegir variante que no cargue cervical."
+        },
+        {
+          "name": "Sentadilla búlgara",
+          "sets": 2,
+          "reps": "8-10 por pierna",
+          "load": "34-36 kg c/mano",
+          "target": "RIR 1",
+          "muscle": "glúteo",
+          "note": "Control cardiaco, sin fallo técnico."
+        },
+        {
+          "name": "Extensión cuádriceps",
+          "sets": 3,
+          "reps": "12-15",
+          "load": "180-200 lbs",
+          "target": "RIR 1",
+          "muscle": "cuádriceps",
+          "note": "Pausa 1 s arriba. Rodilla manda."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 3,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Rango completo y descanso real."
+        },
+        {
+          "name": "Core anti-extensión",
+          "sets": 3,
+          "reps": "10-15 o 20-40 s",
+          "load": "Moderado",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Calidad antes que carga."
+        }
+      ],
+      "Miércoles - Upper A": [
+        {
+          "name": "Dominadas lastradas / jalón neutro",
+          "sets": 3,
+          "reps": "Top 5-8 / Back 6-10",
+          "load": "+30 kg top",
+          "target": "RIR 1",
+          "muscle": "espalda/dorsal",
+          "note": "Barbilla limpia. Si codo/agarre molesta, jalón neutro."
+        },
+        {
+          "name": "Press inclinado mancuernas top/backoff",
+          "sets": 3,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "40 kg top / 36-38 kg back",
+          "target": "RIR 1",
+          "muscle": "pecho",
+          "note": "Hombro protegido. No pelear dolor."
+        },
+        {
+          "name": "Remo pecho apoyado / Hammer",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "80-85 kg",
+          "target": "RIR 1",
+          "muscle": "espalda/dorsal",
+          "note": "Dorsal antes que agarre. Pausa atrás."
+        },
+        {
+          "name": "Press plano máquina neutro",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 1",
+          "muscle": "pecho",
+          "note": "Volumen limpio, sin grind."
+        },
+        {
+          "name": "Pushdown tríceps",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Sin bloqueo violento."
+        },
+        {
+          "name": "Curl bíceps",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Controlado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Codo estable."
+        },
+        {
+          "name": "Circuito escapular",
+          "sets": 1,
+          "reps": "5-8 min",
+          "load": "Ligero",
+          "target": "Técnico",
+          "muscle": "escápula/manguito",
+          "note": "No saltar. Salud de hombro."
+        }
+      ],
+      "Jueves - Cardio suave": [
+        {
+          "name": "Zona 2 / trote suave",
+          "sets": 1,
+          "reps": "25-40 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "No convertirlo en test."
+        },
+        {
+          "name": "Movilidad cadera/isquio",
+          "sets": 1,
+          "reps": "10-15 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Preparar Lower B."
+        }
+      ],
+      "Viernes - Lower B": [
+        {
+          "name": "RDL principal / deadlift técnico solo si verde",
+          "sets": 3,
+          "reps": "6-8",
+          "load": "RDL 140-145 kg o DL 175-185 si verde",
+          "target": "RIR 1",
+          "muscle": "posterior/hinge",
+          "note": "Una sola bisagra principal. No sumar RDL + DL pesados."
+        },
+        {
+          "name": "Hip thrust",
+          "sets": 3,
+          "reps": "8-10",
+          "load": "175-185 kg",
+          "target": "RIR 1",
+          "muscle": "glúteo",
+          "note": "Pausa 1 s arriba. Glúteo, no lumbar."
+        },
+        {
+          "name": "Curl femoral",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "90-110 lbs / moderado",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Excéntrica controlada."
+        },
+        {
+          "name": "Prensa pies altos",
+          "sets": 2,
+          "reps": "10-12",
+          "load": "220-240 kg",
+          "target": "RIR 1",
+          "muscle": "glúteo",
+          "note": "Estímulo glúteo/isquio sin otra bisagra pesada."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 3,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Constancia y rango completo."
+        },
+        {
+          "name": "Core/carry opcional",
+          "sets": 2,
+          "reps": "20-40 s",
+          "load": "Moderado",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Solo si agarre/lumbar están bien."
+        }
+      ],
+      "Sábado - Upper B": [
+        {
+          "name": "Incline DB Press",
+          "sets": 3,
+          "reps": "8-10",
+          "load": "36-38 kg",
+          "target": "RIR 1",
+          "muscle": "pecho",
+          "note": "4ta serie solo si estás verde."
+        },
+        {
+          "name": "Jalón neutro / dominadas BW",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "195-210 lbs o BW",
+          "target": "RIR 1",
+          "muscle": "espalda/dorsal",
+          "note": "Control escapular."
+        },
+        {
+          "name": "Remo polea / pecho apoyado",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "70-85 kg / moderado",
+          "target": "RIR 1",
+          "muscle": "espalda/dorsal",
+          "note": "Pausa atrás."
+        },
+        {
+          "name": "Elevaciones laterales",
+          "sets": 3,
+          "reps": "12-18",
+          "load": "10-12.5 kg",
+          "target": "RIR 1-2",
+          "muscle": "deltoide lateral",
+          "note": "Progresar por calidad, no ego."
+        },
+        {
+          "name": "Curl inclinado / polea",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Subir reps antes que peso."
+        },
+        {
+          "name": "Tríceps overhead / pushdown",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Fluido, sin bloqueo agresivo."
+        },
+        {
+          "name": "Calistenia técnica",
+          "sets": 2,
+          "reps": "Submáximo",
+          "load": "Peso corporal",
+          "target": "RIR 3",
+          "muscle": "core/control",
+          "note": "Soporte paralelas, hollow hold, scap pushups."
+        }
+      ],
+      "Domingo - Trote opcional": [
+        {
+          "name": "Trote zona 2 / caminata rápida",
+          "sets": 1,
+          "reps": "20-45 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "Opcional. No fuerte si isquio/lumbar sensible."
+        },
+        {
+          "name": "Chequeo semanal",
+          "sets": 1,
+          "reps": "5 min",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Peso, dolor, fatiga, PRs, energía."
+        }
+      ]
+    },
+    "Semana 5": {
+      "Lunes - Descanso": [
+        {
+          "name": "Movilidad + caminata",
+          "sets": 1,
+          "reps": "15-25 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Pico técnico controlado. Rep PR técnico, no ego PR. Si hay dolor, cancelar pico."
+        },
+        {
+          "name": "Chequeo molestias",
+          "sets": 1,
+          "reps": "0-10",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Registrar hombro, cuello/lumbar, isquio, energía y sueño."
+        }
+      ],
+      "Martes - Lower A": [
+        {
+          "name": "Prensa 45 top/backoff",
+          "sets": 3,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "270-285 kg top / 250-260 kg back",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "cuádriceps",
+          "note": "Profundidad, control, sin manos. Sin back squat por cuello."
+        },
+        {
+          "name": "Variante unilateral / hack / belt / Smith sin cuello",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "cuádriceps",
+          "note": "Elegir variante que no cargue cervical."
+        },
+        {
+          "name": "Sentadilla búlgara",
+          "sets": 2,
+          "reps": "8-10 por pierna",
+          "load": "36-40 kg si técnica limpia",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "glúteo",
+          "note": "Control cardiaco, sin fallo técnico."
+        },
+        {
+          "name": "Extensión cuádriceps",
+          "sets": 3,
+          "reps": "12-15",
+          "load": "mínimo útil",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "cuádriceps",
+          "note": "Pausa 1 s arriba. Rodilla manda."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 3,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Rango completo y descanso real."
+        },
+        {
+          "name": "Core anti-extensión",
+          "sets": 3,
+          "reps": "10-15 o 20-40 s",
+          "load": "Moderado",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Calidad antes que carga."
+        }
+      ],
+      "Miércoles - Upper A": [
+        {
+          "name": "Dominadas lastradas / jalón neutro",
+          "sets": 3,
+          "reps": "Top 5-8 / Back 6-10",
+          "load": "+30-32.5 kg",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Barbilla limpia. Si codo/agarre molesta, jalón neutro."
+        },
+        {
+          "name": "Press inclinado mancuernas top/backoff",
+          "sets": 3,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "40 kg rep PR / back 36 kg",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "pecho",
+          "note": "Hombro protegido. No pelear dolor."
+        },
+        {
+          "name": "Remo pecho apoyado / Hammer",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "mínimo útil",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Dorsal antes que agarre. Pausa atrás."
+        },
+        {
+          "name": "Press plano máquina neutro",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "pecho",
+          "note": "Volumen limpio, sin grind."
+        },
+        {
+          "name": "Pushdown tríceps",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Sin bloqueo violento."
+        },
+        {
+          "name": "Curl bíceps",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Controlado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Codo estable."
+        },
+        {
+          "name": "Circuito escapular",
+          "sets": 1,
+          "reps": "5-8 min",
+          "load": "Ligero",
+          "target": "Técnico",
+          "muscle": "escápula/manguito",
+          "note": "No saltar. Salud de hombro."
+        }
+      ],
+      "Jueves - Cardio suave": [
+        {
+          "name": "Zona 2 / trote suave",
+          "sets": 1,
+          "reps": "25-40 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "No convertirlo en test."
+        },
+        {
+          "name": "Movilidad cadera/isquio",
+          "sets": 1,
+          "reps": "10-15 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Preparar Lower B."
+        }
+      ],
+      "Viernes - Lower B": [
+        {
+          "name": "RDL principal / deadlift técnico solo si verde",
+          "sets": 3,
+          "reps": "1-8 según variante",
+          "load": "RDL 145-150 o DL 180-190 solo verde",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "posterior/hinge",
+          "note": "Una sola bisagra principal. No sumar RDL + DL pesados."
+        },
+        {
+          "name": "Hip thrust",
+          "sets": 3,
+          "reps": "6-8",
+          "load": "180-190 kg",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "glúteo",
+          "note": "Pausa 1 s arriba. Glúteo, no lumbar."
+        },
+        {
+          "name": "Curl femoral",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "90-110 lbs / moderado",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Excéntrica controlada."
+        },
+        {
+          "name": "Prensa pies altos",
+          "sets": 2,
+          "reps": "10-12",
+          "load": "moderado",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "glúteo",
+          "note": "Estímulo glúteo/isquio sin otra bisagra pesada."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 3,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Constancia y rango completo."
+        },
+        {
+          "name": "Core/carry opcional",
+          "sets": 2,
+          "reps": "20-40 s",
+          "load": "Moderado",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Solo si agarre/lumbar están bien."
+        }
+      ],
+      "Sábado - Upper B": [
+        {
+          "name": "Incline DB Press",
+          "sets": 3,
+          "reps": "8-10",
+          "load": "38-40 kg si estable",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "pecho",
+          "note": "4ta serie solo si estás verde."
+        },
+        {
+          "name": "Jalón neutro / dominadas BW",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "200-210 lbs",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Control escapular."
+        },
+        {
+          "name": "Remo polea / pecho apoyado",
+          "sets": 3,
+          "reps": "10-12",
+          "load": "70-85 kg / moderado",
+          "target": "RIR 0-1 solo top seguro / resto 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Pausa atrás."
+        },
+        {
+          "name": "Elevaciones laterales",
+          "sets": 3,
+          "reps": "12-18",
+          "load": "moderado",
+          "target": "RIR 1-2",
+          "muscle": "deltoide lateral",
+          "note": "Progresar por calidad, no ego."
+        },
+        {
+          "name": "Curl inclinado / polea",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Subir reps antes que peso."
+        },
+        {
+          "name": "Tríceps overhead / pushdown",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Fluido, sin bloqueo agresivo."
+        },
+        {
+          "name": "Calistenia técnica",
+          "sets": 2,
+          "reps": "Submáximo",
+          "load": "Peso corporal",
+          "target": "RIR 3",
+          "muscle": "core/control",
+          "note": "Soporte paralelas, hollow hold, scap pushups."
+        }
+      ],
+      "Domingo - Trote opcional": [
+        {
+          "name": "Trote zona 2 / caminata rápida",
+          "sets": 1,
+          "reps": "20-45 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "Opcional. No fuerte si isquio/lumbar sensible."
+        },
+        {
+          "name": "Chequeo semanal",
+          "sets": 1,
+          "reps": "5 min",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Peso, dolor, fatiga, PRs, energía."
+        }
+      ]
+    },
+    "Semana 6": {
+      "Lunes - Descanso": [
+        {
+          "name": "Movilidad + caminata",
+          "sets": 1,
+          "reps": "15-25 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Pivot / Deload inteligente. Bajar volumen 40-50%. Salir fresco."
+        },
+        {
+          "name": "Chequeo molestias",
+          "sets": 1,
+          "reps": "0-10",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Registrar hombro, cuello/lumbar, isquio, energía y sueño."
+        }
+      ],
+      "Martes - Lower A": [
+        {
+          "name": "Prensa 45 top/backoff",
+          "sets": 2,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "210-230 kg",
+          "target": "RIR 3-4",
+          "muscle": "cuádriceps",
+          "note": "Profundidad, control, sin manos. Sin back squat por cuello."
+        },
+        {
+          "name": "Variante unilateral / hack / belt / Smith sin cuello",
+          "sets": 1,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 3-4",
+          "muscle": "cuádriceps",
+          "note": "Elegir variante que no cargue cervical."
+        },
+        {
+          "name": "Sentadilla búlgara",
+          "sets": 1,
+          "reps": "8-10 por pierna",
+          "load": "20-24 kg c/mano",
+          "target": "RIR 3-4",
+          "muscle": "glúteo",
+          "note": "Control cardiaco, sin fallo técnico."
+        },
+        {
+          "name": "Extensión cuádriceps",
+          "sets": 2,
+          "reps": "12-15",
+          "load": "120-150 lbs",
+          "target": "RIR 3-4",
+          "muscle": "cuádriceps",
+          "note": "Pausa 1 s arriba. Rodilla manda."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 2,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Rango completo y descanso real."
+        },
+        {
+          "name": "Core anti-extensión",
+          "sets": 2,
+          "reps": "10-15 o 20-40 s",
+          "load": "Moderado",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Calidad antes que carga."
+        }
+      ],
+      "Miércoles - Upper A": [
+        {
+          "name": "Dominadas lastradas / jalón neutro",
+          "sets": 2,
+          "reps": "Top 5-8 / Back 6-10",
+          "load": "BW/+10 o jalón ligero",
+          "target": "RIR 3-4",
+          "muscle": "espalda/dorsal",
+          "note": "Barbilla limpia. Si codo/agarre molesta, jalón neutro."
+        },
+        {
+          "name": "Press inclinado mancuernas top/backoff",
+          "sets": 2,
+          "reps": "Top 6-8 / Back 8-10",
+          "load": "30-32 kg",
+          "target": "RIR 3-4",
+          "muscle": "pecho",
+          "note": "Hombro protegido. No pelear dolor."
+        },
+        {
+          "name": "Remo pecho apoyado / Hammer",
+          "sets": 2,
+          "reps": "8-12",
+          "load": "60-70 kg",
+          "target": "RIR 3-4",
+          "muscle": "espalda/dorsal",
+          "note": "Dorsal antes que agarre. Pausa atrás."
+        },
+        {
+          "name": "Press plano máquina neutro",
+          "sets": 1,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 3-4",
+          "muscle": "pecho",
+          "note": "Volumen limpio, sin grind."
+        },
+        {
+          "name": "Pushdown tríceps",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Sin bloqueo violento."
+        },
+        {
+          "name": "Curl bíceps",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Controlado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Codo estable."
+        },
+        {
+          "name": "Circuito escapular",
+          "sets": 1,
+          "reps": "5-8 min",
+          "load": "Ligero",
+          "target": "Técnico",
+          "muscle": "escápula/manguito",
+          "note": "No saltar. Salud de hombro."
+        }
+      ],
+      "Jueves - Cardio suave": [
+        {
+          "name": "Zona 2 / trote suave",
+          "sets": 1,
+          "reps": "25-40 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "No convertirlo en test."
+        },
+        {
+          "name": "Movilidad cadera/isquio",
+          "sets": 1,
+          "reps": "10-15 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Preparar Lower B."
+        }
+      ],
+      "Viernes - Lower B": [
+        {
+          "name": "RDL principal / deadlift técnico solo si verde",
+          "sets": 2,
+          "reps": "6-8",
+          "load": "RDL 110-120 o DL técnico 130-150",
+          "target": "RIR 3-4",
+          "muscle": "posterior/hinge",
+          "note": "Una sola bisagra principal. No sumar RDL + DL pesados."
+        },
+        {
+          "name": "Hip thrust",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "130-150 kg",
+          "target": "RIR 3-4",
+          "muscle": "glúteo",
+          "note": "Pausa 1 s arriba. Glúteo, no lumbar."
+        },
+        {
+          "name": "Curl femoral",
+          "sets": 2,
+          "reps": "10-12",
+          "load": "90-110 lbs / moderado",
+          "target": "RIR 1-2",
+          "muscle": "isquios",
+          "note": "Excéntrica controlada."
+        },
+        {
+          "name": "Prensa pies altos",
+          "sets": 1,
+          "reps": "10-12",
+          "load": "ligera",
+          "target": "RIR 3-4",
+          "muscle": "glúteo",
+          "note": "Estímulo glúteo/isquio sin otra bisagra pesada."
+        },
+        {
+          "name": "Gemelos",
+          "sets": 2,
+          "reps": "12-20",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "gemelos",
+          "note": "Constancia y rango completo."
+        },
+        {
+          "name": "Core/carry opcional",
+          "sets": 1,
+          "reps": "20-40 s",
+          "load": "Moderado",
+          "target": "Técnico",
+          "muscle": "core/control",
+          "note": "Solo si agarre/lumbar están bien."
+        }
+      ],
+      "Sábado - Upper B": [
+        {
+          "name": "Incline DB Press",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "26-30 kg",
+          "target": "RIR 3-4",
+          "muscle": "pecho",
+          "note": "4ta serie solo si estás verde."
+        },
+        {
+          "name": "Jalón neutro / dominadas BW",
+          "sets": 2,
+          "reps": "8-12",
+          "load": "150-170 lbs",
+          "target": "RIR 3-4",
+          "muscle": "espalda/dorsal",
+          "note": "Control escapular."
+        },
+        {
+          "name": "Remo polea / pecho apoyado",
+          "sets": 2,
+          "reps": "10-12",
+          "load": "70-85 kg / moderado",
+          "target": "RIR 3-4",
+          "muscle": "espalda/dorsal",
+          "note": "Pausa atrás."
+        },
+        {
+          "name": "Elevaciones laterales",
+          "sets": 1,
+          "reps": "12-18",
+          "load": "5-7.5 kg",
+          "target": "RIR 1-2",
+          "muscle": "deltoide lateral",
+          "note": "Progresar por calidad, no ego."
+        },
+        {
+          "name": "Curl inclinado / polea",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Subir reps antes que peso."
+        },
+        {
+          "name": "Tríceps overhead / pushdown",
+          "sets": 1,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Fluido, sin bloqueo agresivo."
+        },
+        {
+          "name": "Calistenia técnica",
+          "sets": 1,
+          "reps": "Submáximo",
+          "load": "Peso corporal",
+          "target": "RIR 3",
+          "muscle": "core/control",
+          "note": "Soporte paralelas, hollow hold, scap pushups."
+        }
+      ],
+      "Domingo - Trote opcional": [
+        {
+          "name": "Trote zona 2 / caminata rápida",
+          "sets": 1,
+          "reps": "20-45 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "Opcional. No fuerte si isquio/lumbar sensible."
+        },
+        {
+          "name": "Chequeo semanal",
+          "sets": 1,
+          "reps": "5 min",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Peso, dolor, fatiga, PRs, energía."
+        }
+      ]
+    }
+  },
+  "weeklyTargets": {
+    "Semana 1": {
+      "cuádriceps": 9,
+      "glúteo": 7,
+      "isquios": 7,
+      "posterior/hinge": 3,
+      "pecho": 8,
+      "espalda/dorsal": 10,
+      "deltoide lateral": 3,
+      "bíceps": 4,
+      "tríceps": 4,
+      "gemelos": 6,
+      "core/control": 4,
+      "escápula/manguito": 2,
+      "cardio": 1,
+      "recuperación": 2,
+      "general": 0
+    },
+    "Semana 2": {
+      "cuádriceps": 10,
+      "glúteo": 8,
+      "isquios": 8,
+      "posterior/hinge": 3,
+      "pecho": 9,
+      "espalda/dorsal": 11,
+      "deltoide lateral": 4,
+      "bíceps": 5,
+      "tríceps": 5,
+      "gemelos": 6,
+      "core/control": 5,
+      "escápula/manguito": 3,
+      "cardio": 1,
+      "recuperación": 2,
+      "general": 0
+    },
+    "Semana 2.5 Pivot": {
+      "cuádriceps": 7,
+      "glúteo": 5,
+      "isquios": 4,
+      "posterior/hinge": 3,
+      "pecho": 5,
+      "espalda/dorsal": 6,
+      "deltoide lateral": 2,
+      "bíceps": 2,
+      "tríceps": 3,
+      "gemelos": 4,
+      "core/control": 3,
+      "escápula/manguito": 2,
+      "cardio": 1,
+      "recuperación": 3,
+      "general": 0
+    },
+    "Semana 3": {
+      "cuádriceps": 11,
+      "glúteo": 10,
+      "isquios": 9,
+      "posterior/hinge": 3,
+      "pecho": 10,
+      "espalda/dorsal": 13,
+      "deltoide lateral": 5,
+      "bíceps": 6,
+      "tríceps": 6,
+      "gemelos": 7,
+      "core/control": 6,
+      "escápula/manguito": 3,
+      "cardio": 2,
+      "recuperación": 2,
+      "general": 0
+    },
+    "Semana 4": {
+      "cuádriceps": 11,
+      "glúteo": 10,
+      "isquios": 9,
+      "posterior/hinge": 3,
+      "pecho": 10,
+      "espalda/dorsal": 13,
+      "deltoide lateral": 5,
+      "bíceps": 6,
+      "tríceps": 6,
+      "gemelos": 7,
+      "core/control": 6,
+      "escápula/manguito": 3,
+      "cardio": 2,
+      "recuperación": 2,
+      "general": 0
+    },
+    "Semana 5": {
+      "cuádriceps": 10,
+      "glúteo": 9,
+      "isquios": 8,
+      "posterior/hinge": 3,
+      "pecho": 9,
+      "espalda/dorsal": 11,
+      "deltoide lateral": 4,
+      "bíceps": 5,
+      "tríceps": 5,
+      "gemelos": 6,
+      "core/control": 5,
+      "escápula/manguito": 2,
+      "cardio": 1,
+      "recuperación": 2,
+      "general": 0
+    },
+    "Semana 6": {
+      "cuádriceps": 6,
+      "glúteo": 6,
+      "isquios": 5,
+      "posterior/hinge": 2,
+      "pecho": 5,
+      "espalda/dorsal": 7,
+      "deltoide lateral": 2,
+      "bíceps": 3,
+      "tríceps": 3,
+      "gemelos": 4,
+      "core/control": 4,
+      "escápula/manguito": 2,
+      "cardio": 1,
+      "recuperación": 4,
+      "general": 0
+    }
+  },
+  "seedSessions": [
+    {
+      "id": 250001,
+      "date": "Semana 2.5",
+      "week": "Semana 2.5 Pivot",
+      "day": "Martes - Lower A",
+      "readiness": {
+        "status": "Importado",
+        "sleep": "",
+        "energy": "",
+        "shoulder": "",
+        "neck": "",
+        "ham": "",
+        "motivation": ""
+      },
+      "notes": "Cuádriceps controlado. Progreso limpio sin castigar lumbar ni repetir fallo cardiaco.",
+      "exercises": [
+        {
+          "name": "Búlgara",
+          "muscle": "cuádriceps",
+          "target": "RIR 2-3",
+          "actualSets": 2,
+          "isAdded": false,
+          "isAlternative": false,
+          "note": "Bajar un poco por lumbar. No repetir fallo cardiaco.",
+          "sets": [
+            {
+              "set": 1,
+              "weight": "27,5 kg por mano",
+              "repsDone": "10 por pierna",
+              "rir": "RIR 3-4",
+              "feeling": "controlado",
+              "rest": "2-3 min",
+              "pain": "0",
+              "done": true
+            },
+            {
+              "set": 2,
+              "weight": "27,5 kg por mano",
+              "repsDone": "10 por pierna",
+              "rir": "RIR 3",
+              "feeling": "controlado",
+              "rest": "2-3 min",
+              "pain": "0",
+              "done": true
+            }
+          ]
+        },
+        {
+          "name": "Prensa 45",
+          "muscle": "cuádriceps",
+          "target": "RIR 2",
+          "actualSets": 2,
+          "isAdded": false,
+          "isAlternative": false,
+          "note": "No pasar de 240 si se siente pesada. Sin manos ayudando.",
+          "sets": [
+            {
+              "set": 1,
+              "weight": "230 kg",
+              "repsDone": "10",
+              "rir": "RIR 2-3",
+              "feeling": "sólida",
+              "rest": "3-4 min",
+              "pain": "0",
+              "done": true
+            },
+            {
+              "set": 2,
+              "weight": "230 kg",
+              "repsDone": "10",
+              "rir": "RIR 1-2",
+              "feeling": "más pesada",
+              "rest": "3-4 min",
+              "pain": "0",
+              "done": true
+            }
+          ]
+        },
+        {
+          "name": "Sóleo sentado + gemelos de pie",
+          "muscle": "gemelos",
+          "target": "RIR 1-2",
+          "actualSets": 2,
+          "isAdded": true,
+          "isAlternative": true,
+          "note": "40 kg sentado + de pie con peso corporal.",
+          "sets": [
+            {
+              "set": 1,
+              "weight": "40 kg + peso corporal",
+              "repsDone": "20 sentado + 21 de pie",
+              "rir": "",
+              "feeling": "controlado",
+              "rest": "60-90 s",
+              "pain": "0",
+              "done": true
+            },
+            {
+              "set": 2,
+              "weight": "40 kg + peso corporal",
+              "repsDone": "similar S1",
+              "rir": "",
+              "feeling": "controlado",
+              "rest": "60-90 s",
+              "pain": "0",
+              "done": true
+            }
+          ]
+        },
+        {
+          "name": "Extensión cuádriceps",
+          "muscle": "cuádriceps",
+          "target": "RIR 1-2",
+          "actualSets": 3,
+          "isAdded": false,
+          "isAlternative": false,
+          "note": "Lento y controlado. Rodilla manda.",
+          "sets": [
+            {
+              "set": 1,
+              "weight": "115 kg",
+              "repsDone": "15",
+              "rir": "@6 fácil",
+              "feeling": "fácil",
+              "rest": "90 s",
+              "pain": "0",
+              "done": true
+            },
+            {
+              "set": 2,
+              "weight": "115 kg",
+              "repsDone": "15",
+              "rir": "",
+              "feeling": "controlado",
+              "rest": "90 s",
+              "pain": "0",
+              "done": true
+            },
+            {
+              "set": 3,
+              "weight": "115 kg",
+              "repsDone": "15",
+              "rir": "",
+              "feeling": "controlado",
+              "rest": "90 s",
+              "pain": "0",
+              "done": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 250002,
+      "date": "Semana 2.5",
+      "week": "Semana 2.5 Pivot",
+      "day": "Miércoles - Upper A",
+      "readiness": {
+        "status": "Precaución",
+        "sleep": "PM/sueño",
+        "energy": "",
+        "shoulder": "6",
+        "neck": "",
+        "ham": "",
+        "motivation": ""
+      },
+      "notes": "Entreno PM con sueño. Dolor 6/10 en press inclinado. Evitar RIR 0 en Semana 3.",
+      "exercises": [
+        {
+          "name": "Press inclinado mancuernas",
+          "muscle": "pecho",
+          "target": "RIR 2",
+          "actualSets": 2,
+          "isAdded": false,
+          "isAlternative": false,
+          "note": "Dolor 6/10. No repetir agresivo si hombro/pecho molesta.",
+          "sets": [
+            {
+              "set": 1,
+              "weight": "75 lbs",
+              "repsDone": "9",
+              "rir": "RIR 1",
+              "feeling": "pesado",
+              "rest": "3 min",
+              "pain": "6",
+              "done": true
+            },
+            {
+              "set": 2,
+              "weight": "75 lbs",
+              "repsDone": "7",
+              "rir": "RIR 1",
+              "feeling": "pesado",
+              "rest": "3 min",
+              "pain": "6",
+              "done": true
+            }
+          ]
+        },
+        {
+          "name": "Pulldown",
+          "muscle": "espalda/dorsal",
+          "target": "RIR 2",
+          "actualSets": 3,
+          "isAdded": true,
+          "isAlternative": true,
+          "note": "Reemplazo/variación de dominadas.",
+          "sets": [
+            {
+              "set": 1,
+              "weight": "96 kg",
+              "repsDone": "8",
+              "rir": "",
+              "feeling": "fuerte",
+              "rest": "2-3 min",
+              "pain": "0",
+              "done": true
+            },
+            {
+              "set": 2,
+              "weight": "82 kg",
+              "repsDone": "10",
+              "rir": "RIR 1",
+              "feeling": "controlado",
+              "rest": "2-3 min",
+              "pain": "0",
+              "done": true
+            },
+            {
+              "set": 3,
+              "weight": "82 kg",
+              "repsDone": "8",
+              "rir": "RIR 3",
+              "feeling": "controlado",
+              "rest": "2-3 min",
+              "pain": "0",
+              "done": true
+            }
+          ]
+        },
+        {
+          "name": "Pushdown tríceps",
+          "muscle": "tríceps",
+          "target": "RIR 1-2",
+          "actualSets": 2,
+          "isAdded": false,
+          "isAlternative": false,
+          "note": "Una serie llegó a RIR 0. Controlar.",
+          "sets": [
+            {
+              "set": 1,
+              "weight": "80 lbs",
+              "repsDone": "11",
+              "rir": "RIR 0",
+              "feeling": "al límite",
+              "rest": "90 s",
+              "pain": "0",
+              "done": true
+            },
+            {
+              "set": 2,
+              "weight": "65 lbs",
+              "repsDone": "15",
+              "rir": "RIR 2",
+              "feeling": "mejor",
+              "rest": "90 s",
+              "pain": "0",
+              "done": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 250003,
+      "date": "Semana 2.5",
+      "week": "Semana 2.5 Pivot",
+      "day": "Viernes - Lower B",
+      "readiness": {
+        "status": "Importado",
+        "sleep": "",
+        "energy": "",
+        "shoulder": "",
+        "neck": "",
+        "ham": "",
+        "motivation": ""
+      },
+      "notes": "Día sin tiempo. Solo dos ejercicios ejecutados. Sin hip thrust, prensa pies altos, gemelos ni core.",
+      "exercises": [
+        {
+          "name": "Peso muerto semi sumo",
+          "muscle": "posterior/hinge",
+          "target": "RIR 2-3",
+          "actualSets": 2,
+          "isAdded": true,
+          "isAlternative": true,
+          "note": "Hinge único y controlado. No subir a 145 todavía.",
+          "sets": [
+            {
+              "set": 1,
+              "weight": "130 kg",
+              "repsDone": "8",
+              "rir": "RIR 3",
+              "feeling": "técnico",
+              "rest": "3 min",
+              "pain": "0",
+              "done": true
+            },
+            {
+              "set": 2,
+              "weight": "130 kg",
+              "repsDone": "8",
+              "rir": "RIR 3",
+              "feeling": "técnico",
+              "rest": "3 min",
+              "pain": "0",
+              "done": true
+            }
+          ]
+        },
+        {
+          "name": "Curl femoral",
+          "muscle": "isquio",
+          "target": "RIR 1-2",
+          "actualSets": 3,
+          "isAdded": false,
+          "isAlternative": false,
+          "note": "Mucho RIR. Sesión corta.",
+          "sets": [
+            {
+              "set": 1,
+              "weight": "60 lbs",
+              "repsDone": "20",
+              "rir": "muchos",
+              "feeling": "fácil",
+              "rest": "2 min",
+              "pain": "0",
+              "done": true
+            },
+            {
+              "set": 2,
+              "weight": "80 lbs",
+              "repsDone": "15",
+              "rir": "muchos",
+              "feeling": "fácil",
+              "rest": "2 min",
+              "pain": "0",
+              "done": true
+            },
+            {
+              "set": 3,
+              "weight": "80 lbs",
+              "repsDone": "15",
+              "rir": "muchos",
+              "feeling": "fácil",
+              "rest": "2 min",
+              "pain": "0",
+              "done": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "legacyRoutine": {
+    "normal": {
+      "Lunes - Descanso": [
+        {
+          "name": "Movilidad + caminata suave",
+          "sets": 1,
+          "reps": "15-25 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Recuperación activa"
+        },
+        {
+          "name": "Chequeo molestias",
+          "sets": 1,
+          "reps": "0-10",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Registrar hombro, cervical/lumbar e isquio"
+        }
+      ],
+      "Martes - Lower A": [
+        {
+          "name": "Sentadilla alta",
+          "sets": 4,
+          "reps": "4-5",
+          "load": "145-155 kg",
+          "target": "RPE 7-8",
+          "muscle": "cuádriceps",
+          "note": "Cuidar cervical. Si molesta, alternativa: prensa/hack"
+        },
+        {
+          "name": "Sentadilla pausada",
+          "sets": 3,
+          "reps": "3-4",
+          "load": "110-120 kg",
+          "target": "RPE 6-7",
+          "muscle": "cuádriceps",
+          "note": "Pausa 2s, técnica limpia"
+        },
+        {
+          "name": "Prensa o accesorios cuádriceps",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "Moderado",
+          "target": "RIR 2-3",
+          "muscle": "cuádriceps",
+          "note": "No llegar al fallo"
+        },
+        {
+          "name": "Curl femoral",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "Moderado",
+          "target": "RIR 2",
+          "muscle": "isquios",
+          "note": "Si isquio tira, bajar carga"
+        }
+      ],
+      "Miércoles - Upper A": [
+        {
+          "name": "Press inclinado mancuernas",
+          "sets": 3,
+          "reps": "6-8",
+          "load": "35-40 kg",
+          "target": "RIR 1-2",
+          "muscle": "pecho",
+          "note": "Último fuerte: 40x5 RIR1; 35x7 RIR1"
+        },
+        {
+          "name": "Dominadas lastradas",
+          "sets": 3,
+          "reps": "6-8",
+          "load": "25-30 kg",
+          "target": "RIR 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Último fuerte: 30x8/7/6"
+        },
+        {
+          "name": "Remo",
+          "sets": 3,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 2",
+          "muscle": "espalda/dorsal",
+          "note": "Control escapular"
+        },
+        {
+          "name": "Elevaciones laterales",
+          "sets": 3,
+          "reps": "12-20",
+          "load": "Ligero",
+          "target": "RIR 2",
+          "muscle": "deltoide lateral",
+          "note": "No irritar hombro"
+        },
+        {
+          "name": "Curl bíceps",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Evitar fallo si estás amarillo"
+        },
+        {
+          "name": "Extensión tríceps",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Evitar fallo si estás amarillo"
+        }
+      ],
+      "Jueves - Cardio suave": [
+        {
+          "name": "Zona 2",
+          "sets": 1,
+          "reps": "25-40 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "Respiración controlada"
+        },
+        {
+          "name": "Movilidad cadera/isquio",
+          "sets": 1,
+          "reps": "10-15 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "No estirar agresivo si hay tirón"
+        }
+      ],
+      "Viernes - Lower B": [
+        {
+          "name": "Peso muerto sumo",
+          "sets": 4,
+          "reps": "3",
+          "load": "180-190 kg",
+          "target": "RPE 7-8.5",
+          "muscle": "posterior/hinge",
+          "note": "Punto débil: bloqueo final"
+        },
+        {
+          "name": "Halting deadlift",
+          "sets": 3,
+          "reps": "3-4",
+          "load": "145 kg aprox",
+          "target": "RPE 6-7",
+          "muscle": "posterior/hinge",
+          "note": "Pausar antes del bloqueo"
+        },
+        {
+          "name": "Hip thrust o RDL liviano",
+          "sets": 3,
+          "reps": "6-10",
+          "load": "Moderado",
+          "target": "RIR 2",
+          "muscle": "glúteo",
+          "note": "Priorizar glúteo, no lumbar"
+        },
+        {
+          "name": "Core",
+          "sets": 2,
+          "reps": "8-12",
+          "load": "—",
+          "target": "Control",
+          "muscle": "core/control",
+          "note": "Estabilidad"
+        }
+      ],
+      "Sábado - Upper B": [
+        {
+          "name": "Press banca o pausa",
+          "sets": 3,
+          "reps": "3-5",
+          "load": "105-115 kg",
+          "target": "RPE 7-8",
+          "muscle": "pecho",
+          "note": "Si hombro molesta, pausa liviana o inclinado"
+        },
+        {
+          "name": "Dominadas/chin ups",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "Peso corporal/lastre moderado",
+          "target": "RIR 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Chin ups previos 14/13/11"
+        },
+        {
+          "name": "Press hombro moderado",
+          "sets": 3,
+          "reps": "6-10",
+          "load": "Moderado",
+          "target": "RIR 2",
+          "muscle": "deltoide lateral",
+          "note": "Cuidar hombro"
+        },
+        {
+          "name": "Remo horizontal",
+          "sets": 3,
+          "reps": "8-12",
+          "load": "Moderado",
+          "target": "RIR 2",
+          "muscle": "espalda/dorsal",
+          "note": "Control"
+        },
+        {
+          "name": "Curl bíceps",
+          "sets": 3,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Acumular sin destruirte"
+        },
+        {
+          "name": "Tríceps extra",
+          "sets": 3,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Acumular sin destruirte"
+        }
+      ],
+      "Domingo - Trote opcional": [
+        {
+          "name": "Trote opcional",
+          "sets": 1,
+          "reps": "20-45 min",
+          "load": "—",
+          "target": "Según isquio",
+          "muscle": "cardio",
+          "note": "Si hay isquio sensible, zona 2 o caminar"
+        },
+        {
+          "name": "Chequeo semanal",
+          "sets": 1,
+          "reps": "5 min",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Anotar peso, dolor, fatiga, PRs"
+        }
+      ]
+    },
+    "pivot": {
+      "Lunes - Descanso": [
+        {
+          "name": "Movilidad + caminata suave",
+          "sets": 1,
+          "reps": "15-25 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "Recuperación activa"
+        },
+        {
+          "name": "Chequeo molestias",
+          "sets": 1,
+          "reps": "0-10",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Registrar hombro, cervical/lumbar e isquio"
+        }
+      ],
+      "Martes - Lower A": [
+        {
+          "name": "Sentadilla alta",
+          "sets": 2,
+          "reps": "3-5",
+          "load": "110-130 kg",
+          "target": "RPE 6",
+          "muscle": "cuádriceps",
+          "note": "Cuidar cervical. Si molesta, alternativa: prensa/hack"
+        },
+        {
+          "name": "Sentadilla pausada",
+          "sets": 2,
+          "reps": "3-4",
+          "load": "90-100 kg",
+          "target": "RPE 6-7",
+          "muscle": "cuádriceps",
+          "note": "Pausa 2s, técnica limpia"
+        },
+        {
+          "name": "Prensa o accesorios cuádriceps",
+          "sets": 2,
+          "reps": "8-12",
+          "load": "Moderado",
+          "target": "RIR 2-3",
+          "muscle": "cuádriceps",
+          "note": "No llegar al fallo"
+        },
+        {
+          "name": "Curl femoral",
+          "sets": 2,
+          "reps": "8-12",
+          "load": "Moderado",
+          "target": "RIR 2",
+          "muscle": "isquios",
+          "note": "Si isquio tira, bajar carga"
+        }
+      ],
+      "Miércoles - Upper A": [
+        {
+          "name": "Press inclinado mancuernas",
+          "sets": 2,
+          "reps": "6-8",
+          "load": "30-35 kg",
+          "target": "RIR 1-2",
+          "muscle": "pecho",
+          "note": "Último fuerte: 40x5 RIR1; 35x7 RIR1"
+        },
+        {
+          "name": "Dominadas lastradas",
+          "sets": 2,
+          "reps": "6-8",
+          "load": "20-25 kg",
+          "target": "RIR 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Último fuerte: 30x8/7/6"
+        },
+        {
+          "name": "Remo",
+          "sets": 2,
+          "reps": "8-10",
+          "load": "Moderado",
+          "target": "RIR 2",
+          "muscle": "espalda/dorsal",
+          "note": "Control escapular"
+        },
+        {
+          "name": "Elevaciones laterales",
+          "sets": 2,
+          "reps": "12-20",
+          "load": "Ligero",
+          "target": "RIR 2",
+          "muscle": "deltoide lateral",
+          "note": "No irritar hombro"
+        },
+        {
+          "name": "Curl bíceps",
+          "sets": 2,
+          "reps": "8-12",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Evitar fallo si estás amarillo"
+        },
+        {
+          "name": "Extensión tríceps",
+          "sets": 2,
+          "reps": "8-12",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Evitar fallo si estás amarillo"
+        }
+      ],
+      "Jueves - Cardio suave": [
+        {
+          "name": "Zona 2",
+          "sets": 1,
+          "reps": "25-40 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "cardio",
+          "note": "Respiración controlada"
+        },
+        {
+          "name": "Movilidad cadera/isquio",
+          "sets": 1,
+          "reps": "10-15 min",
+          "load": "—",
+          "target": "Suave",
+          "muscle": "recuperación",
+          "note": "No estirar agresivo si hay tirón"
+        }
+      ],
+      "Viernes - Lower B": [
+        {
+          "name": "Peso muerto sumo",
+          "sets": 2,
+          "reps": "2-3",
+          "load": "140-160 kg",
+          "target": "RPE 6",
+          "muscle": "posterior/hinge",
+          "note": "Punto débil: bloqueo final"
+        },
+        {
+          "name": "Halting deadlift",
+          "sets": 2,
+          "reps": "3-4",
+          "load": "120-130 kg",
+          "target": "RPE 6-7",
+          "muscle": "posterior/hinge",
+          "note": "Pausar antes del bloqueo"
+        },
+        {
+          "name": "Hip thrust o RDL liviano",
+          "sets": 2,
+          "reps": "6-10",
+          "load": "Moderado",
+          "target": "RIR 2",
+          "muscle": "glúteo",
+          "note": "Priorizar glúteo, no lumbar"
+        },
+        {
+          "name": "Core",
+          "sets": 2,
+          "reps": "8-12",
+          "load": "—",
+          "target": "Control",
+          "muscle": "core/control",
+          "note": "Estabilidad"
+        }
+      ],
+      "Sábado - Upper B": [
+        {
+          "name": "Press banca o pausa",
+          "sets": 2,
+          "reps": "3-5",
+          "load": "90-100 kg",
+          "target": "RPE 6",
+          "muscle": "pecho",
+          "note": "Si hombro molesta, pausa liviana o inclinado"
+        },
+        {
+          "name": "Dominadas/chin ups",
+          "sets": 2,
+          "reps": "8-12",
+          "load": "Peso corporal/lastre moderado",
+          "target": "RIR 1-2",
+          "muscle": "espalda/dorsal",
+          "note": "Chin ups previos 14/13/11"
+        },
+        {
+          "name": "Press hombro moderado",
+          "sets": 2,
+          "reps": "6-10",
+          "load": "Moderado",
+          "target": "RIR 2",
+          "muscle": "deltoide lateral",
+          "note": "Cuidar hombro"
+        },
+        {
+          "name": "Remo horizontal",
+          "sets": 2,
+          "reps": "8-12",
+          "load": "Moderado",
+          "target": "RIR 2",
+          "muscle": "espalda/dorsal",
+          "note": "Control"
+        },
+        {
+          "name": "Curl bíceps",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "bíceps",
+          "note": "Acumular sin destruirte"
+        },
+        {
+          "name": "Tríceps extra",
+          "sets": 2,
+          "reps": "10-15",
+          "load": "Moderado",
+          "target": "RIR 1-2",
+          "muscle": "tríceps",
+          "note": "Acumular sin destruirte"
+        }
+      ],
+      "Domingo - Trote opcional": [
+        {
+          "name": "Trote opcional",
+          "sets": 1,
+          "reps": "20-45 min",
+          "load": "—",
+          "target": "Según isquio",
+          "muscle": "cardio",
+          "note": "Si hay isquio sensible, zona 2 o caminar"
+        },
+        {
+          "name": "Chequeo semanal",
+          "sets": 1,
+          "reps": "5 min",
+          "load": "—",
+          "target": "Honesto",
+          "muscle": "recuperación",
+          "note": "Anotar peso, dolor, fatiga, PRs"
+        }
+      ]
+    }
+  },
+  "exerciseAliases": {
+    "press inclinado mancuernas": [
+      "press inclinado manc",
+      "press inclinado mancuernas top/backoff",
+      "incline db press",
+      "press inclinado mancuernas top backoff"
+    ],
+    "prensa 45": [
+      "prensa 45 / maquina disponible",
+      "prensa 45 top/backoff",
+      "prensa 45 top backoff"
+    ],
+    "sentadilla bulgara": [
+      "bulgara"
+    ],
+    "dominadas lastradas": [
+      "dominadas lastradas / jalon neutro"
+    ],
+    "hip thrust": [
+      "hip thrust o rdl liviano"
+    ],
+    "remo pecho apoyado": [
+      "remo frontal / pecho apoyado",
+      "remo pecho apoyado / hammer"
+    ],
+    "curl biceps": [
+      "curl biceps polea/curl"
+    ],
+    "peso muerto semi sumo": [
+      "rdl principal o semi-sumo tecnico",
+      "rdl principal / deadlift tecnico solo si verde"
+    ]
+  }
+}

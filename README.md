@@ -1,4 +1,4 @@
-# Prime OS - Martin Reyes V7.5
+# Prime OS - Martin Reyes V8.0
 
 ## Qué es
 
@@ -7,6 +7,28 @@ Prime OS es una plataforma personal de entrenamiento para registrar rutina, seri
 ## Objetivo
 
 Automatizar el seguimiento del bloque de entrenamiento de Martin Reyes para tomar mejores decisiones de carga, volumen, progreso y recuperación.
+
+## Cambios de V8.0
+
+- **No se pierde lo que escribes en Registrar:** se guarda solo en el equipo mientras escribes y al cerrar o cambiar de app. Se mantiene aunque cambies de sección, edites la rutina, recargues o cierres la app, hasta presionar `Guardar sesión`. Registrar se ve igual que antes.
+- **Funciona sin internet:** la app queda guardada en el dispositivo (service worker) y las librerías de Excel y gráficos vienen incluidas en `vendor/`.
+- **Recordatorio de respaldo:** Inicio avisa si pasan más de 7 días sin descargar el respaldo JSON.
+- **Peso como número + unidad:** "27,5 kg por mano" se guarda como 27,5 · kg · "por mano"; también acepta "80 lbs". Los datos antiguos se convierten solos.
+- **1RM estimado, volumen y PRs automáticos:** al guardar una sesión avisa si hay récord nuevo; en Progreso hay un gráfico por ejercicio y la lista de récords.
+- **Mismo ejercicio con otro nombre:** "Press inclinado manc." y "Press inclinado mancuernas" cuentan como el mismo (alias en `data/plan.json`).
+- **Alertas de dolor:** si una zona o un ejercicio queda sobre 3/10 tres sesiones seguidas, aparece un aviso en Inicio y Progreso, junto al gráfico del semáforo por sesión.
+- **Código ordenado:** `app.js` se dividió en módulos dentro de `js/`, el plan de entrenamiento pasó a `data/plan.json` y se limpió `styles.css` (sin cambios visuales).
+- **Pruebas automáticas:** `npm test` y GitHub Actions (`.github/workflows/test.yml`).
+
+## Estructura
+
+- `index.html` · `styles.css` · `manifest.json` · `sw.js` (uso sin internet)
+- `js/config.js` versión y claves · `js/util.js` utilidades · `js/domain.js` músculos, cargas, 1RM, PRs, alertas · `js/state.js` datos y migraciones · `js/training.js` Registrar · `js/views.js` pantallas · `js/io.js` importar/exportar · `js/app.js` arranque
+- `data/plan.json` plan de 6 semanas, objetivos, sesiones reales y alias de ejercicios
+- `vendor/` Chart.js 4.4.1 y SheetJS 0.18.5
+- `tests/e2e.test.js` pruebas en Chromium
+
+Al publicar una versión nueva, sube la versión en `js/config.js`, `sw.js` (`CACHE_VERSION`) y los `?v=` de `index.html` (la prueba lo verifica).
 
 ## Cambios de V7.5
 
@@ -26,7 +48,7 @@ Automatizar el seguimiento del bloque de entrenamiento de Martin Reyes para toma
 - Menú móvil cerrado por defecto.
 - Menú móvil como drawer lateral superpuesto.
 - Contenido móvil usando todo el ancho disponible.
-- Cache busting con `?v=7.4` (ahora `?v=7.5`) para evitar que Safari/GitHub carguen CSS o JS antiguos.
+- Cache busting con `?v=7.4` para evitar que Safari/GitHub carguen CSS o JS antiguos.
 - No se cambia rutina, semanas ni registros.
 
 ## Plan cargado
