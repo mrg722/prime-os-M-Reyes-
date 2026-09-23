@@ -59,6 +59,7 @@ function bindInputs(){
     collectDraftInputs();
     if(!confirmDiscardDraft()){ e.target.value = state.selectedMode; return; }
     state.selectedMode = String(e.target.value);
+    state.routine = clone(PLAN.routineByMode?.[state.selectedMode] || PLAN.routine);
     state.days = clone(PLAN.modeDays[state.selectedMode] || PLAN.days);
     state.weeklyTargets = clone(PLAN.weeklyTargetsByMode[state.selectedMode] || PLAN.weeklyTargets || {});
     state.selectedDay = state.days[0];
