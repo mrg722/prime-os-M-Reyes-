@@ -1,0 +1,97 @@
+{
+  "version": "v9.0-12-semanas-adaptive",
+  "programVersion": "9.0",
+  "sourceWorkbooks": [
+    "Bloque_12_Semanas_3_Dias_Registro_Completo_Martin.xlsx",
+    "Bloque_12_Semanas_4_Dias_Registro_PRO_Martin.xlsx"
+  ],
+  "weeks": [
+    "Semana 1",
+    "Semana 2",
+    "Semana 3",
+    "Semana 4",
+    "Semana 5",
+    "Semana 6",
+    "Semana 7",
+    "Semana 8",
+    "Semana 9",
+    "Semana 10",
+    "Semana 11",
+    "Semana 12"
+  ],
+  "defaultWeek": "Semana 1",
+  "defaultMode": "3",
+  "defaultDay": "Martes - Upper A",
+  "modes": {
+    "2": {
+      "label": "2 días · Full Body adaptativo",
+      "description": "Full Body A + Full Body B progresivos",
+      "days": [
+        "Full Body A · Adaptativo 2D",
+        "Full Body B · Adaptativo 2D",
+        "Cardio/Abs/Movilidad · Adaptativo 2D"
+      ]
+    },
+    "3": {
+      "label": "3 días · Excel",
+      "description": "Upper A + Lower A + Full Body · Excel",
+      "days": [
+        "Martes - Upper A",
+        "Miércoles - Lower A",
+        "Sábado - Full Body · Excel",
+        "Jueves - Cardio/Abs/Movilidad"
+      ]
+    },
+    "4": {
+      "label": "4 días · Excel PRO",
+      "description": "Upper A + Lower A + Upper B + Lower B",
+      "days": [
+        "Martes - Upper A",
+        "Miércoles - Lower A",
+        "Viernes - Upper B",
+        "Sábado - Lower B",
+        "Jueves - Cardio/Abs/Movilidad"
+      ]
+    }
+  },
+  "settings": {
+    "ownerName": "Martin Reyes",
+    "goalWeight": "74-76 kg",
+    "mainGoal": "Fuerza + hipertrofia + rendimiento",
+    "deadliftWeakness": "Bloqueo final",
+    "sensitiveExercises": "Banca plana pesada, sentadilla si molesta cervical, bisagra pesada/trote si isquio sensible"
+  },
+  "blockStatus": {
+    "1": "base",
+    "2": "base",
+    "3": "base",
+    "4": "pivot",
+    "5": "base",
+    "6": "base",
+    "7": "base",
+    "8": "pivot",
+    "9": "base",
+    "10": "base",
+    "11": "base",
+    "12": "base"
+  },
+  "adaptiveRules": {
+    "identity": "FULL BODY ADAPTATIVO 2D",
+    "purpose": "Opción exclusiva cuando la disponibilidad semanal sea de 2 días; no sustituye el Full Body del Excel del modo 3 días.",
+    "progression": "Misma semana del bloque al cambiar disponibilidad. Doble progresión: reps limpias + RIR objetivo antes que carga; pivots y test submáximo se respetan.",
+    "fatigue": "Una bisagra principal por sesión; semi-sumo opcional solo con semáforo verde; no compensar días perdidos.",
+    "history": "Un historial maestro por ejercicio/canonical key, compartido entre modos 2/3/4.",
+    "evidence": [
+      "https://pubmed.ncbi.nlm.nih.gov/38595233/",
+      "https://pubmed.ncbi.nlm.nih.gov/38970765/",
+      "https://pubmed.ncbi.nlm.nih.gov/36334240/"
+    ]
+  },
+  "prs": {
+    "Peso muerto sumo": "210 kg x3, fallo cerca del bloqueo en 3ª",
+    "Press banca": "125 kg single histórico, 115x5 @7, 120x3 con 4ª fallida",
+    "Sentadilla alta": "155x4 reciente",
+    "Dominadas lastradas": "30 kg x8/7/6",
+    "Press inclinado mancuernas": "40 kg x5 RIR1"
+  }
+}
