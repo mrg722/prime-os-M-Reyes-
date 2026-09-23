@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#0d1117"/>
   <title>Prime OS · Martin Reyes</title>
-  <link rel="manifest" href="manifest.json?v=10.6.1">
+  <link rel="manifest" href="manifest.json?v=10.7.0">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=10.6.1"/>
+  <link rel="stylesheet" href="styles.css?v=10.7.0"/>
   <script>
     // Si llega una versión nueva de la app (service worker), recarga una vez para no mezclar
     // archivos de dos versiones. Va aquí porque index.html siempre se descarga nuevo.
@@ -31,7 +31,7 @@
       <div class="launch-logo">PR</div>
       <p class="launch-kicker">Sistema operativo de entrenamiento</p>
       <h1>Prime OS</h1>
-      <p class="launch-user">Martin Reyes · V10.6.1</p>
+      <p class="launch-user">Martin Reyes · V10.7.0</p>
       <p class="launch-text">Rutina · registros · RIR/RPE · dolor · progreso semanal</p>
       <button id="launchBtn" class="primary launch-btn">Iniciar</button>
     </div>
@@ -43,7 +43,7 @@
       <div class="brand-icon">PR</div>
       <div>
         <h1>Prime OS</h1>
-        <p>Martin Reyes · V10.6.1</p>
+        <p>Martin Reyes · V10.7.0</p>
       </div>
     </div>
     <div class="mobile-head-actions"><button id="menuBtn" class="hamburger-btn" title="Menú" aria-label="Menú"><span></span><span></span><span></span></button></div>
@@ -55,7 +55,7 @@
         <div class="brand-icon">PR</div>
         <div class="brand-copy">
           <h1>Prime OS</h1>
-          <p>Martin Reyes · Training System · V10.6.1</p>
+          <p>Martin Reyes · Training System · V10.7.0</p>
         </div>
         <button id="sidebarCompactBtn" class="hamburger-btn" title="Contraer o expandir barra lateral" aria-label="Contraer o expandir barra lateral"><span></span><span></span><span></span></button>
       </div>
@@ -66,7 +66,7 @@
         <button class="nav-btn" data-view="entrenar"><span class="nav-icon">✎</span><span class="nav-text">Registrar</span></button>
         <button class="nav-btn" data-view="historial"><span class="nav-icon">◴</span><span class="nav-text">Historial</span></button>
         <button class="nav-btn" data-view="progreso"><span class="nav-icon">↗</span><span class="nav-text">Progreso</span></button>
-        <button class="nav-btn" data-view="one-rm"><span class="nav-icon">1RM</span><span class="nav-text">Calculadora 1RM</span></button>
+        <button class="nav-btn" data-view="one-rm"><span class="nav-icon nav-icon-rm">RM</span><span class="nav-text">Calculadora RM</span></button>
         <button class="nav-btn" data-view="cardio"><span class="nav-icon">♡</span><span class="nav-text">Cardio</span></button>
         <button class="nav-btn" data-view="nutricion"><span class="nav-icon">◉</span><span class="nav-text">Peso Corporal</span></button>
         <button class="nav-btn" data-view="ajustes"><span class="nav-icon">⚙</span><span class="nav-text">Ajustes</span></button>
@@ -272,7 +272,7 @@
         <div class="card">
           <div class="card-head">
             <div>
-              <span class="eyebrow">V10.6.1 · Volume Engine</span>
+              <span class="eyebrow">V10.7.0 · Volume Engine</span>
               <h3>Volumen efectivo por músculo</h3>
               <p class="small-muted">Directo + indirecto + ponderación por RIR. Los coeficientes son convenciones operativas y evolucionan con el historial.</p>
             </div>
@@ -283,15 +283,15 @@
         <div class="card rm-dashboard-card">
           <div class="card-head">
             <div>
-              <span class="eyebrow">Fórmula Epley · 1RM</span>
-              <h3>Calculadora rápida de 1RM</h3>
-              <p class="small-muted">Epley: <b>1RM = kg usados + (kg usados × reps × 0,03)</b>. Úsala como estimación, no como prueba máxima.</p>
+              <span class="eyebrow">Fuerza · Epley</span>
+              <h3>Calculadora de RM</h3>
+              <p class="small-muted">Tu repetición máxima estimada desde cualquier serie: <b>RM = kg + (kg × reps × 0,03)</b>. Es una estimación, no una prueba máxima.</p>
             </div>
-            <button type="button" class="primary" data-go="one-rm">Abrir calculadora completa</button>
+            <button type="button" class="primary" data-go="one-rm">Abrir calculadora</button>
           </div>
           <div class="rm-inline-result">
-            <strong>Acceso rápido</strong>
-            <span>Selecciona un ejercicio, carga y repeticiones en la sección Calculadora 1RM.</span>
+            <strong>Carga por rango</strong>
+            <span>Elige ejercicio, kg y reps: verás tu RM y cuánto cargar para 1 a 12 repeticiones.</span>
           </div>
         </div>
 
@@ -299,7 +299,7 @@
           <div class="card-head">
             <div>
               <span class="eyebrow">Por ejercicio</span>
-              <h3>1RM estimado y volumen</h3>
+              <h3>RM estimado y volumen</h3>
               <p id="exerciseProgressSummary" class="small-muted"></p>
             </div>
             <select id="exerciseProgressSelect" aria-label="Ejercicio"></select>
@@ -325,17 +325,17 @@
       </section>
 
       <section id="view-one-rm" class="view">
-        <div class="card">
+        <div class="card rm-main-card">
           <div class="card-head">
             <div>
-              <span class="eyebrow">Herramienta de fuerza</span>
-              <h3>Calculadora 1RM · Epley</h3>
-              <p class="small-muted">Calcula una repetición máxima estimada desde una carga y un número de repeticiones. Prime OS usa exactamente: <b>kg × reps × 0,03 + kg</b>.</p>
+              <span class="eyebrow">Fuerza · Epley</span>
+              <h3>Calculadora de RM</h3>
+              <p class="small-muted">Anota la carga y las repeticiones de una serie y obtén tu repetición máxima estimada.</p>
             </div>
           </div>
           <div class="form-grid three rm-calculator-grid">
             <label>Ejercicio
-              <select id="rmExerciseSelect" aria-label="Ejercicio para calcular 1RM"></select>
+              <select id="rmExerciseSelect" aria-label="Ejercicio para calcular el RM"></select>
             </label>
             <label>Carga usada
               <div class="input-with-unit"><input id="rmLoadInput" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="Ej. 100"><span>kg</span></div>
@@ -345,29 +345,35 @@
             </label>
           </div>
           <div class="rm-form-actions">
-            <button type="button" id="rmUseLastBtn" class="ghost">Usar mejor registro</button>
+            <button type="button" id="rmUseLastBtn" class="ghost">Usar mi mejor serie</button>
             <button type="button" id="rmClearBtn" class="ghost">Limpiar</button>
           </div>
-          <div id="rmResultCard" class="rm-result-card">
-            <span class="eyebrow">1RM estimado</span>
-            <strong id="rmResultValue">—</strong>
-            <span id="rmResultDetail">Ingresa carga y repeticiones.</span>
+          <div class="rm-result-layout">
+            <div id="rmResultCard" class="rm-result-card">
+              <span class="eyebrow">RM estimado</span>
+              <strong id="rmResultValue">—</strong>
+              <span id="rmResultDetail">Ingresa la carga y entre 1 y 15 repeticiones.</span>
+            </div>
+            <div class="rm-table-card">
+              <span class="eyebrow">Carga por repeticiones</span>
+              <div id="rmTable" class="rm-table"></div>
+            </div>
           </div>
         </div>
 
         <div class="grid two">
           <article class="card">
             <span class="eyebrow">Fórmula</span>
-            <h3>Epley paso a paso</h3>
+            <h3>Cómo se calcula</h3>
             <div class="formula-box">
-              <code>1RM = kg usados + (kg usados × reps × 0,03)</code>
+              <code>RM = kg + (kg × reps × 0,03)</code>
               <p>Ejemplo: 100 kg × 5 reps × 0,03 + 100 kg = <b>115 kg</b>.</p>
-              <p class="small-muted">Para 1 repetición, el resultado es la propia carga. El motor acepta 1–15 reps, pero las estimaciones son más sensibles a la calidad del set y al ejercicio.</p>
+              <p class="small-muted">Con 1 repetición el RM es la propia carga. Acepta de 1 a 15 reps; cuantas menos reps y mejor técnica, más fiable es la estimación.</p>
             </div>
           </article>
           <article class="card">
-            <span class="eyebrow">Auditoría del repertorio</span>
-            <h3>Ejercicios disponibles</h3>
+            <span class="eyebrow">Ejercicios</span>
+            <h3>Repertorio disponible</h3>
             <div id="rmCatalogAudit"></div>
           </article>
         </div>
@@ -376,8 +382,8 @@
           <div class="card-head">
             <div>
               <span class="eyebrow">Historial</span>
-              <h3>Mejores 1RM estimados por ejercicio</h3>
-              <p class="small-muted">Se alimenta de las sesiones guardadas en Prime OS.</p>
+              <h3>Tus mejores RM</h3>
+              <p class="small-muted">Se calculan solos con las sesiones que guardas en Prime OS.</p>
             </div>
           </div>
           <div id="rmHistoryList"></div>
@@ -480,9 +486,9 @@
   </div>
 
   <footer class="prime-footer">
-    <div><strong>Prime OS</strong><span>Martin Reyes</span><b>V10.6.1</b></div>
+    <div><strong>Prime OS</strong><span>Martin Reyes</span><b>V10.7.0</b></div>
     <button type="button" id="updateAppBtn" class="ghost update-app-btn">Actualizar Prime OS</button>
-    <small id="updateStatus" class="small-muted">Versión instalada: V10.6.1</small>
+    <small id="updateStatus" class="small-muted">Versión instalada: V10.7.0</small>
   </footer>
 
   <button type="button" id="clockFab" class="clock-fab hidden" aria-expanded="false" aria-controls="timerPanel">
@@ -501,12 +507,12 @@
     <div id="timerPresets" class="timer-presets">
       <div class="timer-wheel-wrap">
         <span class="timer-wheel-label">MIN</span>
-        <div id="timerMinuteWheel" class="timer-wheel" role="listbox" aria-label="Minutos"></div>
+        <div class="timer-wheel-frame"><div id="timerMinuteWheel" class="timer-wheel" role="listbox" aria-label="Minutos"></div></div>
       </div>
       <span class="timer-wheel-colon">:</span>
       <div class="timer-wheel-wrap">
         <span class="timer-wheel-label">SEG</span>
-        <div id="timerSecondWheel" class="timer-wheel" role="listbox" aria-label="Segundos"></div>
+        <div class="timer-wheel-frame"><div id="timerSecondWheel" class="timer-wheel" role="listbox" aria-label="Segundos"></div></div>
       </div>
       <div class="timer-fine-controls">
         <button type="button" id="timerMinus1Btn" class="timer-adjust" aria-label="Restar un segundo">−1</button>
@@ -528,18 +534,18 @@
     </div>
   </section>
 
-  <script src="vendor/chart.umd.js?v=10.6.1"></script>
-  <script src="vendor/xlsx.full.min.js?v=10.6.1"></script>
-  <script src="js/config.js?v=10.6.1"></script>
-  <script src="js/util.js?v=10.6.1"></script>
-  <script src="js/domain.js?v=10.6.1"></script>
-  <script src="js/exerciseCatalog.js?v=10.6.1"></script>
-  <script src="js/volumeEngine.js?v=10.6.1"></script>
-  <script src="js/state.js?v=10.6.1"></script>
-  <script src="js/training.js?v=10.6.1"></script>
-  <script src="js/timer.js?v=10.6.1"></script>
-  <script src="js/views.js?v=10.6.1"></script>
-  <script src="js/io.js?v=10.6.1"></script>
-  <script src="js/app.js?v=10.6.1"></script>
+  <script src="vendor/chart.umd.js?v=10.7.0"></script>
+  <script src="vendor/xlsx.full.min.js?v=10.7.0"></script>
+  <script src="js/config.js?v=10.7.0"></script>
+  <script src="js/util.js?v=10.7.0"></script>
+  <script src="js/domain.js?v=10.7.0"></script>
+  <script src="js/exerciseCatalog.js?v=10.7.0"></script>
+  <script src="js/volumeEngine.js?v=10.7.0"></script>
+  <script src="js/state.js?v=10.7.0"></script>
+  <script src="js/training.js?v=10.7.0"></script>
+  <script src="js/timer.js?v=10.7.0"></script>
+  <script src="js/views.js?v=10.7.0"></script>
+  <script src="js/io.js?v=10.7.0"></script>
+  <script src="js/app.js?v=10.7.0"></script>
 </body>
 </html>

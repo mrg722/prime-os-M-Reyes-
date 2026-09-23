@@ -280,7 +280,7 @@ function saveSession(){
   clearDraftStorage();
 
   const prText = prs.length
-    ? "\n\n🏆 Nuevo PR:\n" + prs.map(p => `• ${p.name}: ${formatSetWeight(p)} x ${p.reps} → 1RM est. ${formatNumber(p.e1rm)} kg`).join("\n")
+    ? "\n\n🏆 Nuevo PR:\n" + prs.map(p => `• ${p.name}: ${formatSetWeight(p)} x ${p.reps} → RM est. ${formatNumber(p.e1rm)} kg`).join("\n")
     : "";
   alert("Sesión guardada en Prime OS ✅" + prText);
   resetTrainingDraft();

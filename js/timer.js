@@ -1,10 +1,10 @@
 // Reloj flotante: temporizador (cuenta regresiva) y cronómetro. Sigue corriendo al cambiar de sección o recargar.
 // V10.6: se rediseña el temporizador; el cronómetro conserva su comportamiento original.
+// V10.7: ruedas de minutos/segundos reescritas para arrastrar y elegir sin saltos.
 const TIMER_KEY = "prime_os_timer_v1";
 let timerState = {mode: "countdown", duration: 120, running: false, startedAt: 0, elapsedBefore: 0, finished: false, open: false};
 let timerInterval = null;
 let timerAudio = null;
-let timerWheelSyncing = false;
 
 function loadTimer(){
   try {
@@ -19,55 +19,127 @@ function timerElapsed(){
   return timerState.elapsedBefore + (timerState.running ? (Date.now() - timerState.startedAt) / 1000 : 0);
 }
 
-function renderTimerWheel(id, max, selected){
-  const el=$(id); if(!el) return;
-  const current=String(selected);
-  if(el.dataset.value===current && el.children.length===max+1) return;
-  el.innerHTML=Array.from({length:max+1},(_,v)=>`<button type="button" class="timer-wheel-item ${v===selected?"selected":""}" data-value="${v}" role="option" aria-selected="${v===selected}">${String(v).padStart(2,"0")}</button>`).join("");
-  el.dataset.value=current;
-  requestAnimationFrame(()=>{ el.scrollTop=selected*42; });
+// Ruedas de minutos y segundos. Cada ítem mide WHEEL_ITEM_H px (fijado también en CSS) y el valor
+// elegido queda centrado. El valor se confirma solo cuando el usuario suelta y la rueda se detiene,
+// así el dedo nunca pelea con la app mientras arrastra.
+const WHEEL_ITEM_H = 44;
+const WHEEL_SETTLE_MS = 140;
+
+function wheelValueAt(el){
+  const max = Number(el.dataset.max);
+  return Math.max(0, Math.min(max, Math.round(el.scrollTop / WHEEL_ITEM_H)));
+}
+
+function markWheelItems(el, value){
+  el.querySelectorAll(".timer-wheel-item").forEach(item => {
+    const on = Number(item.dataset.value) === value;
+    if(item.classList.contains("selected") !== on){
+      item.classList.toggle("selected", on);
+      item.setAttribute("aria-selected", String(on));
+    }
+  });
+}
+
+function buildTimerWheel(el, max){
+  el.dataset.max = String(max);
+  el.innerHTML = Array.from({length:max+1}, (_,v) => `<div class="timer-wheel-item" data-value="${v}" role="option" aria-selected="false">${String(v).padStart(2,"0")}</div>`).join("");
+}
+
+// Coloca la rueda en un valor sin disparar un cambio de duración.
+function positionTimerWheel(el, value, smooth = false){
+  el._programmatic = true;
+  markWheelItems(el, value);
+  if(smooth && typeof el.scrollTo === "function"){
+    el._busy = true;
+    el.scrollTo({top: value * WHEEL_ITEM_H, behavior: "smooth"});
+    scheduleWheelSettle(el);
+  } else {
+    el.scrollTop = value * WHEEL_ITEM_H;
+  }
 }
 
 function renderTimerWheels(){
-  if(timerState.mode!=="countdown") return;
-  const total=Math.max(0,Math.round(timerState.duration));
-  renderTimerWheel("#timerMinuteWheel",60,Math.floor(total/60));
-  renderTimerWheel("#timerSecondWheel",59,total%60);
-  $$(".timer-wheel-item").forEach(item=>item.classList.toggle("selected",Number(item.dataset.value)===(item.parentElement.id==="timerMinuteWheel"?Math.floor(total/60):total%60)));
+  if(timerState.mode !== "countdown") return;
+  const total = Math.max(0, Math.min(3600, Math.round(timerState.duration)));
+  const values = {timerMinuteWheel: Math.floor(total / 60), timerSecondWheel: total % 60};
+  const panelOpen = !$("#timerPanel")?.classList.contains("hidden");
+  $("#timerPresets")?.classList.toggle("locked", timerState.running);
+  Object.entries(values).forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    // No se mueve una rueda que el usuario está tocando o que aún se está deteniendo.
+    if(!el || el._busy || el._touching) return;
+    if(!panelOpen){ markWheelItems(el, value); return; }
+    if(Math.abs(el.scrollTop - value * WHEEL_ITEM_H) > 1) positionTimerWheel(el, value);
+    else markWheelItems(el, value);
+  });
 }
 
-function syncTimerFromWheels(){
-  if(timerWheelSyncing || timerState.mode!=="countdown") return;
-  const mw=$("#timerMinuteWheel"), sw=$("#timerSecondWheel");
-  if(!mw||!sw) return;
-  const minutes=Math.round(mw.scrollTop/42), seconds=Math.round(sw.scrollTop/42);
-  const total=Math.max(5,Math.min(3600,minutes*60+seconds));
-  if(total===timerState.duration) return;
-  timerState.duration=total; timerState.finished=false; saveTimer();
-  timerWheelSyncing=true;
+function commitWheelValue(el, value){
+  const isMinutes = el.id === "timerMinuteWheel";
+  const current = Math.max(0, Math.min(3600, Math.round(timerState.duration)));
+  let minutes = isMinutes ? value : Math.floor(current / 60);
+  let seconds = isMinutes ? current % 60 : value;
+  if(minutes >= 60){ minutes = 60; seconds = 0; }
+  const total = Math.max(5, minutes * 60 + seconds);
+  if(total !== timerState.duration){
+    timerState.duration = total;
+    timerState.elapsedBefore = 0;
+    timerState.finished = false;
+    saveTimer();
+  }
   renderTimer();
-  timerWheelSyncing=false;
 }
 
-function bindTimerWheel(id){
-  const el=$(id); if(!el) return;
-  let raf=0;
-  el.addEventListener("scroll",()=>{
-    cancelAnimationFrame(raf);
-    raf=requestAnimationFrame(()=>{
-      const snapped=Math.round(el.scrollTop/42)*42;
-      if(Math.abs(el.scrollTop-snapped)>1) el.scrollTo({top:snapped,behavior:"smooth"});
-      el.querySelectorAll(".timer-wheel-item").forEach(item=>{
-        const selected=Math.abs(Number(item.dataset.value)*42-el.scrollTop)<22;
-        item.classList.toggle("selected",selected);
-        item.setAttribute("aria-selected",String(selected));
-      });
-      syncTimerFromWheels();
-    });
-  },{passive:true});
-  el.addEventListener("click",event=>{
-    const item=event.target.closest(".timer-wheel-item"); if(!item) return;
-    el.scrollTo({top:Number(item.dataset.value)*42,behavior:"smooth"});
+function scheduleWheelSettle(el){
+  clearTimeout(el._settleTimer);
+  el._settleTimer = setTimeout(() => {
+    if(el._touching) return; // se volverá a programar al soltar
+    const userMoved = el._userMoved;
+    el._busy = false;
+    el._userMoved = false;
+    el._programmatic = false;
+    const value = wheelValueAt(el);
+    // Si el navegador no ajustó al ítem, se ajusta aquí sin animación.
+    if(Math.abs(el.scrollTop - value * WHEEL_ITEM_H) > 1){ el._programmatic = true; el.scrollTop = value * WHEEL_ITEM_H; }
+    if(userMoved && !timerState.running) commitWheelValue(el, value);
+    else renderTimerWheels();
+  }, WHEEL_SETTLE_MS);
+}
+
+function bindTimerWheel(id, max){
+  const el = $(id); if(!el) return;
+  buildTimerWheel(el, max);
+  el.tabIndex = 0;
+  const startUser = () => { if(timerState.running) return; el._touching = true; el._busy = true; el._userMoved = true; el._programmatic = false; clearTimeout(el._settleTimer); };
+  const endUser = () => { if(!el._touching) return; el._touching = false; scheduleWheelSettle(el); };
+  el.addEventListener("touchstart", startUser, {passive:true});
+  el.addEventListener("touchend", endUser, {passive:true});
+  el.addEventListener("touchcancel", endUser, {passive:true});
+  el.addEventListener("pointerdown", e => { if(e.pointerType === "mouse") startUser(); });
+  window.addEventListener("pointerup", e => { if(e.pointerType === "mouse") endUser(); });
+  el.addEventListener("wheel", () => { if(timerState.running) return; el._busy = true; el._userMoved = true; el._programmatic = false; scheduleWheelSettle(el); }, {passive:true});
+  el.addEventListener("scroll", () => {
+    // Solo se ilumina el número centrado; el valor se guarda al detenerse.
+    markWheelItems(el, wheelValueAt(el));
+    if(el._touching) return;
+    if(el._busy || el._userMoved) scheduleWheelSettle(el);
+  }, {passive:true});
+  // Tocar un número sin arrastrar lo elige directamente.
+  el.addEventListener("click", event => {
+    const item = event.target.closest(".timer-wheel-item");
+    if(!item || timerState.running) return;
+    const value = Number(item.dataset.value);
+    if(value === wheelValueAt(el)) return;
+    el._userMoved = false;
+    positionTimerWheel(el, value, true);
+    commitWheelValue(el, value);
+  });
+  el.addEventListener("keydown", event => {
+    if(timerState.running || !["ArrowUp","ArrowDown"].includes(event.key)) return;
+    event.preventDefault();
+    const value = Math.max(0, Math.min(max, wheelValueAt(el) + (event.key === "ArrowDown" ? 1 : -1)));
+    positionTimerWheel(el, value);
+    commitWheelValue(el, value);
   });
 }
 
@@ -202,8 +274,8 @@ function bindTimer(){
   $("#timerCloseBtn").addEventListener("click", () => setTimerOpen(false));
   $$("#timerPanel .timer-mode").forEach(b => b.addEventListener("click", () => setTimerMode(b.dataset.mode)));
   $$("#timerPanel .timer-preset").forEach(b => b.addEventListener("click", () => setTimerDuration(Number(b.dataset.seconds))));
-  bindTimerWheel("#timerMinuteWheel");
-  bindTimerWheel("#timerSecondWheel");
+  bindTimerWheel("#timerMinuteWheel", 60);
+  bindTimerWheel("#timerSecondWheel", 59);
   $("#timerMinus1Btn")?.addEventListener("click", () => adjustTimer(-1));
   $("#timerPlus1Btn")?.addEventListener("click", () => adjustTimer(1));
   $("#timerMinusBtn").addEventListener("click", () => adjustTimer(-15));

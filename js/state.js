@@ -61,6 +61,8 @@ async function loadPlan(){
     weeklyTargets:clone(numericTargets(target4Bands)),
     legacyRoutine:{normal:{},pivot:{}},
     seedSessions:legacy.seedSessions||[],
+    // El manifiesto V9 trae un objeto de alias vacío: se suman a los alias históricos en vez de reemplazarlos.
+    exerciseAliases:{...(legacy.exerciseAliases||{}), ...(manifest.exerciseAliases||{})},
     cardio:legacy.cardio||manifest.cardio||[], weightLog:legacy.weightLog||manifest.weightLog||[],
     fullBodyVersion:manifest.version
   };
@@ -304,10 +306,11 @@ function normalizeState(data){
 }
 
 // Se llama una vez que `state` está asignado (usa funciones de dominio que leen el estado global).
+// Versión 2: los PRs se recalculan con la fórmula de Epley vigente (kg + kg × reps × 0,03).
 function finishStateLoad(){
-  if(state.meta.autoPRsVersion !== 1){
+  if(state.meta.autoPRsVersion !== 2){
     recomputeAutoPRs();
-    state.meta.autoPRsVersion = 1;
+    state.meta.autoPRsVersion = 2;
   }
 }
 

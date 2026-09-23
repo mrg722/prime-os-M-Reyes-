@@ -1,5 +1,5 @@
 // Configuración global de Prime OS.
-const APP_VERSION = "10.6.1";
+const APP_VERSION = "10.7.0";
 const STORAGE_KEY = "prime_os_martin_v10";
 const DRAFT_KEY = "prime_os_draft_v10";
 // Incluye la clave de V7.3–V8.2 para migrar los datos existentes a V9 sin perderlos.

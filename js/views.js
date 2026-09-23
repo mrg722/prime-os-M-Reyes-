@@ -7,7 +7,7 @@ const PAGE_META = {
   entrenar: { title: "Registrar", subtitle: "Registra la sesión real, cargas, RIR, dolor y observaciones." },
   historial: { title: "Historial", subtitle: "Revisa sesiones pasadas, ejercicios completados y notas previas." },
   progreso: { title: "Progreso", subtitle: "Analiza objetivos semanales, volumen registrado y tendencias." },
-  "one-rm": { title: "Calculadora 1RM", subtitle: "Calcula y consulta estimaciones de 1RM mediante la fórmula de Epley." },
+  "one-rm": { title: "Calculadora de RM", subtitle: "Tu repetición máxima estimada y cuánto cargar en cada rango de repeticiones." },
   cardio: { title: "Cardio", subtitle: "Lleva control de trote, zona 2, spinning y trabajo cardiovascular." },
   nutricion: { title: "Peso Corporal", subtitle: "Registra peso corporal y sigue la tendencia semanal o diaria." },
   ajustes: { title: "Ajustes", subtitle: "Administra perfil, respaldo y parámetros del sistema." }
@@ -393,7 +393,7 @@ function renderProgress(){
 function renderPRs(){
   const auto = Object.values(state.autoPRs || {}).sort((a, b) => b.e1rm - a.e1rm);
   const autoHtml = auto.length ? auto.map(p => `<div class="progress-row"><strong>${escapeHtml(p.name)}</strong>
-      <span class="small-muted">1RM est. <b>${formatNumber(p.e1rm)} kg</b> · ${escapeHtml(formatSetWeight(p))} x ${escapeHtml(p.reps)} · ${escapeHtml(p.date)}</span></div>`).join("")
+      <span class="small-muted">RM est. <b>${formatNumber(p.e1rm)} kg</b> · ${escapeHtml(formatSetWeight(p))} x ${escapeHtml(p.reps)} · ${escapeHtml(p.date)}</span></div>`).join("")
     : `<p class="small-muted">Aún no hay series con peso y reps para calcular récords.</p>`;
   const manual = Object.entries(state.prs).map(([k,v]) =>
     `<div class="progress-row"><strong>${escapeHtml(k)}</strong><span class="small-muted">${escapeHtml(v)}</span></div>`
@@ -466,14 +466,14 @@ function renderExerciseProgress(){
   });
   const bests = points.map(p => p.e1rm).filter(Boolean);
   summary.innerHTML = bests.length
-    ? `Mejor 1RM estimado: <b>${formatNumber(Math.max(...bests))} kg</b> · ${hist.length} sesiones registradas`
-    : `${hist.length} sesiones registradas (sin peso numérico para calcular 1RM).`;
+    ? `Mejor RM estimado: <b>${formatNumber(Math.max(...bests))} kg</b> · ${hist.length} sesiones registradas`
+    : `${hist.length} sesiones registradas (sin peso numérico para calcular el RM).`;
   drawChart("exerciseChart", {
     type: "line",
     data: {
       labels: points.map(p => p.label),
       datasets: [
-        {label:"1RM estimado (kg)", data: points.map(p => p.e1rm && Number(p.e1rm.toFixed(1))), borderColor: CHART_COLORS.primary, backgroundColor:"rgba(47,129,247,.18)", fill: true, tension: .25, yAxisID: "y"},
+        {label:"RM estimado (kg)", data: points.map(p => p.e1rm && Number(p.e1rm.toFixed(1))), borderColor: CHART_COLORS.primary, backgroundColor:"rgba(47,129,247,.18)", fill: true, tension: .25, yAxisID: "y"},
         {label:"Volumen (kg)", data: points.map(p => p.volume && Math.round(p.volume)), borderColor: CHART_COLORS.yellow, tension: .25, yAxisID: "y1"}
       ]
     },
@@ -481,53 +481,113 @@ function renderExerciseProgress(){
   });
 }
 
-/* ---------- Calculadora 1RM / Epley ---------- */
+/* ---------- Calculadora de RM (Epley) ---------- */
+const RM_TABLE_REPS = [1,2,3,4,5,6,8,10,12];
+
+function rmMuscleLabel(raw){
+  const key = String(raw || "");
+  if(typeof V10_MUSCLE_LABELS !== "undefined" && V10_MUSCLE_LABELS[key]) return V10_MUSCLE_LABELS[key];
+  const text = key.replace(/_/g, " ").replace(/\s*\/\s*/g, " / ").trim();
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : "General";
+}
+
+// Mejor RM estimado guardado para un ejercicio (por su nombre o cualquiera de sus alias).
+function rmBestPR(names){
+  let best = null;
+  names.forEach(n => { const pr = state.autoPRs?.[canonicalExercise(n)]; if(pr && Number.isFinite(Number(pr.e1rm)) && (!best || pr.e1rm > best.e1rm)) best = pr; });
+  return best;
+}
+
 function oneRMEligibleExercises(){
   const catalog=Object.values(V10_CATALOG || {}).filter(e=>{
     const cat=String(e.category||"");
     return e.countsAsVolume !== false && !["correctivo","control"].includes(cat) && !["cardio","recuperación"].includes(String(e.sourceMuscle||""));
   });
-  const map=new Map(catalog.map(e=>[e.id,{key:e.id,name:e.name,muscle:e.sourceMuscle,category:e.category,source:"catálogo"}]));
-  exerciseCatalog().forEach(e=>{ if(!map.has(e.key)) map.set(e.key,{key:e.key,name:e.name,muscle:"registrado",category:"historial",source:"historial"}); });
-  return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name,"es"));
+  // Clave canónica: así un ejercicio del catálogo y el mismo ejercicio del historial no se duplican.
+  const map=new Map();
+  catalog.forEach(e=>{
+    const key=canonicalExercise(e.name);
+    if(!map.has(key)) map.set(key,{key,name:e.name,names:[e.name,...(e.aliases||[])],muscle:rmMuscleLabel(e.sourceMuscle),category:e.category,source:"catálogo"});
+  });
+  exerciseCatalog().forEach(e=>{
+    if(!map.has(e.key)) map.set(e.key,{key:e.key,name:e.name,names:[e.name],muscle:"Registrado",category:"historial",source:"historial"});
+    else map.get(e.key).names.push(e.name);
+  });
+  const list=[...map.values()];
+  list.forEach(e=>{ e.pr=rmBestPR(e.names); });
+  return list.sort((a,b)=>a.name.localeCompare(b.name,"es"));
 }
+
+function rmOptionLabel(e){ return `${e.name} · ${e.muscle}`; }
+
+// Rellena el selector: primero los ejercicios con registros propios, luego el resto.
+function render1RMExerciseSelect(catalog){
+  const select=$("#rmExerciseSelect"); if(!select) return;
+  const previous=select.value;
+  const withPR=catalog.filter(e=>e.pr).sort((a,b)=>b.pr.e1rm-a.pr.e1rm);
+  const rest=catalog.filter(e=>!e.pr);
+  const opt=e=>`<option value="${escapeAttr(e.key)}">${escapeHtml(rmOptionLabel(e))}</option>`;
+  select.innerHTML=(withPR.length?`<optgroup label="Con tus registros">${withPR.map(opt).join("")}</optgroup><optgroup label="Todos los ejercicios">${rest.map(opt).join("")}</optgroup>`:rest.map(opt).join(""));
+  const fallback=withPR[0]?.key || catalog.find(e=>e.key===canonicalExercise("Press banca"))?.key || catalog[0]?.key || "";
+  select.value=catalog.some(e=>e.key===previous) ? previous : fallback;
+}
+
+function update1RMResult(){
+  const result=$("#rmResultValue"), detail=$("#rmResultDetail"), table=$("#rmTable"), card=$("#rmResultCard");
+  if(!result) return;
+  const load=parseNumber($("#rmLoadInput")?.value), reps=parseNumber($("#rmRepsInput")?.value);
+  const valid=!(load===null || load<=0 || reps===null || reps<1 || reps>15 || !Number.isInteger(reps));
+  const rm=valid ? epley1RM(load,reps) : null;
+  card?.classList.toggle("has-value", rm!==null);
+  if(rm===null){
+    result.textContent="—";
+    if(detail) detail.textContent="Ingresa la carga y entre 1 y 15 repeticiones.";
+    if(table) table.innerHTML=`<p class="small-muted rm-table-empty">Aquí verás cuánto cargar para cada rango de repeticiones.</p>`;
+    return;
+  }
+  result.innerHTML=`${formatNumber(rm,1)}<small> kg</small>`;
+  if(detail) detail.innerHTML=reps===1
+    ? `Con 1 repetición el RM es la misma carga: <b>${formatNumber(load,1)} kg</b>`
+    : `${formatNumber(load,1)} kg × ${reps} × 0,03 + ${formatNumber(load,1)} kg = <b>${formatNumber(rm,1)} kg</b>`;
+  if(table){
+    table.innerHTML=`<div class="rm-table-head"><span>Reps</span><span>Carga</span><span>% RM</span></div>`+RM_TABLE_REPS.map(r=>{
+      const kg=r===1 ? rm : rm/(1+0.03*r);
+      return `<div class="rm-table-row${r===reps?" current":""}"><span>${r}</span><b>${formatNumber(kg,1)} kg</b><span>${Math.round(kg/rm*100)}%</span></div>`;
+    }).join("");
+  }
+}
+
 function render1RMCalculator(){
   const select=$("#rmExerciseSelect"); if(!select) return;
-  const catalog=oneRMEligibleExercises(), previous=select.value;
-  select.innerHTML=catalog.map(e=>`<option value="${escapeAttr(e.key)}">${escapeHtml(e.name)} · ${escapeHtml(e.muscle)}</option>`).join("");
-  if(catalog.some(e=>e.key===previous)) select.value=previous;
-  const load=parseNumber($("#rmLoadInput")?.value), reps=parseNumber($("#rmRepsInput")?.value), result=$("#rmResultValue"), detail=$("#rmResultDetail");
-  if(load===null || load<=0 || reps===null || reps<1 || reps>15){
-    if(result) result.textContent="—";
-    if(detail) detail.textContent="Ingresa una carga válida y entre 1 y 15 repeticiones.";
-  }else{
-    const rm=epley1RM(load,reps);
-    if(result) result.textContent=rm===null?"—":`${formatNumber(rm,1)} kg`;
-    if(detail) detail.innerHTML=`${formatNumber(load,1)} kg × ${reps} × 0,03 + ${formatNumber(load,1)} kg = <b>${rm===null?"—":formatNumber(rm,1)} kg</b>`;
-  }
+  const catalog=oneRMEligibleExercises();
+  render1RMExerciseSelect(catalog);
+  update1RMResult();
   const audit=$("#rmCatalogAudit");
   if(audit){
     const groups={}; catalog.forEach(e=>{groups[e.muscle]=(groups[e.muscle]||0)+1;});
-    audit.innerHTML=`<div class="rm-audit-total"><b>${catalog.length}</b><span>ejercicios disponibles para estimación</span></div><div class="rm-audit-grid">${Object.entries(groups).sort((a,b)=>b[1]-a[1]).map(([m,n])=>`<span>${escapeHtml(m)} <b>${n}</b></span>`).join("")}</div><p class="small-muted">Incluye variantes frecuentes de los Excel 3D/4D y conserva nombres del historial que todavía no tengan alias.</p>`;
+    audit.innerHTML=`<div class="rm-audit-total"><b>${catalog.length}</b><span>ejercicios disponibles para calcular tu RM</span></div><div class="rm-audit-grid">${Object.entries(groups).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],"es")).map(([m,n])=>`<span>${escapeHtml(m)} <b>${n}</b></span>`).join("")}</div><p class="small-muted">Incluye los ejercicios de tus rutinas 3D/4D y los nombres que ya registraste.</p>`;
   }
   const histRoot=$("#rmHistoryList");
   if(histRoot){
     const prs=Object.values(state.autoPRs||{}).filter(x=>Number.isFinite(Number(x.e1rm))).sort((a,b)=>b.e1rm-a.e1rm);
-    histRoot.innerHTML=prs.length ? prs.slice(0,30).map(p=>`<div class="progress-row"><strong>${escapeHtml(p.name)}</strong><span class="small-muted">${formatNumber(p.e1rm,1)} kg · ${escapeHtml(formatSetWeight(p))} × ${escapeHtml(p.reps)} · ${escapeHtml(p.date)}</span></div>`).join("") : `<p class="small-muted">Aún no hay registros con peso y repeticiones suficientes para estimar 1RM.</p>`;
+    histRoot.innerHTML=prs.length ? `<div class="rm-history">${prs.slice(0,30).map((p,i)=>`<div class="rm-history-row"><span class="rm-history-rank">${i+1}</span><div><strong>${escapeHtml(p.name)}</strong><span class="small-muted">${escapeHtml(formatSetWeight(p))} × ${escapeHtml(p.reps)} · ${escapeHtml(p.date||"")}</span></div><b class="rm-history-value">${formatNumber(p.e1rm,1)} kg</b></div>`).join("")}</div>` : `<p class="small-muted">Aún no hay registros con peso y repeticiones suficientes para estimar tu RM.</p>`;
   }
 }
+
 function useBestRecordFor1RM(){
   const select=$("#rmExerciseSelect"); if(!select) return;
   const chosen=oneRMEligibleExercises().find(e=>e.key===select.value); if(!chosen) return;
-  const bests=exerciseHistory(chosen.name).map(h=>bestSet(h.sets)).filter(Boolean);
-  const best=bests.sort((a,b)=>(estimate1RM(b)||0)-(estimate1RM(a)||0))[0];
+  const seen=new Set(), bests=[];
+  chosen.names.forEach(n=>exerciseHistory(n).forEach(h=>{ if(seen.has(h.exercise)) return; seen.add(h.exercise); const b=bestSet(h.sets); if(b) bests.push(b); }));
+  const best=bests.filter(b=>estimate1RM(b)).sort((a,b)=>(estimate1RM(b)||0)-(estimate1RM(a)||0))[0];
   if(!best){toast("No hay un registro con peso y reps para este ejercicio.","info",3500);return;}
   $("#rmLoadInput").value=toKg(best)?.toFixed(1) || "";
   $("#rmRepsInput").value=repsCount(best.repsDone) || "";
-  render1RMCalculator();
+  update1RMResult();
 }
-function clear1RMCalculator(){ $("#rmLoadInput").value=""; $("#rmRepsInput").value=""; render1RMCalculator(); }
+function clear1RMCalculator(){ $("#rmLoadInput").value=""; $("#rmRepsInput").value=""; update1RMResult(); }
 window.render1RMCalculator=render1RMCalculator;
+window.update1RMResult=update1RMResult;
 window.useBestRecordFor1RM=useBestRecordFor1RM;
 window.clear1RMCalculator=clear1RMCalculator;
 

@@ -49,6 +49,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     if(await launch.isVisible()) await launch.click();
     return page;
   }
+  const STORAGE_KEY_NAME = fs.readFileSync(path.join(ROOT, "js/config.js"), "utf8").match(/STORAGE_KEY = "([^"]+)"/)[1];
   const go = (page, view) => page.evaluate(v => switchView(v), view);
   const W = (ei, si) => `[data-ei="${ei}"][data-si="${si}"][data-field="weight"]`;
   const R = (ei, si) => `[data-ei="${ei}"][data-si="${si}"][data-field="repsDone"]`;
@@ -84,7 +85,8 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     const page = await open();
     const r = await page.evaluate(() => ({
       a: parseWeightText("27,5 kg por mano"), b: parseWeightText("75 lbs"), c: parseWeightText("peso corporal"),
-      seed: state.sessions.find(s => s.id === 250002).exercises[0].sets[0]
+      // Desde V9 la app parte sin sesiones: se normalizan las sesiones de ejemplo del plan.
+      seed: normalizeState({sessions: clone(PLAN.seedSessions)}).sessions.find(s => s.id === 250002).exercises[0].sets[0]
     }));
     assert(r.a.weight === "27.5" && r.a.unit === "kg" && r.a.weightNote === "por mano", JSON.stringify(r.a));
     assert(r.b.weight === "75" && r.b.unit === "lbs", JSON.stringify(r.b));
@@ -96,7 +98,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
   await test("músculos, catálogo de ejercicios y 1RM", async () => {
     const page = await open();
     const r = await page.evaluate(() => ({
-      soleo: state.sessions.find(s => s.id === 250001).exercises.find(e => e.name.startsWith("Sóleo")).muscle,
+      soleo: normalizeState({sessions: clone(PLAN.seedSessions)}).sessions.find(s => s.id === 250001).exercises.find(e => e.name.startsWith("Sóleo")).muscle,
       trabajo: normalizeMuscle("trabajo"), abs: normalizeMuscle("abs"),
       alias: canonicalExercise("Press inclinado manc.") === canonicalExercise("Press inclinado mancuernas top/backoff"),
       e1rm: estimate1RM({weight:"100", unit:"kg", repsDone:"5"}), epley: epley1RM(100,5),
@@ -115,7 +117,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
   await test("Registrar: el borrador sobrevive a cambiar de sección, editar la rutina y cerrar la app", async () => {
     const ctx = await browser.newContext({viewport: {width:390, height:844}, serviceWorkers: "block"});
     let page = await open({context: ctx});
-    await page.evaluate(() => { state.selectedWeek = "Semana 3"; state.selectedDay = "Miércoles - Upper A"; saveState(); resetTrainingDraft(); renderAll(); });
+    await page.evaluate(() => { state.selectedWeek = "Semana 3"; state.selectedDay = "Martes - Upper A"; saveState(); resetTrainingDraft(); renderAll(); });
     await go(page, "entrenar");
     await page.fill(W(0,0), "27,5"); await page.fill(R(0,0), "7");
     await page.selectOption('#trainingForm .exercise-card >> nth=0 >> select >> nth=0', "4");
@@ -130,7 +132,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     await go(page, "entrenar");
     assert(await page.inputValue(R(0,3)) === "11" && await page.inputValue(W(0,0)) === "27,5", "se perdió al cerrar y reabrir");
     assert(await page.isChecked('[data-ei="0"][data-si="0"][data-field="done"]') && await page.inputValue("#sessionNotes") === "nota", "check o nota perdidos");
-    assert(await page.textContent("#trainTitle") === "Miércoles · Upper A · Semana 3", "no volvió a la semana/día del borrador: " + await page.textContent("#trainTitle"));
+    assert(await page.textContent("#trainTitle") === "Martes · Upper A · Semana 3", "no volvió a la semana/día del borrador: " + await page.textContent("#trainTitle"));
     await page.click("#saveSessionBtn");
     const saved = await page.evaluate(() => state.sessions.at(-1).exercises[0].sets.map(s => [s.weight, s.unit, s.repsDone]));
     assert(JSON.stringify(saved[0]) === '["27.5","kg","7"]' && JSON.stringify(saved[3]) === '["20","kg","11"]', JSON.stringify(saved));
@@ -163,18 +165,21 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
 
   await test("PR automático al guardar y en Progreso", async () => {
     const page = await open();
-    await page.evaluate(() => { state.selectedWeek = "Semana 3"; state.selectedDay = "Viernes - Lower B"; resetTrainingDraft(); renderAll(); });
+    await page.evaluate(() => { state.selectedWeek = "Semana 3"; state.selectedDay = "Miércoles - Lower A"; resetTrainingDraft(); renderAll(); });
     await go(page, "entrenar");
+    const first = await page.inputValue('[data-ei="0"][data-field="name"]');
     const msgs = [];
     page.removeAllListeners("dialog");
     page.on("dialog", d => { msgs.push(d.message()); d.accept(); });
     await page.fill(W(0,0), "140"); await page.fill(R(0,0), "8");
     await page.click("#saveSessionBtn");
-    assert(msgs.some(m => m.includes("Nuevo PR") && m.includes("RDL principal")), msgs.join(" / "));
+    assert(msgs.some(m => m.includes("Nuevo PR") && m.includes(first) && m.includes("173,6")), msgs.join(" / "));
     await go(page, "progreso");
-    assert((await page.textContent("#strengthProgress")).includes("177,3 kg"), "PR no aparece en Progreso");
-    await page.selectOption("#exerciseProgressSelect", {label: "RDL principal / deadlift técnico solo si verde"});
-    assert(await page.evaluate(() => !!charts.exerciseChart && charts.exerciseChart.data.datasets[0].data.length === 2), "gráfico por ejercicio no tiene 2 puntos (semi sumo + RDL)");
+    assert((await page.textContent("#strengthProgress")).includes("173,6 kg"), "PR no aparece en Progreso");
+    await page.selectOption("#exerciseProgressSelect", {label: first});
+    assert(await page.evaluate(() => !!charts.exerciseChart && charts.exerciseChart.data.datasets[0].data.length === 1), "gráfico por ejercicio sin el punto guardado");
+    await go(page, "one-rm");
+    assert((await page.textContent("#rmHistoryList")).includes("173,6 kg"), "el PR no aparece en Calculadora RM");
     await page.context().close();
   });
 
@@ -224,10 +229,11 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     const routine = {"Semana 1": plan.legacyRoutine.normal, "Semana 2": {...plan.legacyRoutine.normal, "Martes - Lower A": [{name:"Mi ejercicio", sets:4, reps:"5", load:"100", target:"RIR 2", muscle:"pierna", note:""}]}, "Semana 3": {}};
     const page = await open({storage: {prime_os_martin_v7_2: JSON.stringify({weeks:["Semana 1","Semana 2","Semana 3"], routine, sessions:[
       {id:1, date:"x", week:"Semana 1", day:"Martes - Lower A", exercises:[{name:"Sentadilla alta", muscle:"pierna", sets:[{weight:"150 kg", reps:"4"}]}]}]})}});
-    const r = await page.evaluate(() => ({weeks: state.weeks, s1: state.routine["Semana 1"]["Martes - Lower A"][0].name, s2: state.routine["Semana 2"]["Martes - Lower A"][0].name,
+    // Desde V9 la planificación es el bloque de 12 semanas de los Excel; las sesiones antiguas se conservan.
+    const r = await page.evaluate(() => ({weeks: state.weeks, planWeeks: PLAN.weeks, sessions: state.sessions.length,
       set: state.sessions.find(s => s.id === 1).exercises[0].sets[0]}));
-    assert(r.weeks.join(",") === plan.weeks.join(","), r.weeks.join(","));
-    assert(r.s1 === plan.routine["Semana 1"]["Martes - Lower A"][0].name && r.s2 === "Mi ejercicio", `${r.s1} / ${r.s2}`);
+    assert(r.weeks.join(",") === r.planWeeks.join(",") && r.weeks.length === 12, r.weeks.join(","));
+    assert(r.sessions === 1, "sesiones migradas: " + r.sessions);
     assert(r.set.weight === "150" && r.set.unit === "kg" && r.set.repsDone === "4", JSON.stringify(r.set));
     await page.context().close();
   });
@@ -257,18 +263,19 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     const page0 = await open();
     const saved = await page0.evaluate(() => {
       const s = JSON.parse(JSON.stringify(state));
-      s.days = s.days.filter(d => !d.startsWith("Full Body "));
-      Object.values(s.routine).forEach(w => { delete w["Full Body A"]; delete w["Full Body B"]; });
-      delete s.fullBodyVersion;
-      s.routine["Semana 3"]["Martes - Lower A"][0].name = "Editado por mí";
+      s.routine["Semana 3"]["Martes - Upper A"][0].name = "Editado por mí";
+      if(s.routinesByMode?.["3"]?.["Semana 3"]?.["Martes - Upper A"]) s.routinesByMode["3"]["Semana 3"]["Martes - Upper A"][0].name = "Editado por mí";
       return JSON.stringify(s);
     });
     await page0.context().close();
-    const page = await open({storage: {prime_os_martin_v7_3: saved}});
-    const r = await page.evaluate(() => ({days: state.days, fb: state.routine["Semana 3"]["Full Body A"].map(e => e.name), edited: state.routine["Semana 3"]["Martes - Lower A"][0].name}));
-    assert(r.days.at(-2) === "Full Body A" && r.days.at(-1) === "Full Body B", r.days.join(","));
-    assert(r.fb[0] === "Curl femoral sentado", r.fb.join(","));
+    const page = await open({storage: {[STORAGE_KEY_NAME]: saved}});
+    const r = await page.evaluate(() => ({
+      edited: state.routine["Semana 3"]["Martes - Upper A"][0].name,
+      fb2: Object.keys(state.routinesByMode?.["2"]?.["Semana 3"] || {}).filter(d => d.includes("Full Body")),
+      fb3: state.days.filter(d => d.includes("Full Body"))
+    }));
     assert(r.edited === "Editado por mí", "se pisó una edición: " + r.edited);
+    assert(r.fb2.length === 2 && r.fb3.length === 1, JSON.stringify(r));
     await page.context().close();
   });
 
@@ -278,7 +285,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     assert(await page.isVisible("#rmExerciseSelect"), "selector 1RM no visible");
     const options = await page.locator("#rmExerciseSelect option").count();
     assert(options >= 91, "repertorio 1RM insuficiente: " + options);
-    const audited = await page.$eval("#rmExerciseSelect option", opts => opts.map(o => o.textContent));
+    const audited = await page.$$eval("#rmExerciseSelect option", opts => opts.map(o => o.textContent));
     assert(audited.some(x => x.startsWith("Fondos ·")) && audited.some(x => x.startsWith("Peso muerto semi-sumo ·")), "faltan ejercicios auditados en 1RM");
     await page.fill("#rmLoadInput", "100");
     await page.fill("#rmRepsInput", "5");
@@ -289,6 +296,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
 
   await test("V10.6: temporizador conserva ±15, añade ±1 y rueda táctil", async () => {
     const page = await open({viewport:{width:390,height:844}});
+    await go(page, "entrenar");
     await page.click("#clockFab");
     assert(await page.isVisible("#timerMinuteWheel") && await page.isVisible("#timerSecondWheel"), "ruedas del temporizador no visibles");
     assert(await page.isVisible("#timerMinusBtn") && await page.isVisible("#timerPlusBtn"), "±15 desapareció");
@@ -365,7 +373,7 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     await page.fill('[data-ei="0"][data-si="0"][data-field="repsDone"]', "8");
     await page.click("#saveSessionBtn");
     const saved = await page.evaluate(() => state.sessions.at(-1));
-    assert(saved.mode === "2" && saved.day === "Full Body A · Adaptativo 2D", JSON.stringify(saved));
+    assert(saved.mode === "2" && saved.session === "Full Body A · Adaptativo 2D" && saved.day.endsWith("Full Body A · Adaptativo 2D"), JSON.stringify({mode: saved.mode, day: saved.day, session: saved.session}));
 
     await page.selectOption("#modeSelect", "3");
     assert(await page.inputValue("#modeSelect") === "3", "no volvió a 3D");
