@@ -126,11 +126,17 @@ function repsCount(text){
 }
 
 // 1RM estimado (Epley). Solo con peso numérico y 1-15 reps.
+function epley1RM(kg, reps){
+  const load=Number(kg), r=Number(reps);
+  if(!Number.isFinite(load) || load<=0 || !Number.isFinite(r) || r<1 || r>15) return null;
+  return r===1 ? load : load + (load * r * 0.03);
+}
+
 function estimate1RM(set){
   const kg = toKg(set);
   const reps = repsCount(set?.repsDone);
   if(!kg || !reps || reps < 1 || reps > 15) return null;
-  return reps === 1 ? kg : kg * (1 + reps / 30);
+  return epley1RM(kg, reps);
 }
 
 function setVolumeKg(set){
