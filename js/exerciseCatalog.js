@@ -115,3 +115,5 @@ function v10ExerciseId(name){
   return Object.keys(V10_ALIAS).find(id=>id===s || (V10_ALIAS[id]||[]).some(a=>v10Key(a)===s)) || null;
 }
 function v10ExerciseMeta(name){const id=v10ExerciseId(name);return id?V10_CATALOG[id]:null;}
+
+if(typeof module!=="undefined") module.exports={V10_CATALOG,V10_ALIAS,v10ExerciseId,v10ExerciseMeta};
