@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#0d1117"/>
   <title>Prime OS · Martin Reyes</title>
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json?v=10.4">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=10.3"/>
+  <link rel="stylesheet" href="styles.css?v=10.4"/>
   <script>
     // Si llega una versión nueva de la app (service worker), recarga una vez para no mezclar
     // archivos de dos versiones. Va aquí porque index.html siempre se descarga nuevo.
@@ -66,6 +66,7 @@
         <button class="nav-btn" data-view="entrenar"><span class="nav-icon">✎</span><span class="nav-text">Registrar</span></button>
         <button class="nav-btn" data-view="historial"><span class="nav-icon">◴</span><span class="nav-text">Historial</span></button>
         <button class="nav-btn" data-view="progreso"><span class="nav-icon">↗</span><span class="nav-text">Progreso</span></button>
+        <button class="nav-btn" data-view="one-rm"><span class="nav-icon">1RM</span><span class="nav-text">Calculadora 1RM</span></button>
         <button class="nav-btn" data-view="cardio"><span class="nav-icon">♡</span><span class="nav-text">Cardio</span></button>
         <button class="nav-btn" data-view="nutricion"><span class="nav-icon">◉</span><span class="nav-text">Peso Corporal</span></button>
         <button class="nav-btn" data-view="ajustes"><span class="nav-icon">⚙</span><span class="nav-text">Ajustes</span></button>
@@ -279,6 +280,21 @@
           <div id="v10VolumeDashboard"></div>
         </div>
 
+        <div class="card rm-dashboard-card">
+          <div class="card-head">
+            <div>
+              <span class="eyebrow">Fórmula Epley · 1RM</span>
+              <h3>Calculadora rápida de 1RM</h3>
+              <p class="small-muted">Epley: <b>1RM = kg usados + (kg usados × reps × 0,03)</b>. Úsala como estimación, no como prueba máxima.</p>
+            </div>
+            <button type="button" class="primary" data-go="one-rm">Abrir calculadora completa</button>
+          </div>
+          <div class="rm-inline-result">
+            <strong>Acceso rápido</strong>
+            <span>Selecciona un ejercicio, carga y repeticiones en la sección Calculadora 1RM.</span>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-head">
             <div>
@@ -305,6 +321,66 @@
             <p id="readinessChartEmpty" class="small-muted"></p>
             <div class="chart-wrap small"><canvas id="readinessChart"></canvas></div>
           </article>
+        </div>
+      </section>
+
+      <section id="view-one-rm" class="view">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <span class="eyebrow">Herramienta de fuerza</span>
+              <h3>Calculadora 1RM · Epley</h3>
+              <p class="small-muted">Calcula una repetición máxima estimada desde una carga y un número de repeticiones. Prime OS usa exactamente: <b>kg × reps × 0,03 + kg</b>.</p>
+            </div>
+          </div>
+          <div class="form-grid three rm-calculator-grid">
+            <label>Ejercicio
+              <select id="rmExerciseSelect" aria-label="Ejercicio para calcular 1RM"></select>
+            </label>
+            <label>Carga usada
+              <div class="input-with-unit"><input id="rmLoadInput" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="Ej. 100"><span>kg</span></div>
+            </label>
+            <label>Repeticiones
+              <input id="rmRepsInput" type="number" min="1" max="15" step="1" inputmode="numeric" placeholder="Ej. 5">
+            </label>
+          </div>
+          <div class="rm-form-actions">
+            <button type="button" id="rmUseLastBtn" class="ghost">Usar mejor registro</button>
+            <button type="button" id="rmClearBtn" class="ghost">Limpiar</button>
+          </div>
+          <div id="rmResultCard" class="rm-result-card">
+            <span class="eyebrow">1RM estimado</span>
+            <strong id="rmResultValue">—</strong>
+            <span id="rmResultDetail">Ingresa carga y repeticiones.</span>
+          </div>
+        </div>
+
+        <div class="grid two">
+          <article class="card">
+            <span class="eyebrow">Fórmula</span>
+            <h3>Epley paso a paso</h3>
+            <div class="formula-box">
+              <code>1RM = kg usados + (kg usados × reps × 0,03)</code>
+              <p>Ejemplo: 100 kg × 5 reps × 0,03 + 100 kg = <b>115 kg</b>.</p>
+              <p class="small-muted">Para 1 repetición, el resultado es la propia carga. El motor acepta 1–15 reps, pero las estimaciones son más sensibles a la calidad del set y al ejercicio.</p>
+            </div>
+          </article>
+          <article class="card">
+            <span class="eyebrow">Auditoría del repertorio</span>
+            <h3>Ejercicios disponibles</h3>
+            <div id="rmCatalogAudit"></div>
+          </article>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <span class="eyebrow">Historial</span>
+              <h3>Mejores 1RM estimados por ejercicio</h3>
+              <p class="small-muted">Se alimenta de las sesiones guardadas en Prime OS.</p>
+            </div>
+          </div>
+          <div id="rmHistoryList"></div>
         </div>
       </section>
 
@@ -403,6 +479,12 @@
     </main>
   </div>
 
+  <footer class="prime-footer">
+    <div><strong>Prime OS</strong><span>Martin Reyes</span><b>V10.4</b></div>
+    <button type="button" id="updateAppBtn" class="ghost update-app-btn">Actualizar Prime OS</button>
+    <small id="updateStatus" class="small-muted">Versión instalada: V10.4</small>
+  </footer>
+
   <button type="button" id="clockFab" class="clock-fab hidden" aria-expanded="false" aria-controls="timerPanel">
     <span class="clock-fab-icon" aria-hidden="true">⏱</span><span id="clockFabLabel">Reloj</span>
   </button>
@@ -417,13 +499,28 @@
     </div>
     <strong id="timerClock" class="timer-clock" role="timer" aria-live="off">2:00</strong>
     <div id="timerPresets" class="timer-presets">
-      <button type="button" class="timer-preset" data-seconds="60">1:00</button>
-      <button type="button" class="timer-preset" data-seconds="90">1:30</button>
-      <button type="button" class="timer-preset" data-seconds="120">2:00</button>
-      <button type="button" class="timer-preset" data-seconds="180">3:00</button>
-      <button type="button" class="timer-preset" data-seconds="240">4:00</button>
-      <button type="button" id="timerMinusBtn" class="timer-adjust" aria-label="Restar 15 segundos">−15</button>
-      <button type="button" id="timerPlusBtn" class="timer-adjust" aria-label="Sumar 15 segundos">+15</button>
+      <div class="timer-wheel-wrap">
+        <span class="timer-wheel-label">MIN</span>
+        <div id="timerMinuteWheel" class="timer-wheel" role="listbox" aria-label="Minutos"></div>
+      </div>
+      <span class="timer-wheel-colon">:</span>
+      <div class="timer-wheel-wrap">
+        <span class="timer-wheel-label">SEG</span>
+        <div id="timerSecondWheel" class="timer-wheel" role="listbox" aria-label="Segundos"></div>
+      </div>
+      <div class="timer-fine-controls">
+        <button type="button" id="timerMinus1Btn" class="timer-adjust" aria-label="Restar un segundo">−1</button>
+        <button type="button" id="timerMinusBtn" class="timer-adjust" aria-label="Restar 15 segundos">−15</button>
+        <button type="button" id="timerPlusBtn" class="timer-adjust" aria-label="Sumar 15 segundos">+15</button>
+        <button type="button" id="timerPlus1Btn" class="timer-adjust" aria-label="Sumar un segundo">+1</button>
+      </div>
+      <div class="timer-quick-presets" aria-label="Tiempos rápidos">
+        <button type="button" class="timer-preset" data-seconds="60">1:00</button>
+        <button type="button" class="timer-preset" data-seconds="90">1:30</button>
+        <button type="button" class="timer-preset" data-seconds="120">2:00</button>
+        <button type="button" class="timer-preset" data-seconds="180">3:00</button>
+        <button type="button" class="timer-preset" data-seconds="240">4:00</button>
+      </div>
     </div>
     <div class="timer-actions">
       <button type="button" id="timerStartBtn" class="primary">Iniciar</button>
@@ -431,18 +528,18 @@
     </div>
   </section>
 
-  <script src="vendor/chart.umd.js?v=10.3"></script>
-  <script src="vendor/xlsx.full.min.js?v=10.3"></script>
-  <script src="js/config.js?v=10.3"></script>
-  <script src="js/util.js?v=10.3"></script>
-  <script src="js/domain.js?v=10.3"></script>
-  <script src="js/exerciseCatalog.js?v=10.3"></script>
-  <script src="js/volumeEngine.js?v=10.3"></script>
-  <script src="js/state.js?v=10.3"></script>
-  <script src="js/training.js?v=10.3"></script>
-  <script src="js/timer.js?v=10.3"></script>
-  <script src="js/views.js?v=10.3"></script>
-  <script src="js/io.js?v=10.3"></script>
-  <script src="js/app.js?v=10.3"></script>
+  <script src="vendor/chart.umd.js?v=10.4"></script>
+  <script src="vendor/xlsx.full.min.js?v=10.4"></script>
+  <script src="js/config.js?v=10.4"></script>
+  <script src="js/util.js?v=10.4"></script>
+  <script src="js/domain.js?v=10.4"></script>
+  <script src="js/exerciseCatalog.js?v=10.4"></script>
+  <script src="js/volumeEngine.js?v=10.4"></script>
+  <script src="js/state.js?v=10.4"></script>
+  <script src="js/training.js?v=10.4"></script>
+  <script src="js/timer.js?v=10.4"></script>
+  <script src="js/views.js?v=10.4"></script>
+  <script src="js/io.js?v=10.4"></script>
+  <script src="js/app.js?v=10.4"></script>
 </body>
 </html>

@@ -89,7 +89,20 @@ const V10_EXERCISE_DEFS = [
 ["curl-muneca","Curl de muñeca","antebrazo","","flexion_muneca","aislamiento"],
 ["ext-muneca","Extensión de muñeca","antebrazo","","extension_muneca","aislamiento"],
 ["rotacion-externa","Rotación externa","manguito_rotador","","rotacion_hombro","correctivo"],
-["scap-pullup","Scap pull-up","escapula","espalda/dorsal:.25","depresion_escapula","correctivo"]
+["scap-pullup","Scap pull-up","escapula","espalda/dorsal:.25","depresion_escapula","correctivo"],
+["press-inclinado-maquina","Press inclinado máquina","pecho_superior","tríceps:.5,deltoide_anterior:.4","empuje_inclinado","compuesto"],
+["aperturas-polea","Aperturas polea","pecho","","aduccion_horizontal","aislamiento"],
+["pullover-polea","Pullover polea","espalda/dorsal","pecho:.15","extension_hombro","aislamiento"],
+["remo-t-bar","Remo T-bar","espalda/dorsal","bíceps:.5,deltoide_posterior:.25","traccion_horizontal","compuesto"],
+["jalon-prono","Jalón prono","espalda/dorsal","bíceps:.5","traccion_vertical","compuesto"],
+["zancada-inversa","Zancada inversa","glúteo","cuádriceps:.65","unilateral_pierna","compuesto"],
+["split-squat","Split squat","cuádriceps","glúteo:.7","unilateral_pierna","compuesto"],
+["curl-femoral-pie","Curl femoral unilateral de pie","isquios","","flexion_rodilla","aislamiento"],
+["hip-thrust-maquina","Hip thrust máquina","glúteo","isquios:.25","extension_cadera","compuesto"],
+["press-landmine","Press landmine","deltoide_anterior","pecho:.35,tríceps:.35","empuje_diagonal","compuesto"],
+["elevacion-posterior-polea","Elevación posterior polea","deltoide_posterior","espalda/dorsal:.15","abduccion_horizontal","aislamiento"],
+["curl-cable-unilateral","Curl cable unilateral","bíceps","braquial:.3","flexion_codo","aislamiento"],
+["extension-triceps-polea-unilateral","Extensión tríceps polea unilateral","tríceps","","extension_codo","aislamiento"]
 ];
 
 const V10_ALIAS = {
@@ -109,7 +122,27 @@ const V10_ALIAS = {
   "rdl":["rdl barra","rdl tecnico","rdl o hip thrust"],"hip-thrust":["hip thrust"],
   "curl-femoral-sentado":["curl femoral","curl femoral o back extension","curl femoral/back extension"],
   "extension-sobre-cabeza":["extension triceps trasnuca polea"],"curl-martillo":["curl martillo"],
-  "gemelo-de-pie":["gemelo de pie","gemelos de pie"]
+  "gemelo-de-pie":["gemelo de pie","gemelos de pie","gemelo","gemelos"],
+  "press-inclinado-mancuernas":["press inclinado db","press inclinado mancuernas"],
+  "press-banca":["press banco plano","press plano barra","press plano barra/maquina","press plano maquina/barra","press maquina/plano db"],
+  "press-maquina-neutro":["press maquina","press maquina neutro","press maquina/plano db","press maquina neutro/plano db","press maquina convergente/plano db","press maquina/neutro o plano db"],
+  "dominadas-lastradas":["dominadas lastradas","dominadas lastradas neutras"],
+  "dominadas":["dominadas peso corporal","dominadas bw o jalon","jalon/dominada bw","jalon/dominadas bw"],
+  "jalon-neutro":["jalon","jalon neutro","jalon neutro o dominadas bw","jalon neutro/dominadas bw","jalon neutro/dominada bw","jalon/dominada bw","jalon/dominadas bw"],
+  "remo-polea":["remo cable","remo cable/hammer","remo frontal polea/maquina"],
+  "remo-pecho-apoyado":["remo pecho apoyado","remo pecho apoyado/hammer","remo pecho apoyado/frontal","remo frontal/pecho apoyado"],
+  "remo-hammer":["remo hammer","remo cable/hammer"],
+  "elevacion-lateral":["elevaciones laterales","laterales","bi-serie laterales","laterales + posterior","laterales/posterior"],
+  "reverse-pec-deck":["pajarito unilateral polea","pajarito"],
+  "pushdown":["pushdown triceps","pushdown tríceps"],
+  "extension-sobre-cabeza":["extension triceps trasnuca polea","triceps overhead","extension triceps trasnuca"],
+  "curl-polea":["curl unilateral o polea","curl polea","curl arnold/concentrado unilateral neutro"],
+  "prensa":["prensa secundaria","prensa secundaria/hack","prensa 45/hack","prensa/hack","prensa o hack suave","prensa pies medios-altos","prensa pies altos suave","prensa pies altos/back ext","prensa pies altos/back extension"],
+  "bulgarian-split-squat":["bulgara","bulgara moderada","bulgara controlada","sentadilla bulgara","split squat/bulgara moderada","split squat o step-up"],
+  "extension-rodilla":["extension cuadriceps","extensión cuádriceps"],
+  "rdl":["rdl barra","rdl tecnico","rdl o hip thrust","opcion a: rdl barra"],
+  "peso-muerto-rumano":["peso muerto semi-sumo","semi-sumo tecnico","semi-sumo opcional tecnico","semi-sumo opcional"],
+  "curl-femoral-sentado":["curl femoral","curl femoral moderado","curl femoral o back extension","curl femoral/back extension"]
 };
 
 const V10_CATALOG = Object.fromEntries(V10_EXERCISE_DEFS.map(([id,name,primary,secondary,pattern,category])=>{

@@ -7,13 +7,14 @@ const PAGE_META = {
   entrenar: { title: "Registrar", subtitle: "Registra la sesión real, cargas, RIR, dolor y observaciones." },
   historial: { title: "Historial", subtitle: "Revisa sesiones pasadas, ejercicios completados y notas previas." },
   progreso: { title: "Progreso", subtitle: "Analiza objetivos semanales, volumen registrado y tendencias." },
+  "one-rm": { title: "Calculadora 1RM", subtitle: "Calcula y consulta estimaciones de 1RM mediante la fórmula de Epley." },
   cardio: { title: "Cardio", subtitle: "Lleva control de trote, zona 2, spinning y trabajo cardiovascular." },
   nutricion: { title: "Peso Corporal", subtitle: "Registra peso corporal y sigue la tendencia semanal o diaria." },
   ajustes: { title: "Ajustes", subtitle: "Administra perfil, respaldo y parámetros del sistema." }
 };
 
 function currentView(){
-  return document.body.className.match(/bg-([a-z]+)/)?.[1] || "inicio";
+  return document.body.className.match(/bg-([a-z-]+)/)?.[1] || "inicio";
 }
 
 function refreshTopMeta(view){
@@ -31,6 +32,7 @@ function renderAll(){
   renderTraining();
   renderHistory();
   renderProgress();
+  render1RMCalculator();
   renderCardio();
   renderWeight();
   renderBlockStatus();
@@ -478,6 +480,56 @@ function renderExerciseProgress(){
     options: { scales: { y1: { position: "right", grid: { drawOnChartArea: false }, ticks: { color: CHART_COLORS.muted } } } }
   });
 }
+
+/* ---------- Calculadora 1RM / Epley ---------- */
+function oneRMEligibleExercises(){
+  const catalog=Object.values(V10_CATALOG || {}).filter(e=>{
+    const cat=String(e.category||"");
+    return e.countsAsVolume !== false && !["correctivo","control"].includes(cat) && !["cardio","recuperación"].includes(String(e.sourceMuscle||""));
+  });
+  const map=new Map(catalog.map(e=>[e.id,{key:e.id,name:e.name,muscle:e.sourceMuscle,category:e.category,source:"catálogo"}]));
+  exerciseCatalog().forEach(e=>{ if(!map.has(e.key)) map.set(e.key,{key:e.key,name:e.name,muscle:"registrado",category:"historial",source:"historial"}); });
+  return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name,"es"));
+}
+function render1RMCalculator(){
+  const select=$("#rmExerciseSelect"); if(!select) return;
+  const catalog=oneRMEligibleExercises(), previous=select.value;
+  select.innerHTML=catalog.map(e=>`<option value="${escapeAttr(e.key)}">${escapeHtml(e.name)} · ${escapeHtml(e.muscle)}</option>`).join("");
+  if(catalog.some(e=>e.key===previous)) select.value=previous;
+  const load=parseNumber($("#rmLoadInput")?.value), reps=parseNumber($("#rmRepsInput")?.value), result=$("#rmResultValue"), detail=$("#rmResultDetail");
+  if(load===null || load<=0 || reps===null || reps<1 || reps>15){
+    if(result) result.textContent="—";
+    if(detail) detail.textContent="Ingresa una carga válida y entre 1 y 15 repeticiones.";
+  }else{
+    const rm=epley1RM(load,reps);
+    if(result) result.textContent=rm===null?"—":`${formatNumber(rm,1)} kg`;
+    if(detail) detail.innerHTML=`${formatNumber(load,1)} kg × ${reps} × 0,03 + ${formatNumber(load,1)} kg = <b>${rm===null?"—":formatNumber(rm,1)} kg</b>`;
+  }
+  const audit=$("#rmCatalogAudit");
+  if(audit){
+    const groups={}; catalog.forEach(e=>{groups[e.muscle]=(groups[e.muscle]||0)+1;});
+    audit.innerHTML=`<div class="rm-audit-total"><b>${catalog.length}</b><span>ejercicios disponibles para estimación</span></div><div class="rm-audit-grid">${Object.entries(groups).sort((a,b)=>b[1]-a[1]).map(([m,n])=>`<span>${escapeHtml(m)} <b>${n}</b></span>`).join("")}</div><p class="small-muted">Incluye variantes frecuentes de los Excel 3D/4D y conserva nombres del historial que todavía no tengan alias.</p>`;
+  }
+  const histRoot=$("#rmHistoryList");
+  if(histRoot){
+    const prs=Object.values(state.autoPRs||{}).filter(x=>Number.isFinite(Number(x.e1rm))).sort((a,b)=>b.e1rm-a.e1rm);
+    histRoot.innerHTML=prs.length ? prs.slice(0,30).map(p=>`<div class="progress-row"><strong>${escapeHtml(p.name)}</strong><span class="small-muted">${formatNumber(p.e1rm,1)} kg · ${escapeHtml(formatSetWeight(p))} × ${escapeHtml(p.reps)} · ${escapeHtml(p.date)}</span></div>`).join("") : `<p class="small-muted">Aún no hay registros con peso y repeticiones suficientes para estimar 1RM.</p>`;
+  }
+}
+function useBestRecordFor1RM(){
+  const select=$("#rmExerciseSelect"); if(!select) return;
+  const chosen=oneRMEligibleExercises().find(e=>e.key===select.value); if(!chosen) return;
+  const bests=exerciseHistory(chosen.name).map(h=>bestSet(h.sets)).filter(Boolean);
+  const best=bests.sort((a,b)=>(estimate1RM(b)||0)-(estimate1RM(a)||0))[0];
+  if(!best){toast("No hay un registro con peso y reps para este ejercicio.","info",3500);return;}
+  $("#rmLoadInput").value=toKg(best)?.toFixed(1) || "";
+  $("#rmRepsInput").value=repsCount(best.repsDone) || "";
+  render1RMCalculator();
+}
+function clear1RMCalculator(){ $("#rmLoadInput").value=""; $("#rmRepsInput").value=""; render1RMCalculator(); }
+window.render1RMCalculator=render1RMCalculator;
+window.useBestRecordFor1RM=useBestRecordFor1RM;
+window.clear1RMCalculator=clear1RMCalculator;
 
 /* ---------- Cardio ---------- */
 

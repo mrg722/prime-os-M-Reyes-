@@ -1,4 +1,15 @@
-# Prime OS - Martin Reyes V10
+# Prime OS - Martin Reyes V10.4
+
+## V10.4 — 1RM, repertorio, temporizador y actualizaciones
+
+- **Calculadora 1RM Epley:** `1RM = kg + (kg × reps × 0,03)`, con opción independiente en el menú y acceso desde el Dashboard.
+- **Repertorio ampliado:** catálogo y aliases auditados contra las variantes presentes en los Excel de 3 y 4 días; se conservan nombres históricos aunque todavía no tengan alias.
+- **Temporizador:** selector tipo rueda desplazable para minutos/segundos, manteniendo los botones `−15` y `+15` y agregando `−1` y `+1`. El cronómetro no cambia.
+- **Dashboard Excel:** los dashboards 3D/4D incluyen un bloque específico para la fórmula Epley.
+- **Versión visible:** el pie de página muestra siempre la versión instalada.
+- **Actualización PWA:** `APP_VERSION`, `CACHE_VERSION`, `?v=` y el manifiesto se actualizan juntos. El Service Worker usa caché versionada, `updateViaCache:"none"`, `skipWaiting()`/`clients.claim()` y la app ofrece un botón **Actualizar Prime OS** para comprobar y aplicar la versión nueva.
+
+Estas medidas siguen las prácticas documentadas para actualización y limpieza de caché de PWAs. (web.dev / MDN)
 
 ## V10 actual
 
