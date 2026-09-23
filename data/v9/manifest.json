@@ -1,0 +1,514 @@
+{
+  "version": "v9.0-12-semanas-adaptive",
+  "programVersion": "9.0",
+  "sourceWorkbooks": [
+    "Bloque_12_Semanas_3_Dias_Registro_Completo_Martin.xlsx",
+    "Bloque_12_Semanas_4_Dias_Registro_PRO_Martin.xlsx"
+  ],
+  "weeks": [
+    "Semana 1",
+    "Semana 2",
+    "Semana 3",
+    "Semana 4",
+    "Semana 5",
+    "Semana 6",
+    "Semana 7",
+    "Semana 8",
+    "Semana 9",
+    "Semana 10",
+    "Semana 11",
+    "Semana 12"
+  ],
+  "defaultWeek": "Semana 1",
+  "defaultMode": "3",
+  "defaultDay": "Martes - Upper A",
+  "modes": {
+    "3": {
+      "label": "3 días · Excel",
+      "description": "Upper A + Lower A + Full Body · Excel",
+      "days": [
+        "Martes - Upper A",
+        "Miércoles - Lower A",
+        "Sábado - Full Body · Excel",
+        "Jueves - Cardio/Abs/Movilidad"
+      ]
+    },
+    "4": {
+      "label": "4 días · Excel PRO",
+      "description": "Upper A + Lower A + Upper B + Lower B",
+      "days": [
+        "Martes - Upper A",
+        "Miércoles - Lower A",
+        "Viernes - Upper B",
+        "Sábado - Lower B",
+        "Jueves - Cardio/Abs/Movilidad"
+      ]
+    },
+    "2": {
+      "label": "2 días · Full Body adaptativo",
+      "description": "Full Body A + Full Body B progresivos",
+      "days": [
+        "Full Body A · Adaptativo 2D",
+        "Full Body B · Adaptativo 2D",
+        "Cardio/Abs/Movilidad · Adaptativo 2D"
+      ]
+    }
+  },
+  "settings": {
+    "ownerName": "Martin Reyes",
+    "goalWeight": "74-76 kg",
+    "mainGoal": "Fuerza + hipertrofia + rendimiento",
+    "deadliftWeakness": "Bloqueo final",
+    "sensitiveExercises": "Banca plana pesada, sentadilla si molesta cervical, bisagra pesada/trote si isquio sensible"
+  },
+  "blockStatus": {
+    "Semana 1": {
+      "status": "base",
+      "note": "Medir base y ordenar estímulo"
+    },
+    "Semana 2": {
+      "status": "base",
+      "note": "Repetir calidad y subir solo lo necesario"
+    },
+    "Semana 3": {
+      "status": "base",
+      "note": "Primer empuje controlado"
+    },
+    "Semana 4": {
+      "status": "pivot",
+      "note": "Descargar y salir con hambre"
+    },
+    "Semana 5": {
+      "status": "base",
+      "note": "Construcción fuerte I"
+    },
+    "Semana 6": {
+      "status": "base",
+      "note": "Consolidar cargas útiles"
+    },
+    "Semana 7": {
+      "status": "base",
+      "note": "Cerrar bloque 2 fuerte"
+    },
+    "Semana 8": {
+      "status": "pivot",
+      "note": "Reset articular/SNC"
+    },
+    "Semana 9": {
+      "status": "base",
+      "note": "Reacelerar con intensidad productiva"
+    },
+    "Semana 10": {
+      "status": "base",
+      "note": "Semana fuerte + sumo opcional"
+    },
+    "Semana 11": {
+      "status": "base",
+      "note": "Rep PRs submáximos"
+    },
+    "Semana 12": {
+      "status": "base",
+      "note": "Consolidar y medir sin 1RM"
+    }
+  },
+  "phases": {
+    "1": {
+      "phase": "Reacumulación técnica",
+      "targets": {
+        "pecho": "8-10",
+        "espalda/dorsal": "10-12",
+        "cuádriceps": "8-10",
+        "isquios": "8-10",
+        "deltoide lateral": "6-8",
+        "bíceps": "4-6",
+        "core/control": "4-6 bloques + cardio opcional"
+      },
+      "objective": "Medir base y ordenar estímulo"
+    },
+    "2": {
+      "phase": "Reacumulación técnica",
+      "targets": {
+        "pecho": "8-10",
+        "espalda/dorsal": "10-12",
+        "cuádriceps": "8-10",
+        "isquios": "8-10",
+        "deltoide lateral": "6-8",
+        "bíceps": "4-6",
+        "core/control": "4-6 bloques + cardio opcional"
+      },
+      "objective": "Repetir calidad y subir solo lo necesario"
+    },
+    "3": {
+      "phase": "Reacumulación técnica",
+      "targets": {
+        "pecho": "8-10",
+        "espalda/dorsal": "10-12",
+        "cuádriceps": "8-10",
+        "isquios": "8-10",
+        "deltoide lateral": "6-8",
+        "bíceps": "4-6",
+        "core/control": "4-6 bloques + cardio opcional"
+      },
+      "objective": "Primer empuje controlado"
+    },
+    "4": {
+      "phase": "Pivot 1",
+      "targets": {
+        "pecho": "50-60% S3",
+        "espalda/dorsal": "50-60%",
+        "cuádriceps": "50-60%",
+        "isquios": "50-60%",
+        "deltoide lateral": "50-70%",
+        "bíceps": "50-70%",
+        "core/control": "Suave"
+      },
+      "objective": "Descargar y salir con hambre"
+    },
+    "5": {
+      "phase": "Construcción fuerte",
+      "targets": {
+        "pecho": "10-12",
+        "espalda/dorsal": "12-14",
+        "cuádriceps": "10-12",
+        "isquios": "10-12",
+        "deltoide lateral": "8-10",
+        "bíceps": "6-8",
+        "core/control": "5-6 bloques + cardio"
+      },
+      "objective": "Construcción fuerte I"
+    },
+    "6": {
+      "phase": "Construcción fuerte",
+      "targets": {
+        "pecho": "10-12",
+        "espalda/dorsal": "12-14",
+        "cuádriceps": "10-12",
+        "isquios": "10-12",
+        "deltoide lateral": "8-10",
+        "bíceps": "6-8",
+        "core/control": "5-6 bloques + cardio"
+      },
+      "objective": "Consolidar cargas útiles"
+    },
+    "7": {
+      "phase": "Construcción fuerte III",
+      "targets": {
+        "pecho": "10-12",
+        "espalda/dorsal": "12-14",
+        "cuádriceps": "10-12",
+        "isquios": "10-12",
+        "deltoide lateral": "8-10",
+        "bíceps": "6-8",
+        "core/control": "5-6 bloques + cardio"
+      },
+      "objective": "Cerrar bloque 2 fuerte"
+    },
+    "8": {
+      "phase": "Pivot 2",
+      "targets": {
+        "pecho": "50-60%",
+        "espalda/dorsal": "50-60%",
+        "cuádriceps": "50-60%",
+        "isquios": "50-60%",
+        "deltoide lateral": "50-70%",
+        "bíceps": "50-70%",
+        "core/control": "Suave"
+      },
+      "objective": "Reset articular/SNC"
+    },
+    "9": {
+      "phase": "Intensificación productiva",
+      "targets": {
+        "pecho": "10-13",
+        "espalda/dorsal": "12-15",
+        "cuádriceps": "10-13",
+        "isquios": "10-13",
+        "deltoide lateral": "8-11",
+        "bíceps": "6-9",
+        "core/control": "5-8 bloques + cardio"
+      },
+      "objective": "Reacelerar con intensidad productiva"
+    },
+    "10": {
+      "phase": "Intensificación productiva",
+      "targets": {
+        "pecho": "10-13",
+        "espalda/dorsal": "13-15",
+        "cuádriceps": "10-13",
+        "isquios": "10-13",
+        "deltoide lateral": "9-11",
+        "bíceps": "6-9",
+        "core/control": "5-8 bloques + cardio"
+      },
+      "objective": "Semana fuerte + sumo opcional"
+    },
+    "11": {
+      "phase": "Intensificación productiva / rep PR",
+      "targets": {
+        "pecho": "10-13",
+        "espalda/dorsal": "13-15",
+        "cuádriceps": "10-13",
+        "isquios": "10-13",
+        "deltoide lateral": "9-11",
+        "bíceps": "6-9",
+        "core/control": "5-8 bloques + cardio"
+      },
+      "objective": "Rep PRs submáximos"
+    },
+    "12": {
+      "phase": "Consolidación / test submáximo",
+      "targets": {
+        "pecho": "6-9",
+        "espalda/dorsal": "8-11",
+        "cuádriceps": "6-9",
+        "isquios": "6-9",
+        "deltoide lateral": "5-8",
+        "bíceps": "4-6",
+        "core/control": "Suave + test opcional"
+      },
+      "objective": "Consolidar y medir sin 1RM"
+    }
+  },
+  "weeklyTargets3": {
+    "1": {
+      "pecho": "8-10",
+      "espalda/dorsal": "10-12",
+      "cuádriceps": "8-10",
+      "isquios": "8-10",
+      "deltoide lateral": "6-8",
+      "bíceps": "4-6",
+      "core/control": "4-6 bloques + cardio opcional"
+    },
+    "2": {
+      "pecho": "8-10",
+      "espalda/dorsal": "10-12",
+      "cuádriceps": "8-10",
+      "isquios": "8-10",
+      "deltoide lateral": "6-8",
+      "bíceps": "4-6",
+      "core/control": "4-6 bloques + cardio opcional"
+    },
+    "3": {
+      "pecho": "8-10",
+      "espalda/dorsal": "10-12",
+      "cuádriceps": "8-10",
+      "isquios": "8-10",
+      "deltoide lateral": "6-8",
+      "bíceps": "4-6",
+      "core/control": "4-6 bloques + cardio opcional"
+    },
+    "4": {
+      "pecho": "50-60% S3",
+      "espalda/dorsal": "50-60%",
+      "cuádriceps": "50-60%",
+      "isquios": "50-60%",
+      "deltoide lateral": "50-70%",
+      "bíceps": "50-70%",
+      "core/control": "Suave"
+    },
+    "5": {
+      "pecho": "10-12",
+      "espalda/dorsal": "12-14",
+      "cuádriceps": "10-12",
+      "isquios": "10-12",
+      "deltoide lateral": "8-10",
+      "bíceps": "6-8",
+      "core/control": "5-6 bloques + cardio"
+    },
+    "6": {
+      "pecho": "10-12",
+      "espalda/dorsal": "12-14",
+      "cuádriceps": "10-12",
+      "isquios": "10-12",
+      "deltoide lateral": "8-10",
+      "bíceps": "6-8",
+      "core/control": "5-6 bloques + cardio"
+    },
+    "7": {
+      "pecho": "10-12",
+      "espalda/dorsal": "12-14",
+      "cuádriceps": "10-12",
+      "isquios": "10-12",
+      "deltoide lateral": "8-10",
+      "bíceps": "6-8",
+      "core/control": "5-6 bloques + cardio"
+    },
+    "8": {
+      "pecho": "50-60%",
+      "espalda/dorsal": "50-60%",
+      "cuádriceps": "50-60%",
+      "isquios": "50-60%",
+      "deltoide lateral": "50-70%",
+      "bíceps": "50-70%",
+      "core/control": "Suave"
+    },
+    "9": {
+      "pecho": "10-13",
+      "espalda/dorsal": "12-15",
+      "cuádriceps": "10-13",
+      "isquios": "10-13",
+      "deltoide lateral": "8-11",
+      "bíceps": "6-9",
+      "core/control": "5-8 bloques + cardio"
+    },
+    "10": {
+      "pecho": "10-13",
+      "espalda/dorsal": "13-15",
+      "cuádriceps": "10-13",
+      "isquios": "10-13",
+      "deltoide lateral": "9-11",
+      "bíceps": "6-9",
+      "core/control": "5-8 bloques + cardio"
+    },
+    "11": {
+      "pecho": "10-13",
+      "espalda/dorsal": "13-15",
+      "cuádriceps": "10-13",
+      "isquios": "10-13",
+      "deltoide lateral": "9-11",
+      "bíceps": "6-9",
+      "core/control": "5-8 bloques + cardio"
+    },
+    "12": {
+      "pecho": "6-9",
+      "espalda/dorsal": "8-11",
+      "cuádriceps": "6-9",
+      "isquios": "6-9",
+      "deltoide lateral": "5-8",
+      "bíceps": "4-6",
+      "core/control": "Suave + test opcional"
+    }
+  },
+  "weeklyTargets4": {
+    "1": {
+      "pecho": "9-11",
+      "espalda/dorsal": "12-14",
+      "cuádriceps": "9-11",
+      "isquios": "9-11",
+      "deltoide lateral": "7-9",
+      "bíceps": "5-7",
+      "core/control": "4-6 bloques + cardio opcional"
+    },
+    "2": {
+      "pecho": "9-11",
+      "espalda/dorsal": "12-14",
+      "cuádriceps": "9-11",
+      "isquios": "9-11",
+      "deltoide lateral": "7-9",
+      "bíceps": "5-7",
+      "core/control": "4-6 bloques + cardio opcional"
+    },
+    "3": {
+      "pecho": "9-11",
+      "espalda/dorsal": "12-14",
+      "cuádriceps": "9-11",
+      "isquios": "9-11",
+      "deltoide lateral": "7-9",
+      "bíceps": "5-7",
+      "core/control": "4-6 bloques + cardio opcional"
+    },
+    "4": {
+      "pecho": "50-60% Sem 3",
+      "espalda/dorsal": "50-60%",
+      "cuádriceps": "50-60%",
+      "isquios": "50-60%",
+      "deltoide lateral": "50-70%",
+      "bíceps": "50-70%",
+      "core/control": "Suave"
+    },
+    "5": {
+      "pecho": "10-13",
+      "espalda/dorsal": "13-16",
+      "cuádriceps": "10-13",
+      "isquios": "10-13",
+      "deltoide lateral": "8-10",
+      "bíceps": "6-8",
+      "core/control": "5-6 bloques + cardio"
+    },
+    "6": {
+      "pecho": "10-13",
+      "espalda/dorsal": "13-16",
+      "cuádriceps": "10-13",
+      "isquios": "10-13",
+      "deltoide lateral": "8-10",
+      "bíceps": "6-8",
+      "core/control": "5-6 bloques + cardio"
+    },
+    "7": {
+      "pecho": "10-13",
+      "espalda/dorsal": "13-16",
+      "cuádriceps": "10-13",
+      "isquios": "10-13",
+      "deltoide lateral": "8-10",
+      "bíceps": "6-8",
+      "core/control": "5-6 bloques + cardio"
+    },
+    "8": {
+      "pecho": "50-60% Sem 7",
+      "espalda/dorsal": "50-60%",
+      "cuádriceps": "50-60%",
+      "isquios": "50-60%",
+      "deltoide lateral": "50-70%",
+      "bíceps": "50-70%",
+      "core/control": "Suave"
+    },
+    "9": {
+      "pecho": "10-14",
+      "espalda/dorsal": "14-16",
+      "cuádriceps": "10-14",
+      "isquios": "10-14",
+      "deltoide lateral": "8-12",
+      "bíceps": "6-10",
+      "core/control": "5-8 bloques + cardio"
+    },
+    "10": {
+      "pecho": "10-14",
+      "espalda/dorsal": "14-16",
+      "cuádriceps": "10-14",
+      "isquios": "10-14",
+      "deltoide lateral": "8-12",
+      "bíceps": "6-10",
+      "core/control": "5-8 bloques + cardio"
+    },
+    "11": {
+      "pecho": "10-14",
+      "espalda/dorsal": "14-16",
+      "cuádriceps": "10-14",
+      "isquios": "10-14",
+      "deltoide lateral": "8-12",
+      "bíceps": "6-10",
+      "core/control": "5-8 bloques + cardio"
+    },
+    "12": {
+      "pecho": "60-75% Sem 11",
+      "espalda/dorsal": "60-75%",
+      "cuádriceps": "60-75%",
+      "isquios": "60-75%",
+      "deltoide lateral": "60-75%",
+      "bíceps": "60-75%",
+      "core/control": "Test submax + recuperación"
+    }
+  },
+  "adaptiveRules": {
+    "identity": "FULL BODY ADAPTATIVO 2D",
+    "purpose": "Opción exclusiva cuando la disponibilidad semanal sea de 2 días; no sustituye el Full Body del Excel del modo 3 días.",
+    "design": "Dos sesiones de cuerpo completo con exposición de empuje, tracción, cuádriceps y posterior en cada sesión, usando ejercicios y prescripciones presentes en los Excel. Se priorizan anclajes y volumen productivo sin sumar toda la deuda del modo 4 días.",
+    "progression": "Mantener la semana del bloque; progresar por reps limpias y RIR objetivo antes que carga; respetar pivots y test submáximo.",
+    "evidenceBasis": "La literatura respalda que volumen semanal y proximidad al fallo son variables importantes, con rendimientos decrecientes del volumen; la frecuencia puede organizarse según disponibilidad cuando el volumen se gestiona. El Full Body adaptativo es una aplicación individualizada de esos principios, no una garantía de progreso.",
+    "sources": [
+      "https://pubmed.ncbi.nlm.nih.gov/38595233/",
+      "https://pubmed.ncbi.nlm.nih.gov/38970765/",
+      "https://pubmed.ncbi.nlm.nih.gov/36334240/"
+    ]
+  },
+  "prs": {
+    "Peso muerto sumo": "210 kg x3, fallo cerca del bloqueo en 3ª",
+    "Press banca": "125 kg single histórico, 115x5 @7, 120x3 con 4ª fallida",
+    "Sentadilla alta": "155x4 reciente, meta previa 170x4",
+    "Dominadas lastradas": "30 kg x8/7/6",
+    "Press inclinado mancuernas": "40 kg x5 RIR1"
+  },
+  "cardio": [],
+  "weightLog": [],
+  "exerciseAliases": {}
+}
