@@ -10,6 +10,7 @@ global.estimate1RM=s=>{const w=Number(s.weight),r=Number(s.repsDone);return w&&r
 global.SLEEP_SCORE={bueno:3,medio:2,malo:1};
 const catalog=require("../js/exerciseCatalog.js");
 const engine=require("../js/volumeEngine.js");
+global.v10ExerciseMeta=catalog.v10ExerciseMeta;
 
 let stateBackup,planBackup;
 function setup(sessions=[],weeks=["Semana 1"],targets={}){global.state={sessions,weeks,weeklyTargets:targets,selectedMode:"4",settings:{goalMode:"mixed"}};global.PLAN={weeklyTargetBandsByMode:{"4":{}},defaultMode:"4"};}
