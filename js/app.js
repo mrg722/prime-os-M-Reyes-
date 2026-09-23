@@ -28,6 +28,7 @@ async function setup(){
   setUpdateStatus("Versión instalada: "+APP_VERSION);
   if(restored) toast("Recuperé tu registro sin guardar. Sigue donde quedaste en Registrar.", "info", 6000);
   registerServiceWorker();
+  checkRemoteVersion();
 }
 
 function fillSelectors(){
@@ -201,6 +202,21 @@ function bindMobileDrawer(){
 
 /* ---------- Uso sin internet ---------- */
 
+async function checkRemoteVersion(){
+  // Handshake independiente del cache: si GitHub Pages ya publica una versión nueva,
+  // el cliente actual la detecta incluso antes de que el service worker viejo termine de actualizarse.
+  try{
+    const res=await fetch("version.json?probe="+Date.now(),{cache:"no-store",credentials:"same-origin"});
+    if(!res.ok) return;
+    const remote=await res.json();
+    const remoteVersion=String(remote.version||"").trim();
+    if(remoteVersion && remoteVersion!==APP_VERSION){
+      setUpdateStatus("Nueva versión "+remoteVersion+" detectada. Actualizando…");
+      await updatePrimeOSNow();
+    }
+  }catch(err){ /* sin red: la app continúa con la versión instalada */ }
+}
+
 async function registerServiceWorker(){
   if(!("serviceWorker" in navigator) || !location.protocol.startsWith("http")) return;
   try{
@@ -252,9 +268,15 @@ async function updatePrimeOSNow(){
       reg.waiting.postMessage({type:"SKIP_WAITING"});
       return;
     }
-    // GitHub Pages/CDN puede tardar; una recarga normal vuelve a pedir los assets ?v=APP_VERSION.
+    // Sin waiting: cambia la URL de navegación para forzar una nueva entrada de red.
+    // Los subrecursos ya llevan ?v=APP_VERSION y el SW usa updateViaCache:"none".
     setUpdateStatus("Prime OS ya está en "+APP_VERSION+". Recargando recursos…");
-    setTimeout(()=>location.reload(),250);
+    setTimeout(()=>{
+      const url=new URL(location.href);
+      url.searchParams.set("v",APP_VERSION);
+      url.searchParams.set("refresh",String(Date.now()));
+      location.replace(url.toString());
+    },250);
   }catch(err){
     setUpdateStatus("No se pudo comprobar. Recarga manualmente.");
     if(btn){btn.disabled=false;btn.textContent="Actualizar Prime OS";}
