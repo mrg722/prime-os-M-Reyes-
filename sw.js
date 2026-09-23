@@ -1,6 +1,6 @@
 // Service worker de Prime OS: guarda la app en el dispositivo para abrirla y usarla sin internet.
 // Al publicar una versión nueva, sube CACHE_VERSION (debe coincidir con APP_VERSION en js/config.js).
-const CACHE_VERSION = "10.4";
+const CACHE_VERSION = "10.5";
 const CACHE_NAME = `prime-os-${CACHE_VERSION}`;
 
 const ASSETS = [
@@ -66,7 +66,11 @@ const ASSETS = [
 ];
 
 // La versión nueva se activa sola apenas se descarga (la app recarga una vez para no mezclar versiones).
-self.addEventListener("message", event => {\n  if(event.data?.type === "SKIP_WAITING") self.skipWaiting();\n});\n\nself.addEventListener("install", event => {
+self.addEventListener("message", event => {
+  if(event.data?.type === "SKIP_WAITING") self.skipWaiting();
+});
+
+self.addEventListener("install", event => {
   // CSS, JS y JSON se guardan con el mismo ?v= que pide la página.
   const urls = ASSETS.map(a => /\.(css|js|json)$/.test(a) && a !== "manifest.json" ? `${a}?v=${CACHE_VERSION}` : a);
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urls)).then(() => self.skipWaiting()));
@@ -87,7 +91,7 @@ self.addEventListener("fetch", event => {
   // Páginas: primero la red (para ver cambios); sin conexión o con señal lenta (>3 s), la copia guardada.
   if(req.mode === "navigate"){
     const cached = () => caches.match("index.html", {ignoreSearch: true});
-    const net = fetch(req);
+    const net = fetch(req, {cache:"no-store"});
     const timeout = new Promise(resolve => setTimeout(resolve, 3000)).then(cached);
     event.respondWith(
       Promise.race([net, timeout])
