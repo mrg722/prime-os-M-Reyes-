@@ -1,7 +1,7 @@
 {
   "name": "Prime OS Martin Reyes V9.0",
   "short_name": "Prime OS",
-  "start_url": "./index.html?v=8.2",
+  "start_url": "./index.html?v=9.0",
   "display": "standalone",
   "background_color": "#0d1117",
   "theme_color": "#0d1117",

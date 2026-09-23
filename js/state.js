@@ -19,6 +19,12 @@ async function loadPlan(){
     Promise.all(manifest.weeks.map((_,i)=>fetchJson(`data/v9/adaptiveFullBody_${i+1}.json`)))
   ]);
   const routineByMode = {"3":{},"4":{},"2":{}};
+  // Sesiones de cada modo (el orden define la sesión por defecto al cambiar de modo).
+  const modeDays = {
+    "4": ["Martes - Upper A","Miércoles - Lower A","Viernes - Upper B","Sábado - Lower B","Jueves - Cardio/Abs/Movilidad"],
+    "3": ["Martes - Upper A","Miércoles - Lower A","Sábado - Full Body · Excel","Jueves - Cardio/Abs/Movilidad"],
+    "2": ["Full Body A · Adaptativo 2D","Full Body B · Adaptativo 2D"]
+  };
   const map3 = {"Martes - Upper A":"Upper A","Miércoles - Lower A":"Lower A","Sábado - Full Body · Excel":"Full Body · Excel","Jueves - Cardio/Abs/Movilidad":"Cardio/Abs/Movilidad"};
   const map4 = {"Martes - Upper A":"Upper A","Miércoles - Lower A":"Lower A","Viernes - Upper B":"Upper B","Sábado - Lower B":"Lower B","Jueves - Cardio/Abs/Movilidad":"Cardio/Abs/Movilidad"};
   const map2 = {"Full Body A · Adaptativo 2D":"Full Body A · Adaptativo 2D","Full Body B · Adaptativo 2D":"Full Body B · Adaptativo 2D"};
@@ -36,14 +42,16 @@ async function loadPlan(){
       const m = normalizeMuscle(e.muscle); weeklyTargets2[w][m]=(weeklyTargets2[w][m]||0)+Number(e.sets||0);
     });
   });
-  const numericTargets = bands => Object.fromEntries(Object.entries(bands||{}).map(([w,groups])=>[w,Object.fromEntries(Object.entries(groups||{}).map(([m,v])=>{
+  const weekName = w => /^\d+$/.test(String(w)) ? `Semana ${w}` : String(w);
+  const numericTargets = bands => Object.fromEntries(Object.entries(bands||{}).map(([w,groups])=>[weekName(w),Object.fromEntries(Object.entries(groups||{}).map(([m,v])=>{
     if(typeof v === "number") return [m,v];
-    const nums = String(v).match(/\\d+(?:\\.\\d+)?/g)?.map(Number) || [];
+    const nums = String(v).match(/\d+(?:\.\d+)?/g)?.map(Number) || [];
     if(nums.length >= 2) return [m,Math.round((nums[0]+nums[1])/2)];
     if(nums.length === 1) return [m,nums[0]];
     return [m,0];
   }))]));
-  const target3Bands = clone(manifest.weeklyTargets3), target4Bands = clone(manifest.weeklyTargets4);
+  const bandsByWeek = bands => Object.fromEntries(Object.entries(bands||{}).map(([w,g])=>[weekName(w), g]));
+  const target3Bands = bandsByWeek(manifest.weeklyTargets3), target4Bands = bandsByWeek(manifest.weeklyTargets4);
   PLAN = {...legacy, ...manifest,
     version: manifest.version,
     routine:clone(routineByMode[String(manifest.defaultMode || "4")]),
