@@ -1,5 +1,5 @@
 // Reloj flotante: temporizador (cuenta regresiva) y cronómetro. Sigue corriendo al cambiar de sección o recargar.
-// V10.4: solo se rediseña el temporizador; el cronómetro conserva su comportamiento original.
+// V10.6: se rediseña el temporizador; el cronómetro conserva su comportamiento original.
 const TIMER_KEY = "prime_os_timer_v1";
 let timerState = {mode: "countdown", duration: 120, running: false, startedAt: 0, elapsedBefore: 0, finished: false, open: false};
 let timerInterval = null;

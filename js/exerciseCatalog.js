@@ -8,6 +8,10 @@ const V10_EXERCISE_DEFS = [
 ["press-maquina-neutro","Press máquina neutro","pecho","tríceps:.4,deltoide_anterior:.25","empuje_horizontal","compuesto"],
 ["fondos","Fondos","pecho","tríceps:.6,deltoide_anterior:.25","empuje_vertical","compuesto"],
 ["fondos-asistidos","Fondos asistidos","pecho","tríceps:.6,deltoide_anterior:.25","empuje_vertical","compuesto"],
+["semi-sumo","Peso muerto semi-sumo","isquios","glúteo:.75,erectores:.35","bisagra","fuerza"],
+["isometrico-dominada","Isométrico 1 brazo dominada","espalda/dorsal","bíceps:.5","traccion_vertical","control"],
+["biceps-triceps-combo","Bíceps + tríceps","bíceps","tríceps:1","flexion_extension_codo","control"],
+["curl-pushdown-combo","Curl + pushdown","bíceps","tríceps:1","flexion_extension_codo","control"],
 ["aperturas-mancuernas","Aperturas mancuernas","pecho","","aduccion_horizontal","aislamiento"],
 ["pec-deck","Pec deck","pecho","","aduccion_horizontal","aislamiento"],
 ["cruce-poleas","Cruce de poleas","pecho","","aduccion_horizontal","aislamiento"],
@@ -107,16 +111,16 @@ const V10_EXERCISE_DEFS = [
 
 const V10_ALIAS = {
   "press-banca":["bench press","banca plana","press plano","press banco plano"],"press-banca-pausado":["bench pausado","press banca pause","press banca con pausa"],
-  "press-inclinado-mancuernas":["incline db","press inclinado db"],"dominadas":["pull ups","pull-up","pullups","dominadas bw"],
-  "dominadas-lastradas":["pull ups lastradas","pull-ups lastradas","dominada lastrada"],"chin-up":["chin ups","chinups"],
-  "remo-hammer":["hammer row"],"sentadilla-alta":["high bar squat","high squat","sentadilla high bar"],
-  "rdl":["peso muerto rumano","rumano","romanian deadlift"],"hip-thrust":["hip thrust","hip thrust barra"],
-  "bulgarian-split-squat":["bulgarian","split squat","búlgaras"],"curl-femoral-sentado":["curl femoral","seated leg curl"],
+  "press-inclinado-mancuernas":["incline db","press inclinado db"],"dominadas":["pull ups","pull-up","pullups","dominadas bw","dominadas bw o jalon","dominadas peso corporal","jalon/dominada bw","jalon/dominadas bw","jalon/dominadas bw","jalon neutro o dominadas bw"],
+  "dominadas-lastradas":["pull ups lastradas","pull-ups lastradas","dominada lastrada","dominadas lastradas neutras"],"chin-up":["chin ups","chinups"],
+  "remo-hammer":["hammer row","remo frontal/hammer"],"sentadilla-alta":["high bar squat","high squat","sentadilla high bar"],
+  "rdl":["peso muerto rumano","rumano","romanian deadlift","rdl barra","rdl tecnico","rdl o hip thrust","opcion a: rdl barra"],"hip-thrust":["hip thrust","hip thrust barra"],
+  "bulgarian-split-squat":["bulgarian","split squat","búlgaras","bulgara o split squat","sentadilla bulgara","split squat/bulgara moderada","split squat o step-up"],"curl-femoral-sentado":["curl femoral","seated leg curl","curl femoral moderado","curl femoral o back extension","curl femoral/back extension"],
   "elevacion-lateral":["laterales","elevaciones laterales","lateral raises","bi-serie laterales","laterales + posterior","laterales/posterior"],"press-militar":["militar","overhead press","ohp"],
-  "press-maquina-neutro":["press maquina/neutro o plano db","press maquina/plano db","press maquina","press maquina neutro"],
-  "dominadas":["dominadas peso corporal","dominadas bw o jalon"],"jalon-neutro":["jalon","jalon neutro o dominadas bw","jalon neutro/dominadas bw"],
-  "remo-polea":["remo cable","remo cable/hammer"],"remo-hammer":["remo hammer"],
-  "prensa":["prensa 45/hack","prensa pies medios-altos","prensa secundaria","prensa secundaria/hack","prensa/hack","prensa/hack suave"],
+  "press-maquina-neutro":["press maquina/neutro o plano db","press maquina/plano db","press maquina","press maquina neutro","press maquina neutro/plano db"],
+  "dominadas":["dominadas peso corporal","dominadas bw o jalon"],"jalon-neutro":["jalon","jalon neutro o dominadas bw","jalon neutro/dominadas bw","jalon neutro","jalon neutro opcional","jalon neutro/dominada bw","jalon/dominada bw","jalon/dominadas bw"],
+  "remo-polea":["remo cable","remo cable/hammer","remo frontal polea/maquina"],"remo-hammer":["remo hammer"],
+  "prensa":["prensa 45/hack","prensa pies medios-altos","prensa secundaria","prensa secundaria/hack","prensa/hack","prensa/hack suave","prensa o hack suave","prensa pies altos suave","prensa pies altos/back ext","prensa pies altos/back extension"],
   "hack-squat":["hack squat","prensa o hack suave"],
   "bulgarian-split-squat":["bulgara","bulgara moderada","sentadilla bulgara","búlgaras"],
   "rdl":["rdl barra","rdl tecnico","rdl o hip thrust"],"hip-thrust":["hip thrust"],
@@ -144,6 +148,36 @@ const V10_ALIAS = {
   "peso-muerto-rumano":["peso muerto semi-sumo","semi-sumo tecnico","semi-sumo opcional tecnico","semi-sumo opcional"],
   "curl-femoral-sentado":["curl femoral","curl femoral moderado","curl femoral o back extension","curl femoral/back extension"]
 };
+
+// V10.6 audit overlay: the supplied Excel templates use many human-readable variants.
+// Keep these aliases in one final overlay so duplicate legacy keys cannot hide an audited variant.
+Object.assign(V10_ALIAS, {
+  "fondos":["fondos submax o press maquina","fondos submax/maquina","fondos submaximos opcional"],
+  "semi-sumo":["peso muerto semi-sumo","semi-sumo","semi-sumo opcional","semi-sumo opcional tecnico","semi-sumo tecnico opcional","opcion b: semi-sumo tecnico"],
+  "isometrico-dominada":["isometricos 1 brazo dominada"],
+  "biceps-triceps-combo":["biceps + triceps","curl + triceps"],
+  "curl-pushdown-combo":["curl + pushdown"],
+  "curl-polea":["curl arnold/concentrado unilateral neutro","curl unilateral o polea"],
+  "reverse-pec-deck":["pajarito unilateral polea"],
+  "bulgarian-split-squat":["bulgara","bulgara controlada","bulgara moderada","bulgara o split squat","búlgaras","sentadilla bulgara","split squat/bulgara moderada","split squat o step-up"],
+  "extension-rodilla":["extension cuadriceps"],
+  "press-inclinado-mancuernas":["press inclinado db"],
+  "press-maquina-convergente":["press maquina convergente/plano db","press plano barra/maquina","press plano maquina/barra"],
+  "press-maquina-neutro":["press maquina","press maquina neutro","press maquina neutro/plano db","press maquina/neutro o plano db","press maquina/plano db"],
+  "pushdown":["pushdown triceps"],
+  "rdl":["rdl barra","rdl tecnico","rdl o hip thrust","opcion a: rdl barra"],
+  "curl-femoral-sentado":["curl femoral","curl femoral moderado","curl femoral o back extension","curl femoral/back extension"],
+  "gemelo-de-pie":["gemelo","gemelos"],
+  "dominadas":["dominadas bw o jalon","dominadas peso corporal","jalon/dominada bw","jalon/dominadas bw","jalon neutro o dominadas bw"],
+  "dominadas-lastradas":["dominadas lastradas neutras"],
+  "jalon-neutro":["jalon","jalon neutro","jalon neutro opcional","jalon neutro o dominadas bw","jalon neutro/dominada bw","jalon neutro/dominadas bw","jalon/dominada bw","jalon/dominadas bw"],
+  "remo-polea":["remo cable","remo cable/hammer","remo frontal polea/maquina"],
+  "remo-hammer":["remo frontal/hammer"],
+  "remo-pecho-apoyado":["remo frontal/pecho apoyado","remo pecho apoyado/hammer","remo pecho apoyado/frontal"],
+  "elevacion-lateral":["elevaciones laterales","laterales","bi-serie laterales","laterales + posterior","laterales/posterior"],
+  "prensa":["prensa 45/hack","prensa o hack suave","prensa pies altos suave","prensa pies altos/back ext","prensa pies altos/back extension","prensa pies medios-altos","prensa secundaria","prensa secundaria/hack","prensa/hack","prensa/hack suave"],
+  "extension-sobre-cabeza":["extension triceps trasnuca polea"]
+});
 
 const V10_CATALOG = Object.fromEntries(V10_EXERCISE_DEFS.map(([id,name,primary,secondary,pattern,category])=>{
   const secondaries=(secondary?secondary.split(",").filter(Boolean):[]).map(x=>{const [muscle,w]=x.split(":");return {muscle,weight:Number(w)};});
