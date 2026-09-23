@@ -185,6 +185,7 @@ function normalizeState(data){
   data.weeks = data.weeks?.length ? data.weeks : base.weeks;
   data.days = data.days?.length ? data.days : base.days;
   data.routine = data.routine || {};
+  data.routinesByMode = data.routinesByMode || {};
   data.sessions = Array.isArray(data.sessions) ? data.sessions : [];
   data.cardio = Array.isArray(data.cardio) ? data.cardio : base.cardio;
   data.weightLog = Array.isArray(data.weightLog) ? data.weightLog : [];
@@ -253,9 +254,33 @@ function normalizeState(data){
       isAdded: Boolean(e.isAdded || e.isAlternative),
       isAlternative: Boolean(e.isAdded || e.isAlternative),
       note: e.note || "",
+      sourceMuscle: e.sourceMuscle || e.muscle || "",
+      normalizedMuscle: e.normalizedMuscle || "",
+      primaryMuscles: e.primaryMuscles || [],
+      secondaryMuscles: e.secondaryMuscles || [],
+      volumeWeights: e.volumeWeights || {},
+      v10Meta: e.v10Meta || null,
       sets: (e.sets || []).map(normalizeSet)
     })),
     notes: s.notes || ""
+  }));
+
+  // V10: mantiene una rutina independiente por modo para que cambiar 2D/3D/4D no sobrescriba ediciones.
+  const activeMode = String(data.selectedMode || PLAN.defaultMode || "4");
+  Object.keys(PLAN.modeDays || {}).forEach(mode => {
+    if(!data.routinesByMode[mode]) data.routinesByMode[mode] = clone(PLAN.routineByMode?.[mode] || PLAN.routine || {});
+  });
+  if(!data.routinesByMode[activeMode]) data.routinesByMode[activeMode] = clone(data.routine || PLAN.routine || {});
+  data.routine = clone(data.routinesByMode[activeMode]);
+  data.volumeEngineVersion = 1;
+  // Enriquecer ejercicios conocidos sin tocar sourceMuscle.
+  Object.values(data.routine || {}).forEach(week => Object.values(week || {}).forEach(list => (list || []).forEach(e => {
+    const enriched = typeof v10AddExerciseMeta === "function" ? v10AddExerciseMeta(e) : e;
+    Object.assign(e, enriched);
+  })));
+  data.sessions.forEach(s => (s.exercises || []).forEach(e => {
+    const enriched = typeof v10AddExerciseMeta === "function" ? v10AddExerciseMeta(e) : e;
+    Object.assign(e, enriched);
   }));
 
   if(!data.selectedWeek || !data.weeks.includes(data.selectedWeek)) data.selectedWeek = data.weeks[0];
