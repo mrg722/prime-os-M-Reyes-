@@ -255,6 +255,7 @@ function saveSession(){
     date: new Date().toLocaleString("es-CL", {dateStyle:"short", timeStyle:"short"}),
     createdAt: new Date().toISOString(),
     week: state.selectedWeek,
+    mode: String(state.selectedMode || PLAN.defaultMode || "4"),
     day: `${state.selectedWeekday} - ${sessionLabel(state.selectedDay)}`,
     weekday: state.selectedWeekday,
     session: state.selectedDay,
