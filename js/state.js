@@ -18,22 +18,17 @@ async function loadPlan(){
     Promise.all(manifest.weeks.map((_,i)=>fetchJson(`data/v9/routine4_${i+1}.json`))),
     Promise.all(manifest.weeks.map((_,i)=>fetchJson(`data/v9/adaptiveFullBody_${i+1}.json`)))
   ]);
-  const routine = {};
-  const modeDays = {"3":[],"4":[],"2":[]};
-  const addModeDay = (mode, label, sourceKey) => { modeDays[mode].push(label); };
+  const routineByMode = {"3":{},"4":{},"2":{}};
+  const map3 = {"Martes - Upper A":"Upper A","Miércoles - Lower A":"Lower A","Sábado - Full Body · Excel":"Full Body · Excel","Jueves - Cardio/Abs/Movilidad":"Cardio/Abs/Movilidad"};
+  const map4 = {"Martes - Upper A":"Upper A","Miércoles - Lower A":"Lower A","Viernes - Upper B":"Upper B","Sábado - Lower B":"Lower B","Jueves - Cardio/Abs/Movilidad":"Cardio/Abs/Movilidad"};
+  const map2 = {"Full Body A · Adaptativo 2D":"Full Body A · Adaptativo 2D","Full Body B · Adaptativo 2D":"Full Body B · Adaptativo 2D"};
   for(let i=0;i<manifest.weeks.length;i++){
     const w = manifest.weeks[i], a=r3[i][String(i+1)]||{}, b=r4[i][String(i+1)]||{}, f=fb[i][String(i+1)]||{};
-    routine[w] = {};
-    const map3 = {"Martes - Upper A":"Upper A","Miércoles - Lower A":"Lower A","Sábado - Full Body · Excel":"Full Body · Excel","Jueves - Cardio/Abs/Movilidad":"Cardio/Abs/Movilidad"};
-    const map4 = {"Martes - Upper A":"Upper A","Miércoles - Lower A":"Lower A","Viernes - Upper B":"Upper B","Sábado - Lower B":"Lower B","Jueves - Cardio/Abs/Movilidad":"Cardio/Abs/Movilidad"};
-    const map2 = {"Full Body A · Adaptativo 2D":"Full Body A · Adaptativo 2D","Full Body B · Adaptativo 2D":"Full Body B · Adaptativo 2D"};
-    Object.entries(map3).forEach(([label,key])=>{ if(a[key]) routine[w][label]=clone(a[key]); });
-    Object.entries(map4).forEach(([label,key])=>{ if(b[key]) routine[w][label]=clone(b[key]); });
-    Object.entries(map2).forEach(([label,key])=>{ if(f[key]) routine[w][label]=clone(f[key]); });
+    routineByMode["3"][w] = {}; routineByMode["4"][w] = {}; routineByMode["2"][w] = {};
+    Object.entries(map3).forEach(([label,key])=>{ if(a[key]) routineByMode["3"][w][label]=clone(a[key]); });
+    Object.entries(map4).forEach(([label,key])=>{ if(b[key]) routineByMode["4"][w][label]=clone(b[key]); });
+    Object.entries(map2).forEach(([label,key])=>{ if(f[key]) routineByMode["2"][w][label]=clone(f[key]); });
   }
-  modeDays["3"]=["Martes - Upper A","Miércoles - Lower A","Sábado - Full Body · Excel","Jueves - Cardio/Abs/Movilidad"];
-  modeDays["4"]=["Martes - Upper A","Miércoles - Lower A","Viernes - Upper B","Sábado - Lower B","Jueves - Cardio/Abs/Movilidad"];
-  modeDays["2"]=["Full Body A · Adaptativo 2D","Full Body B · Adaptativo 2D"];
   const weeklyTargets2 = {};
   manifest.weeks.forEach((w,i)=>{
     weeklyTargets2[w] = {};
@@ -51,7 +46,8 @@ async function loadPlan(){
   const target3Bands = clone(manifest.weeklyTargets3), target4Bands = clone(manifest.weeklyTargets4);
   PLAN = {...legacy, ...manifest,
     version: manifest.version,
-    routine, modeDays,
+    routine:clone(routineByMode[String(manifest.defaultMode || "4")]),
+    routineByMode, modeDays,
     weeklyTargetBandsByMode:{"3":target3Bands,"4":target4Bands},
     weeklyTargetsByMode:{"2":weeklyTargets2,"3":numericTargets(target3Bands),"4":numericTargets(target4Bands)},
     weeklyTargets:clone(numericTargets(target4Bands)),
@@ -195,7 +191,7 @@ function normalizeState(data){
     // V9 reemplaza únicamente la rutina activa; el historial de sesiones, PRs registrados,
     // peso y cardio existentes se conservan y se migran al nuevo esquema.
     data.weeks = clone(PLAN.weeks);
-    data.routine = clone(PLAN.routine);
+    data.routine = clone(PLAN.routineByMode?.[String(data.selectedMode || PLAN.defaultMode || "4")] || PLAN.routine);
     data.selectedMode = String(data.selectedMode || PLAN.defaultMode || "4");
     if(!PLAN.modeDays[data.selectedMode]) data.selectedMode = String(PLAN.defaultMode || "4");
     data.days = clone(PLAN.modeDays[data.selectedMode]);
