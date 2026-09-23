@@ -72,6 +72,9 @@ function v10RirFactor(rir,goalMode="mixed"){
 }
 
 function v10ExerciseClassification(ex){
+  const raw=String(ex?.name||"").toLowerCase();
+  if(/biceps.*triceps|triceps.*biceps|curl.*triceps|triceps.*curl/.test(raw)) return {id:null,name:ex?.name||"Bíceps + tríceps",sourceMuscle:ex?.muscle||"Brazos",normalizedMuscle:"bíceps",primaryMuscles:["bíceps","tríceps"],secondaryMuscles:[],volumeWeights:{"bíceps":1,"tríceps":1},movementPattern:"flexion_extension_codo",category:"aislamiento",countsAsVolume:true,custom:true};
+  if(/laterales.*posterior|posterior.*laterales/.test(raw)) return {id:null,name:ex?.name||"Laterales + posterior",sourceMuscle:ex?.muscle||"Deltoides",normalizedMuscle:"deltoide_lateral",primaryMuscles:["deltoide_lateral"],secondaryMuscles:[{muscle:"deltoide_posterior",weight:.5}],volumeWeights:{"deltoide_lateral":1,"deltoide_posterior":.5},movementPattern:"abduccion_hombro",category:"aislamiento",countsAsVolume:true,custom:true};
   const meta=ex?.v10Meta || v10ExerciseMeta(ex?.name);
   if(meta) return {
     id:meta.id,name:meta.name,sourceMuscle:ex?.muscle||meta.sourceMuscle,
@@ -276,6 +279,105 @@ function v10CatalogOptions(){
   return Object.values(V10_CATALOG).sort((a,b)=>a.name.localeCompare(b.name,"es"));
 }
 
-window.PrimeOSVolume={muscles:V10_MUSCLES,labels:V10_MUSCLE_LABELS,classify:v10ExerciseClassification,contributions:v10Contributions,analyzeWeek:v10AnalyzeWeek,summary:v10MuscleSummary,addMeta:v10AddExerciseMeta,catalog:v10CatalogOptions,rirFactor:v10RirFactor,observedBands:v10ObservedBands};
+
+/* ---------- V10.2 Full Body 2D: adaptación real entre semanas ---------- */
+
+function v10AdaptiveBaseRoutine(week){
+  return clone(state?.routinesByMode?.["2"]?.[week] || PLAN?.routineByMode?.["2"]?.[week] || {});
+}
+function v10AdaptivePrevSessions(week){
+  const idx=state?.weeks?.indexOf(week); if(idx===undefined || idx<=0) return [];
+  const prev=state.weeks[idx-1];
+  return (state.sessions||[]).filter(s=>s.week===prev && (!s.mode || String(s.mode)==="2"));
+}
+function v10AdaptiveKey(ex){
+  const meta=v10ExerciseMeta(ex?.name); if(meta) return meta.id;
+  const src=String(ex?.sourceExercise||ex?.name||"").toLowerCase();
+  if(/biceps.*triceps|triceps.*biceps|curl.*triceps/.test(src)) return "arms-combo";
+  if(/gemel|soleo|calf/.test(src)) return "calves";
+  if(/core|pallof|dead.?bug|hollow|plank|movilidad/.test(src)) return "core";
+  return exerciseKeyBase(src);
+}
+function v10AdaptiveStats(ex,sessions){
+  const key=v10AdaptiveKey(ex), targetMuscle=v10MuscleKey(ex?.muscle), exact=[], fallback=[];
+  sessions.forEach(s=>(s.exercises||[]).forEach(e=>{
+    const sets=(e.sets||[]).filter(setHasData); if(!sets.length) return;
+    if(v10AdaptiveKey(e)===key) exact.push({session:s,exercise:e,sets});
+    else if(v10MuscleKey(e?.muscle)===targetMuscle) fallback.push({session:s,exercise:e,sets});
+  }));
+  const matches=exact.length?exact:fallback; if(!matches.length) return null;
+  const sets=matches.flatMap(x=>x.sets), rirs=sets.map(s=>v10RirFromSet(s)).filter(Number.isFinite), pain=sets.map(s=>setPain(s)).filter(Number.isFinite);
+  const bests=matches.map(x=>bestSet(x.sets)).filter(Boolean), e1rms=bests.map(estimate1RM).filter(Number.isFinite), reps=sets.map(s=>repsCount(s.repsDone)).filter(Number.isFinite);
+  const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+  return {sets:sets.length,sessions:matches.length,avgRir:avg(rirs),pain:avg(pain),bestE1RM:e1rms.length?Math.max(...e1rms):null,maxReps:reps.length?Math.max(...reps):null,fatigue:v10Readiness(matches.map(x=>x.session)).fatigue,sameExercise:exact.length>0};
+}
+function v10AdaptiveLoadText(load,direction){
+  const s=String(load||"").trim(), nums=s.match(/\d+(?:[.,]\d+)?/g)?.map(x=>Number(x.replace(",",".")))||[]; if(!nums.length) return s;
+  const factor=direction>0?1.025:0.95;
+  const out=nums.map(n=>{const v=n*factor,step=v<50?0.5:1.25;return String(Math.round(v/step)*step).replace(/\.0$/,"");});
+  let i=0; return s.replace(/\d+(?:[.,]\d+)?/g,()=>out[i++]);
+}
+function v10AdaptiveApplyProgression(ex,stats,weekStatus){
+  if(!stats) return {exercise:ex,reason:"Sin historial comparable: conservar base."};
+  const out={...ex}, pain=stats.pain??0, fatigue=stats.fatigue??0, rir=stats.avgRir, baseSets=Math.max(1,Number(ex.sets)||1);
+  const repNums=String(ex.reps||"").match(/\d+(?:\.\d+)?/g)?.map(Number)||[], repUpper=repNums.length?Math.max(...repNums):null;
+  const repReady=repUpper===null || stats.maxReps>=repUpper;
+  const hardStop=pain>=5 || (fatigue>=6 && rir!==null && rir<=1);
+  let sets=baseSets, action="mantener";
+  if(weekStatus==="pivot"){ sets=Math.max(1,Math.min(baseSets,2)); action="pivot"; }
+  else if(hardStop){ sets=Math.max(1,baseSets-1); action="reducir 1 serie por recuperación"; }
+  else if(rir!==null && rir>=3 && repReady && pain<3 && fatigue<5){ action="progresar por reps/carga"; }
+  else if(rir!==null && rir>=3 && !repReady){ action="mantener hasta completar rango"; }
+  else if(rir!==null && rir<=1){ action="mantener por proximidad al fallo"; }
+  out.sets=sets; out.adaptiveApplied=true; out.adaptiveAction=action;
+  out.note=[out.note,"V10 adaptativo: "+action+"."].filter(Boolean).join(" ");
+  if(action==="progresar por reps/carga" && stats.sameExercise && out.load && !/bw|peso corporal|suave|moderad|ligero/i.test(String(out.load))){
+    out.load=v10AdaptiveLoadText(out.load,1); out.progression=[out.progression,"V10: +2,5% tras RIR >=3 sin dolor relevante."].filter(Boolean).join(" ");
+  }else if(action==="reducir 1 serie por recuperación"){
+    out.progression=[out.progression,"V10: -1 serie hasta recuperar rendimiento/dolor."].filter(Boolean).join(" ");
+  }
+  return {exercise:out,reason:action};
+}
+function v10AdaptiveVolumePlan(week,routine){
+  const idx=state?.weeks?.indexOf(week); if(idx===undefined || idx<=0) return {routine,actions:[]};
+  const prev=state.weeks[idx-1], sessions=(state.sessions||[]).filter(s=>s.week===prev && (!s.mode || String(s.mode)==="2"));
+  if(!sessions.length) return {routine,actions:[]};
+  const targets={pecho:[8,10],"espalda/dorsal":[8,10],"cuádriceps":[8,10],isquios:[8,10],deltoide_lateral:[4,6],"bíceps":[4,6],"tríceps":[4,6],gemelos:[4,6]};
+  const flat=Object.values(routine||{}).flat(), previous={};
+  Object.keys(targets).forEach(m=>previous[m]=v10WeeklyMuscle(prev,m));
+  const actions=[];
+  Object.entries(targets).forEach(([m,range])=>{
+    const observed=previous[m]?.weightedSets||0, fatigue=previous[m]?.fatigue??0, pain=previous[m]?.pain??0, trend=previous[m]?.performanceTrend||"→";
+    const productive=trend!=="↓" && fatigue<6 && pain<5;
+    const candidates=flat.filter(e=>v10MuscleKey(e?.muscle)===v10MuscleKey(m) || normalizeMuscle(e?.muscle)===normalizeMuscle(m));
+    if(!candidates.length) return;
+    if(observed<range[0] && productive){ const target=candidates[0]; target.sets=Math.min((Number(target.sets)||1)+1,4); target.note=[target.note,"V10 volumen: +1 serie para acercarse al rango operativo."].filter(Boolean).join(" "); actions.push({muscle:m,action:"+1 serie",observed,range}); }
+    else if(observed>range[1] && (fatigue>=6 || pain>=5 || trend==="↓")){ const target=candidates[candidates.length-1]; target.sets=Math.max(1,(Number(target.sets)||1)-1); target.note=[target.note,"V10 volumen: -1 serie por recuperación/rendimiento."].filter(Boolean).join(" "); actions.push({muscle:m,action:"-1 serie",observed,range}); }
+  });
+  return {routine,actions};
+}
+function v10AdaptiveFullBodyRoutine(week){
+  const base=v10AdaptiveBaseRoutine(week); if(!base || !Object.keys(base).length) return {routine:base,actions:[],sourceWeek:null};
+  const idx=state?.weeks?.indexOf(week); if(idx===undefined || idx<=0) return {routine:base,actions:[],sourceWeek:null};
+  const prevSessions=v10AdaptivePrevSessions(week), status=PLAN.blockStatus?.[week]?.status||"base", out={}, actions=[];
+  Object.entries(base).forEach(([day,exercises])=>{
+    out[day]=(exercises||[]).map(ex=>{const r=v10AdaptiveApplyProgression(ex,v10AdaptiveStats(ex,prevSessions),status); if(r.reason!=="Sin historial comparable: conservar base.") actions.push({day,exercise:ex.name,action:r.reason}); return r.exercise;});
+  });
+  const vol=v10AdaptiveVolumePlan(week,out); return {routine:vol.routine,actions:[...actions,...vol.actions],sourceWeek:state.weeks[idx-1]};
+}
+function applyAdaptiveFullBodySelection(){
+  if(!state || String(state.selectedMode||"")!=="2") return;
+  const week=state.selectedWeek;
+  state.meta=state.meta||{}; state.meta.adaptive2D=state.meta.adaptive2D||{};
+  const activeKey="2|"+week;
+  if(state.meta.adaptive2D.activeKey===activeKey) return;
+  const generated=v10AdaptiveFullBodyRoutine(week);
+  state.routine=clone(state.routinesByMode?.["2"]||PLAN.routineByMode?.["2"]||{});
+  state.routine[week]=clone(generated.routine);
+  state.meta.adaptive2D[week]={sourceWeek:generated.sourceWeek,actions:generated.actions,updatedAt:new Date().toISOString()};
+  state.meta.adaptive2D.activeKey=activeKey;
+}
+
+window.PrimeOSVolume={muscles:V10_MUSCLES,labels:V10_MUSCLE_LABELS,classify:v10ExerciseClassification,contributions:v10Contributions,analyzeWeek:v10AnalyzeWeek,summary:v10MuscleSummary,addMeta:v10AddExerciseMeta,catalog:v10CatalogOptions,rirFactor:v10RirFactor,observedBands:v10ObservedBands,adaptiveFullBodyRoutine:v10AdaptiveFullBodyRoutine,applyAdaptiveFullBodySelection};
 
 if(typeof module!=="undefined") module.exports={v10RirFactor,v10ExerciseClassification,v10Contributions,v10WeeklyMuscle,v10ObservedBands,v10MuscleSummary,v10AnalyzeWeek};

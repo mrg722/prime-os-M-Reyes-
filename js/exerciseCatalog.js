@@ -93,13 +93,23 @@ const V10_EXERCISE_DEFS = [
 ];
 
 const V10_ALIAS = {
-  "press-banca":["bench press","banca plana","press plano"],"press-banca-pausado":["bench pausado","press banca pause","press banca con pausa"],
+  "press-banca":["bench press","banca plana","press plano","press banco plano"],"press-banca-pausado":["bench pausado","press banca pause","press banca con pausa"],
   "press-inclinado-mancuernas":["incline db","press inclinado db"],"dominadas":["pull ups","pull-up","pullups","dominadas bw"],
   "dominadas-lastradas":["pull ups lastradas","pull-ups lastradas","dominada lastrada"],"chin-up":["chin ups","chinups"],
   "remo-hammer":["hammer row"],"sentadilla-alta":["high bar squat","high squat","sentadilla high bar"],
   "rdl":["peso muerto rumano","rumano","romanian deadlift"],"hip-thrust":["hip thrust","hip thrust barra"],
   "bulgarian-split-squat":["bulgarian","split squat","búlgaras"],"curl-femoral-sentado":["curl femoral","seated leg curl"],
-  "elevacion-lateral":["laterales","elevaciones laterales","lateral raises"],"press-militar":["militar","overhead press","ohp"]
+  "elevacion-lateral":["laterales","elevaciones laterales","lateral raises","bi-serie laterales","laterales + posterior","laterales/posterior"],"press-militar":["militar","overhead press","ohp"],
+  "press-maquina-neutro":["press maquina/neutro o plano db","press maquina/plano db","press maquina","press maquina neutro"],
+  "dominadas":["dominadas peso corporal","dominadas bw o jalon"],"jalon-neutro":["jalon","jalon neutro o dominadas bw","jalon neutro/dominadas bw"],
+  "remo-polea":["remo cable","remo cable/hammer"],"remo-hammer":["remo hammer"],
+  "prensa":["prensa 45/hack","prensa pies medios-altos","prensa secundaria","prensa secundaria/hack","prensa/hack","prensa/hack suave"],
+  "hack-squat":["hack squat","prensa o hack suave"],
+  "bulgarian-split-squat":["bulgara","bulgara moderada","sentadilla bulgara","búlgaras"],
+  "rdl":["rdl barra","rdl tecnico","rdl o hip thrust"],"hip-thrust":["hip thrust"],
+  "curl-femoral-sentado":["curl femoral","curl femoral o back extension","curl femoral/back extension"],
+  "extension-sobre-cabeza":["extension triceps trasnuca polea"],"curl-martillo":["curl martillo"],
+  "gemelo-de-pie":["gemelo de pie","gemelos de pie"]
 };
 
 const V10_CATALOG = Object.fromEntries(V10_EXERCISE_DEFS.map(([id,name,primary,secondary,pattern,category])=>{

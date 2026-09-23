@@ -30,13 +30,11 @@ async function setup(){
 }
 
 function fillSelectors(){
-  const mode = $("#modeSelect"), week = $("#weekSelect"), exp = $("#exportWeekSelect");
+  const mode = $("#modeSelect"), week = $("#weekSelect");
   if(mode){
     mode.value = String(state.selectedMode || PLAN.defaultMode || "4");
   }
   week.innerHTML = state.weeks.map(w=>`<option ${w===state.selectedWeek?"selected":""}>${escapeHtml(w)}</option>`).join("");
-  exp.innerHTML = state.weeks.map(w=>`<option ${w===state.selectedWeek?"selected":""}>${escapeHtml(w)}</option>`).join("")
-    + `<option value="${ALL_WEEKS}">Todas las semanas</option>`;
   $("#weekdaySelect").innerHTML = WEEKDAYS.map(w => `<option ${w===state.selectedWeekday?"selected":""}>${w}</option>`).join("");
   $("#daySelect").innerHTML = sortedSessions(state.days).map(d =>
     `<option value="${escapeAttr(d)}" ${d===state.selectedDay?"selected":""}>${escapeHtml(sessionLabel(d))}</option>`).join("");
@@ -60,10 +58,15 @@ function bindInputs(){
     if(!confirmDiscardDraft()){ e.target.value = state.selectedMode; return; }
     const nextMode = String(e.target.value);
     state.routinesByMode = state.routinesByMode || {};
-    state.routinesByMode[String(state.selectedMode)] = clone(state.routine);
+    if(String(state.selectedMode)==="2" && typeof applyAdaptiveFullBodySelection==="function"){
+      state.routinesByMode["2"][state.selectedWeek]=clone(state.routine[state.selectedWeek] || {});
+    }else{
+      state.routinesByMode[String(state.selectedMode)] = clone(state.routine);
+    }
     state.selectedMode = nextMode;
     state.routine = clone(state.routinesByMode[nextMode] || PLAN.routineByMode?.[nextMode] || PLAN.routine);
-    state.routinesByMode[nextMode] = clone(state.routine);
+    state.routinesByMode[nextMode] = state.routinesByMode[nextMode] || clone(PLAN.routineByMode?.[nextMode] || PLAN.routine);
+    if(nextMode==="2" && typeof applyAdaptiveFullBodySelection==="function") applyAdaptiveFullBodySelection();
     state.days = clone(PLAN.modeDays[nextMode] || PLAN.days);
     // Los objetivos editados por el usuario se mantienen por modo; solo se crea el bloque si aún no existe.
     state.weeklyTargetsByMode = state.weeklyTargetsByMode || {};
@@ -79,7 +82,8 @@ function bindInputs(){
   $("#weekSelect").addEventListener("change", e => {
     collectDraftInputs();
     if(!confirmDiscardDraft()){ e.target.value = state.selectedWeek; return; }
-    state.selectedWeek=e.target.value; $("#exportWeekSelect").value=e.target.value;
+    state.selectedWeek=e.target.value;
+    if(String(state.selectedMode)==="2" && typeof applyAdaptiveFullBodySelection==="function") applyAdaptiveFullBodySelection();
     saveState(); resetTrainingDraft(); renderAll();
   });
   // Día de la semana: propone la sesión que toca ese día (se puede cambiar abajo).

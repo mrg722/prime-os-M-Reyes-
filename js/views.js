@@ -25,6 +25,7 @@ function refreshTopMeta(view){
 }
 
 function renderAll(){
+  if(String(state?.selectedMode||"") === "2" && typeof applyAdaptiveFullBodySelection==="function") applyAdaptiveFullBodySelection();
   renderHome();
   renderRoutine();
   renderTraining();
@@ -198,7 +199,9 @@ function renderRoutine(){
 // Editar la rutina solo reinicia Registrar si no hay datos escritos (para no perder el borrador).
 function afterRoutineEdit(){
   state.routinesByMode=state.routinesByMode||{};
-  state.routinesByMode[String(state.selectedMode||PLAN.defaultMode||"4")]=clone(state.routine);
+  const mode=String(state.selectedMode||PLAN.defaultMode||"4");
+  if(mode==="2") state.routinesByMode[mode][state.selectedWeek]=clone(state.routine[state.selectedWeek]||{});
+  else state.routinesByMode[mode]=clone(state.routine);
   saveState();
   if(!draftHasData()) resetTrainingDraft();
   renderAll();
