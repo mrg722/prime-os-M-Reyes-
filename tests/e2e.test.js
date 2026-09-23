@@ -279,19 +279,50 @@ function assert(cond, msg){ if(!cond) throw new Error(msg); }
     await page.context().close();
   });
 
-  await test("V10.6: calculadora 1RM Epley visible y repertorio auditado", async () => {
+  await test("calculadora RM: sin selector de ejercicio, Epley y kg/lbs", async () => {
     const page = await open();
     await go(page, "one-rm");
-    assert(await page.isVisible("#rmExerciseSelect"), "selector 1RM no visible");
-    const options = await page.locator("#rmExerciseSelect option").count();
-    assert(options >= 91, "repertorio 1RM insuficiente: " + options);
-    const audited = await page.$$eval("#rmExerciseSelect option", opts => opts.map(o => o.textContent));
-    assert(audited.some(x => x.startsWith("Fondos ·")) && audited.some(x => x.startsWith("Peso muerto semi-sumo ·")), "faltan ejercicios auditados en 1RM");
+    assert(!(await page.$("#rmExerciseSelect")) && !(await page.$("#rmUseLastBtn")) && !(await page.$("#rmCatalogAudit")), "quedan controles ligados a un ejercicio");
     await page.fill("#rmLoadInput", "100");
     await page.fill("#rmRepsInput", "5");
-    assert((await page.textContent("#rmResultValue")).includes("115"), await page.textContent("#rmResultValue"));
+    assert((await page.textContent("#rmResultValue")).includes("115") && (await page.textContent("#rmResultValue")).includes("kg"), await page.textContent("#rmResultValue"));
     assert((await page.textContent("#rmResultDetail")).includes("100") && (await page.textContent("#rmResultDetail")).includes("0,03"), await page.textContent("#rmResultDetail"));
+    assert((await page.textContent("#rmTable")).includes("kg"), "tabla sin kg");
+    await page.click('#rmUnitToggle button[data-unit="lbs"]');
+    assert((await page.textContent("#rmResultValue")).includes("115") && (await page.textContent("#rmResultValue")).includes("lbs"), await page.textContent("#rmResultValue"));
+    assert((await page.textContent("#rmTable")).includes("lbs") && !(await page.textContent("#rmTable")).includes("kg"), "tabla no pasó a lbs");
+    assert((await page.textContent("#rmResultDetail")).includes("52,2 kg"), "falta la equivalencia en kg: " + await page.textContent("#rmResultDetail"));
+    assert(await page.textContent("#rmLoadUnit") === "lbs" && await page.evaluate(() => state.ui.rmUnit) === "lbs", "unidad de la calculadora no guardada");
     await page.context().close();
+  });
+
+  await test("Registrar: interruptor kg/lbs por ejercicio sin convertir lo escrito", async () => {
+    const ctx = await browser.newContext({viewport: {width:390, height:844}, serviceWorkers: "block"});
+    let page = await open({context: ctx});
+    await page.evaluate(() => { state.selectedWeek = "Semana 3"; state.selectedDay = "Miércoles - Lower A"; saveState(); resetTrainingDraft(); renderAll(); });
+    await go(page, "entrenar");
+    assert(await page.getAttribute(W(0,0), "placeholder") === "kg", "unidad por defecto no es kg");
+    await page.click('#trainingForm .exercise-card >> nth=0 >> .unit-toggle button[data-unit="lbs"]');
+    assert(await page.getAttribute(W(0,1), "placeholder") === "lbs", "placeholder no cambió a lbs");
+    assert(await page.getAttribute(W(1,0), "placeholder") === "kg", "cambió la unidad de otro ejercicio");
+    await page.fill(W(0,0), "100"); await page.fill(R(0,0), "5");
+    await page.close({runBeforeUnload: true});
+    page = await open({context: ctx});
+    await go(page, "entrenar");
+    assert(await page.inputValue(W(0,0)) === "100" && await page.getAttribute(W(0,0), "placeholder") === "lbs", "la unidad no sobrevivió a recargar");
+    assert(await page.evaluate(() => $$("#trainingForm .exercise-card")[0].querySelector(".unit-toggle .active").dataset.unit) === "lbs", "botón lbs no activo tras recargar");
+    const headers = await page.$$eval("#trainingForm .set-table >> nth=0 >> th", ths => ths.map(t => t.textContent));
+    assert(headers.join("|") === "Serie|Peso|Reps|RIR/RPE|Sensación|Descanso|Dolor|Check", headers.join("|"));
+    await page.click("#saveSessionBtn");
+    const r = await page.evaluate(() => { const s = state.sessions.at(-1).exercises[0]; return {set: s.sets[0], pr: state.autoPRs[canonicalExercise(s.name)], other: state.sessions.at(-1).exercises[1].sets[0].unit}; });
+    assert(r.set.weight === "100" && r.set.unit === "lbs" && r.other === "kg", JSON.stringify(r));
+    assert(Math.abs(r.pr.e1rm - 100 * 0.45359237 * 1.15) < 0.01, "PR no convirtió lbs a kg: " + r.pr.e1rm);
+    await go(page, "historial");
+    assert((await page.textContent("#historyList")).includes("100 lbs x 5"), "historial sin la unidad");
+    await page.evaluate(() => { resetTrainingDraft(); renderTraining(); });
+    assert(await page.getAttribute(W(0,0), "placeholder") === "lbs", "no recuerda lbs de la última serie registrada");
+    assert(await page.evaluate(() => defaultExerciseUnit({name:"X nuevo", load:"75lbs"}) === "lbs" && defaultExerciseUnit({name:"X nuevo", load:"35 kg c/u"}) === "kg"), "unidad desde la carga planificada");
+    await ctx.close();
   });
 
   await test("V10.6: temporizador conserva ±15, añade ±1 y rueda táctil", async () => {

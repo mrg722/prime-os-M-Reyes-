@@ -484,57 +484,22 @@ function renderExerciseProgress(){
 /* ---------- Calculadora de RM (Epley) ---------- */
 const RM_TABLE_REPS = [1,2,3,4,5,6,8,10,12];
 
-function rmMuscleLabel(raw){
-  const key = String(raw || "");
-  if(typeof V10_MUSCLE_LABELS !== "undefined" && V10_MUSCLE_LABELS[key]) return V10_MUSCLE_LABELS[key];
-  const text = key.replace(/_/g, " ").replace(/\s*\/\s*/g, " / ").trim();
-  return text ? text.charAt(0).toUpperCase() + text.slice(1) : "General";
-}
+// Unidad de la calculadora (kg/lbs). La fórmula no depende de la unidad: el resultado sale en la misma.
+function rmUnit(){ return state.ui?.rmUnit === "lbs" ? "lbs" : "kg"; }
 
-// Mejor RM estimado guardado para un ejercicio (por su nombre o cualquiera de sus alias).
-function rmBestPR(names){
-  let best = null;
-  names.forEach(n => { const pr = state.autoPRs?.[canonicalExercise(n)]; if(pr && Number.isFinite(Number(pr.e1rm)) && (!best || pr.e1rm > best.e1rm)) best = pr; });
-  return best;
-}
-
-function oneRMEligibleExercises(){
-  const catalog=Object.values(V10_CATALOG || {}).filter(e=>{
-    const cat=String(e.category||"");
-    return e.countsAsVolume !== false && !["correctivo","control"].includes(cat) && !["cardio","recuperación"].includes(String(e.sourceMuscle||""));
-  });
-  // Clave canónica: así un ejercicio del catálogo y el mismo ejercicio del historial no se duplican.
-  const map=new Map();
-  catalog.forEach(e=>{
-    const key=canonicalExercise(e.name);
-    if(!map.has(key)) map.set(key,{key,name:e.name,names:[e.name,...(e.aliases||[])],muscle:rmMuscleLabel(e.sourceMuscle),category:e.category,source:"catálogo"});
-  });
-  exerciseCatalog().forEach(e=>{
-    if(!map.has(e.key)) map.set(e.key,{key:e.key,name:e.name,names:[e.name],muscle:"Registrado",category:"historial",source:"historial"});
-    else map.get(e.key).names.push(e.name);
-  });
-  const list=[...map.values()];
-  list.forEach(e=>{ e.pr=rmBestPR(e.names); });
-  return list.sort((a,b)=>a.name.localeCompare(b.name,"es"));
-}
-
-function rmOptionLabel(e){ return `${e.name} · ${e.muscle}`; }
-
-// Rellena el selector: primero los ejercicios con registros propios, luego el resto.
-function render1RMExerciseSelect(catalog){
-  const select=$("#rmExerciseSelect"); if(!select) return;
-  const previous=select.value;
-  const withPR=catalog.filter(e=>e.pr).sort((a,b)=>b.pr.e1rm-a.pr.e1rm);
-  const rest=catalog.filter(e=>!e.pr);
-  const opt=e=>`<option value="${escapeAttr(e.key)}">${escapeHtml(rmOptionLabel(e))}</option>`;
-  select.innerHTML=(withPR.length?`<optgroup label="Con tus registros">${withPR.map(opt).join("")}</optgroup><optgroup label="Todos los ejercicios">${rest.map(opt).join("")}</optgroup>`:rest.map(opt).join(""));
-  const fallback=withPR[0]?.key || catalog.find(e=>e.key===canonicalExercise("Press banca"))?.key || catalog[0]?.key || "";
-  select.value=catalog.some(e=>e.key===previous) ? previous : fallback;
+function set1RMUnit(unit){
+  if(unit !== "kg" && unit !== "lbs") return;
+  state.ui = {...(state.ui || {}), rmUnit: unit};
+  saveState();
+  update1RMResult();
 }
 
 function update1RMResult(){
   const result=$("#rmResultValue"), detail=$("#rmResultDetail"), table=$("#rmTable"), card=$("#rmResultCard");
   if(!result) return;
+  const unit=rmUnit();
+  $$("#rmUnitToggle button").forEach(b=>{ const on=b.dataset.unit===unit; b.classList.toggle("active",on); b.setAttribute("aria-pressed",String(on)); });
+  const unitLabel=$("#rmLoadUnit"); if(unitLabel) unitLabel.textContent=unit;
   const load=parseNumber($("#rmLoadInput")?.value), reps=parseNumber($("#rmRepsInput")?.value);
   const valid=!(load===null || load<=0 || reps===null || reps<1 || reps>15 || !Number.isInteger(reps));
   const rm=valid ? epley1RM(load,reps) : null;
@@ -545,28 +510,23 @@ function update1RMResult(){
     if(table) table.innerHTML=`<p class="small-muted rm-table-empty">Aquí verás cuánto cargar para cada rango de repeticiones.</p>`;
     return;
   }
-  result.innerHTML=`${formatNumber(rm,1)}<small> kg</small>`;
-  if(detail) detail.innerHTML=reps===1
-    ? `Con 1 repetición el RM es la misma carga: <b>${formatNumber(load,1)} kg</b>`
-    : `${formatNumber(load,1)} kg × ${reps} × 0,03 + ${formatNumber(load,1)} kg = <b>${formatNumber(rm,1)} kg</b>`;
+  const u=` ${unit}`;
+  const kgEq=unit==="lbs" ? `<br><span class="small-muted">≈ ${formatNumber(rm*LBS_TO_KG,1)} kg</span>` : "";
+  result.innerHTML=`${formatNumber(rm,1)}<small>${u}</small>`;
+  if(detail) detail.innerHTML=(reps===1
+    ? `Con 1 repetición el RM es la misma carga: <b>${formatNumber(load,1)}${u}</b>`
+    : `${formatNumber(load,1)}${u} × ${reps} × 0,03 + ${formatNumber(load,1)}${u} = <b>${formatNumber(rm,1)}${u}</b>`)+kgEq;
   if(table){
     table.innerHTML=`<div class="rm-table-head"><span>Reps</span><span>Carga</span><span>% RM</span></div>`+RM_TABLE_REPS.map(r=>{
-      const kg=r===1 ? rm : rm/(1+0.03*r);
-      return `<div class="rm-table-row${r===reps?" current":""}"><span>${r}</span><b>${formatNumber(kg,1)} kg</b><span>${Math.round(kg/rm*100)}%</span></div>`;
+      const w=r===1 ? rm : rm/(1+0.03*r);
+      return `<div class="rm-table-row${r===reps?" current":""}"><span>${r}</span><b>${formatNumber(w,1)}${u}</b><span>${Math.round(w/rm*100)}%</span></div>`;
     }).join("");
   }
 }
 
 function render1RMCalculator(){
-  const select=$("#rmExerciseSelect"); if(!select) return;
-  const catalog=oneRMEligibleExercises();
-  render1RMExerciseSelect(catalog);
+  if(!$("#rmResultValue")) return;
   update1RMResult();
-  const audit=$("#rmCatalogAudit");
-  if(audit){
-    const groups={}; catalog.forEach(e=>{groups[e.muscle]=(groups[e.muscle]||0)+1;});
-    audit.innerHTML=`<div class="rm-audit-total"><b>${catalog.length}</b><span>ejercicios disponibles para calcular tu RM</span></div><div class="rm-audit-grid">${Object.entries(groups).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],"es")).map(([m,n])=>`<span>${escapeHtml(m)} <b>${n}</b></span>`).join("")}</div><p class="small-muted">Incluye los ejercicios de tus rutinas 3D/4D y los nombres que ya registraste.</p>`;
-  }
   const histRoot=$("#rmHistoryList");
   if(histRoot){
     const prs=Object.values(state.autoPRs||{}).filter(x=>Number.isFinite(Number(x.e1rm))).sort((a,b)=>b.e1rm-a.e1rm);
@@ -574,21 +534,10 @@ function render1RMCalculator(){
   }
 }
 
-function useBestRecordFor1RM(){
-  const select=$("#rmExerciseSelect"); if(!select) return;
-  const chosen=oneRMEligibleExercises().find(e=>e.key===select.value); if(!chosen) return;
-  const seen=new Set(), bests=[];
-  chosen.names.forEach(n=>exerciseHistory(n).forEach(h=>{ if(seen.has(h.exercise)) return; seen.add(h.exercise); const b=bestSet(h.sets); if(b) bests.push(b); }));
-  const best=bests.filter(b=>estimate1RM(b)).sort((a,b)=>(estimate1RM(b)||0)-(estimate1RM(a)||0))[0];
-  if(!best){toast("No hay un registro con peso y reps para este ejercicio.","info",3500);return;}
-  $("#rmLoadInput").value=toKg(best)?.toFixed(1) || "";
-  $("#rmRepsInput").value=repsCount(best.repsDone) || "";
-  update1RMResult();
-}
 function clear1RMCalculator(){ $("#rmLoadInput").value=""; $("#rmRepsInput").value=""; update1RMResult(); }
 window.render1RMCalculator=render1RMCalculator;
 window.update1RMResult=update1RMResult;
-window.useBestRecordFor1RM=useBestRecordFor1RM;
+window.set1RMUnit=set1RMUnit;
 window.clear1RMCalculator=clear1RMCalculator;
 
 /* ---------- Cardio ---------- */

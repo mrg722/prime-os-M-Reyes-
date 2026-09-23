@@ -1,22 +1,26 @@
 // Registrar: borrador de la sesión (se guarda solo en el equipo hasta presionar "Guardar sesión") y guardado.
 let trainingDraft = [];
 
-function blankSet(i){
-  return {set:i, weight:"", repsDone:"", rir:"", feeling:"", rest:"", pain:"0", done:false};
+function blankSet(i, unit = "kg"){
+  return {set:i, weight:"", unit, repsDone:"", rir:"", feeling:"", rest:"", pain:"0", done:false};
 }
 
 function selectedRoutine(){ return state.routine[state.selectedWeek]?.[state.selectedDay] || []; }
 
 function resetTrainingDraft(){
-  trainingDraft = selectedRoutine().map(e => ({
-    ...clone(e),
-    actualSets: Number(e.sets)||3,
-    isAdded:false,
-    isAlternative:false,
-    setsData: Array.from({length:Number(e.sets)||3}, (_,i)=>blankSet(i+1)),
-    noteDraft:"",
-    secondaryText:""
-  }));
+  trainingDraft = selectedRoutine().map(e => {
+    const unit = defaultExerciseUnit(e);
+    return {
+      ...clone(e),
+      unit,
+      actualSets: Number(e.sets)||3,
+      isAdded:false,
+      isAlternative:false,
+      setsData: Array.from({length:Number(e.sets)||3}, (_,i)=>blankSet(i+1, unit)),
+      noteDraft:"",
+      secondaryText:""
+    };
+  });
 }
 
 // Recupera el registro sin guardar (si se cerró la app o se recargó la página).
@@ -33,12 +37,14 @@ function restoreDraft(){
   return true;
 }
 
+// La unidad (kg/lbs) es por ejercicio: todas sus series la comparten.
 function ensureSetsLength(ex){
   const n = Number(ex.actualSets)||1;
+  if(ex.unit !== "kg" && ex.unit !== "lbs") ex.unit = defaultExerciseUnit(ex);
   if(!Array.isArray(ex.setsData)) ex.setsData = [];
-  while(ex.setsData.length < n) ex.setsData.push(blankSet(ex.setsData.length+1));
+  while(ex.setsData.length < n) ex.setsData.push(blankSet(ex.setsData.length+1, ex.unit));
   if(ex.setsData.length > n) ex.setsData = ex.setsData.slice(0,n);
-  ex.setsData.forEach((s,i)=>s.set=i+1);
+  ex.setsData.forEach((s,i)=>{ s.set = i+1; s.unit = ex.unit; });
 }
 
 function collectDraftInputs(){
@@ -101,7 +107,7 @@ function renderExerciseRegister(e, ei){
   const rows = e.setsData.map((s,si)=>`
     <tr>
       <td style="font-weight:bold; color:var(--primary);">${si+1}</td>
-      <td><input data-ei="${ei}" data-si="${si}" data-field="weight" placeholder="kg" value="${escapeAttr(s.weight)}"></td>
+      <td><input data-ei="${ei}" data-si="${si}" data-field="weight" placeholder="${e.unit}" value="${escapeAttr(s.weight)}"></td>
       <td><input data-ei="${ei}" data-si="${si}" data-field="repsDone" placeholder="reps" value="${escapeAttr(s.repsDone)}"></td>
       <td><input data-ei="${ei}" data-si="${si}" data-field="rir" placeholder="RIR/RPE" value="${escapeAttr(s.rir)}"></td>
       <td><input data-ei="${ei}" data-si="${si}" data-field="feeling" placeholder="sensación" value="${escapeAttr(s.feeling)}"></td>
@@ -128,6 +134,9 @@ function renderExerciseRegister(e, ei){
           <select onchange="changeActualSets(${ei}, this.value)">
             ${[1,2,3,4,5,6,7,8,9,10].map(n=>`<option value="${n}" ${Number(e.actualSets)===n?"selected":""}>${n} series</option>`).join("")}
           </select>
+          <div class="unit-toggle" role="group" aria-label="Unidad de carga">
+            ${["kg","lbs"].map(u=>`<button type="button" data-unit="${u}" class="${e.unit===u?"active":""}" aria-pressed="${e.unit===u}" onclick="setExerciseUnit(${ei}, '${u}')">${u}</button>`).join("")}
+          </div>
           <button class="ghost" onclick="removeDraftExercise(${ei})">Quitar</button>
         </div>
       </div>
@@ -190,6 +199,21 @@ window.changeActualSets = function(i,v){
   renderTraining();
   saveDraftToStorage();
 };
+// Cambia la unidad del ejercicio sin convertir lo escrito: se anota lo que marca la máquina.
+window.setExerciseUnit = function(i,unit){
+  if(!trainingDraft[i] || (unit !== "kg" && unit !== "lbs")) return;
+  collectDraftInputs();
+  trainingDraft[i].unit = unit;
+  ensureSetsLength(trainingDraft[i]);
+  const card = document.querySelectorAll("#trainingForm .exercise-card")[i];
+  card?.querySelectorAll(".unit-toggle button").forEach(b => {
+    const on = b.dataset.unit === unit;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-pressed", String(on));
+  });
+  card?.querySelectorAll('[data-field="weight"]').forEach(el => { el.placeholder = unit; });
+  saveDraftToStorage();
+};
 window.removeDraftExercise = function(i){
   collectDraftInputs();
   trainingDraft.splice(i,1);
@@ -210,6 +234,7 @@ function addAddedExercise(){
     note:"Ejercicio agregado porque cambié o sumé algo al plan.",
     isAdded:true,
     isAlternative:true,
+    unit:"kg",
     setsData:[blankSet(1), blankSet(2), blankSet(3)],
     noteDraft:""
   });

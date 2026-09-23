@@ -119,10 +119,9 @@ function bindInputs(){
   $("#importInput").addEventListener("change", importData);
   $("#weightChartToggle").addEventListener("change", renderWeightChart);
   $("#exerciseProgressSelect").addEventListener("change", renderExerciseProgress);
-  $("#rmExerciseSelect")?.addEventListener("change", update1RMResult);
   $("#rmLoadInput")?.addEventListener("input", update1RMResult);
   $("#rmRepsInput")?.addEventListener("input", update1RMResult);
-  $("#rmUseLastBtn")?.addEventListener("click", useBestRecordFor1RM);
+  $$("#rmUnitToggle button").forEach(b => b.addEventListener("click", () => set1RMUnit(b.dataset.unit)));
   $("#rmClearBtn")?.addEventListener("click", clear1RMCalculator);
   $("#updateAppBtn")?.addEventListener("click", updatePrimeOSNow);
 }

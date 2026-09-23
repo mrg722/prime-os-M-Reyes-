@@ -1224,14 +1224,20 @@ body.clock-open main::after{ height:380px; }
 .rm-history-row:first-child .rm-history-rank{background:linear-gradient(135deg,rgba(255,196,64,.35),rgba(255,140,40,.25));color:#ffe29a}
 .rm-history-value{font-size:17px;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap}
 .nav-icon-rm{font-size:12px;letter-spacing:-.3px}
+.unit-toggle{display:inline-flex;align-items:stretch;padding:3px;gap:2px;border-radius:12px;border:1px solid rgba(133,158,189,.16);background:rgba(5,12,21,.70)}
+.unit-toggle button{min-height:36px;min-width:44px;padding:0 10px;border:0;border-radius:9px;background:transparent !important;color:var(--muted);font-size:13px;font-weight:800;letter-spacing:.3px}
+.unit-toggle button:hover{color:#fff}
+.unit-toggle button.active{background:rgba(47,129,247,.22) !important;color:#fff;box-shadow:inset 0 0 0 1px rgba(74,163,255,.5)}
+.stack-actions .unit-toggle{flex:0 0 auto !important}
+@media (max-width: 980px){
+  .exercise-head .stack-actions{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:stretch}
+  .exercise-head .stack-actions > .ghost{padding:0 12px}
+  .exercise-head .stack-actions select{padding-left:12px;padding-right:6px}
+  .exercise-head .unit-toggle button{min-width:38px;padding:0 8px}
+}
+.rm-unit-toggle{margin-bottom:12px}
 .formula-box{padding:18px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025);line-height:1.6}
 .formula-box code{display:block;padding:12px;border-radius:10px;background:#0d1117;color:#fff;font-size:15px;overflow:auto}
-.rm-audit-total{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.rm-audit-total b{font-size:30px;color:#fff}
-.rm-audit-total span{color:var(--muted)}
-.rm-audit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
-.rm-audit-grid span{display:flex;justify-content:space-between;padding:8px 10px;border-radius:9px;background:rgba(255,255,255,.035);font-size:12px;color:var(--muted)}
-.rm-audit-grid b{color:#fff}
 .timer-presets{display:grid;grid-template-columns:1fr 18px 1fr;gap:6px;align-items:center}
 .timer-wheel-wrap{position:relative;display:grid;gap:4px}
 .timer-wheel-label{text-align:center;font-size:9px;font-weight:900;letter-spacing:1.5px;color:var(--muted)}

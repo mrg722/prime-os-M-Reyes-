@@ -285,13 +285,13 @@
             <div>
               <span class="eyebrow">Fuerza · Epley</span>
               <h3>Calculadora de RM</h3>
-              <p class="small-muted">Tu repetición máxima estimada desde cualquier serie: <b>RM = kg + (kg × reps × 0,03)</b>. Es una estimación, no una prueba máxima.</p>
+              <p class="small-muted">Tu repetición máxima estimada desde cualquier serie: <b>RM = carga + (carga × reps × 0,03)</b>. Es una estimación, no una prueba máxima.</p>
             </div>
             <button type="button" class="primary" data-go="one-rm">Abrir calculadora</button>
           </div>
           <div class="rm-inline-result">
             <strong>Carga por rango</strong>
-            <span>Elige ejercicio, kg y reps: verás tu RM y cuánto cargar para 1 a 12 repeticiones.</span>
+            <span>Anota carga (kg o lbs) y reps: verás tu RM y cuánto cargar para 1 a 12 repeticiones.</span>
           </div>
         </div>
 
@@ -333,19 +333,19 @@
               <p class="small-muted">Anota la carga y las repeticiones de una serie y obtén tu repetición máxima estimada.</p>
             </div>
           </div>
-          <div class="form-grid three rm-calculator-grid">
-            <label>Ejercicio
-              <select id="rmExerciseSelect" aria-label="Ejercicio para calcular el RM"></select>
-            </label>
+          <div class="unit-toggle rm-unit-toggle" id="rmUnitToggle" role="group" aria-label="Unidad de la calculadora">
+            <button type="button" data-unit="kg" class="active" aria-pressed="true">kg</button>
+            <button type="button" data-unit="lbs" aria-pressed="false">lbs</button>
+          </div>
+          <div class="form-grid rm-calculator-grid">
             <label>Carga usada
-              <div class="input-with-unit"><input id="rmLoadInput" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="Ej. 100"><span>kg</span></div>
+              <div class="input-with-unit"><input id="rmLoadInput" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="Ej. 100"><span id="rmLoadUnit">kg</span></div>
             </label>
             <label>Repeticiones
               <input id="rmRepsInput" type="number" min="1" max="15" step="1" inputmode="numeric" placeholder="Ej. 5">
             </label>
           </div>
           <div class="rm-form-actions">
-            <button type="button" id="rmUseLastBtn" class="ghost">Usar mi mejor serie</button>
             <button type="button" id="rmClearBtn" class="ghost">Limpiar</button>
           </div>
           <div class="rm-result-layout">
@@ -361,22 +361,15 @@
           </div>
         </div>
 
-        <div class="grid two">
-          <article class="card">
-            <span class="eyebrow">Fórmula</span>
-            <h3>Cómo se calcula</h3>
-            <div class="formula-box">
-              <code>RM = kg + (kg × reps × 0,03)</code>
-              <p>Ejemplo: 100 kg × 5 reps × 0,03 + 100 kg = <b>115 kg</b>.</p>
-              <p class="small-muted">Con 1 repetición el RM es la propia carga. Acepta de 1 a 15 reps; cuantas menos reps y mejor técnica, más fiable es la estimación.</p>
-            </div>
-          </article>
-          <article class="card">
-            <span class="eyebrow">Ejercicios</span>
-            <h3>Repertorio disponible</h3>
-            <div id="rmCatalogAudit"></div>
-          </article>
-        </div>
+        <article class="card">
+          <span class="eyebrow">Fórmula</span>
+          <h3>Cómo se calcula</h3>
+          <div class="formula-box">
+            <code>RM = carga + (carga × reps × 0,03)</code>
+            <p>Ejemplo: 100 kg × 5 reps × 0,03 + 100 kg = <b>115 kg</b>.</p>
+            <p class="small-muted">Con 1 repetición el RM es la propia carga. Funciona igual en kg o lbs: el resultado sale en la unidad que elijas (1 lb = 0,4536 kg). Acepta de 1 a 15 reps; cuantas menos reps y mejor técnica, más fiable es la estimación.</p>
+          </div>
+        </article>
 
         <div class="card">
           <div class="card-head">
