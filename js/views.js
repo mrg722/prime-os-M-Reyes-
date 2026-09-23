@@ -483,7 +483,7 @@ function renderExerciseProgress(){
 
 /* ---------- Calculadora 1RM / Epley ---------- */
 function oneRMEligibleExercises(){
-  const catalog=Object.values(window.V10_CATALOG || {}).filter(e=>{
+  const catalog=Object.values(V10_CATALOG || {}).filter(e=>{
     const cat=String(e.category||"");
     return e.countsAsVolume !== false && !["correctivo","control"].includes(cat) && !["cardio","recuperación"].includes(String(e.sourceMuscle||""));
   });
