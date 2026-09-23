@@ -152,6 +152,7 @@ function formatClock(totalSeconds){
 function timerBeep(){
   try {
     if(!timerAudio) return;
+    timerAudio.resume?.();
     [0, 0.35, 0.7].forEach(offset => {
       const osc = timerAudio.createOscillator();
       const gain = timerAudio.createGain();
@@ -165,13 +166,38 @@ function timerBeep(){
   } catch(e){}
 }
 
+// Alarma al terminar: sonido + vibración repetidos unos segundos (o hasta tocar el reloj) y destello visual.
+// iPhone no permite vibrar desde una web; ahí avisan el sonido y el destello.
+let timerAlarm = null;
+const TIMER_VIBRATION = [400, 150, 400, 150, 400];
+
+function timerVibrate(pattern = TIMER_VIBRATION){
+  try { if(typeof navigator.vibrate === "function") navigator.vibrate(pattern); } catch(e){}
+}
+
+function startTimerAlarm(){
+  stopTimerAlarm();
+  let rounds = 0;
+  const ring = () => { timerVibrate(); timerBeep(); if(++rounds >= 4) stopTimerAlarm(false); };
+  ring();
+  timerAlarm = setInterval(ring, 2200);
+  document.body.classList.add("timer-alarm");
+}
+
+function stopTimerAlarm(silence = true){
+  const ringing = timerAlarm !== null;
+  clearInterval(timerAlarm);
+  timerAlarm = null;
+  if(silence && ringing) timerVibrate(0);
+  setTimeout(() => { if(!timerAlarm) document.body.classList.remove("timer-alarm"); }, silence ? 0 : 1800);
+}
+
 function finishCountdown(){
   timerState.running = false;
   timerState.elapsedBefore = timerState.duration;
   timerState.finished = true;
   saveTimer();
-  try { navigator.vibrate?.([300, 120, 300, 120, 300]); } catch(e){}
-  timerBeep();
+  startTimerAlarm();
 }
 
 function renderTimer(){
@@ -230,6 +256,7 @@ function toggleTimer(){
 }
 
 function resetTimer(render = true){
+  stopTimerAlarm();
   timerState.running = false;
   timerState.elapsedBefore = 0;
   timerState.finished = false;
@@ -281,6 +308,8 @@ function bindTimer(){
   $("#timerMinusBtn").addEventListener("click", () => adjustTimer(-15));
   $("#timerPlusBtn").addEventListener("click", () => adjustTimer(15));
   $("#timerStartBtn").addEventListener("click", toggleTimer);
+  // Tocar el reloj o el botón flotante apaga la alarma.
+  ["#timerPanel", "#clockFab"].forEach(sel => $(sel)?.addEventListener("pointerdown", () => { if(timerAlarm) stopTimerAlarm(); }));
   $("#timerResetBtn").addEventListener("click", () => resetTimer());
   document.addEventListener("visibilitychange", () => { if(document.visibilityState === "visible") renderTimer(); });
   renderTimer();

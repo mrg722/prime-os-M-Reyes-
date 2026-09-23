@@ -1262,3 +1262,7 @@ body.clock-open main::after{height:430px}
   .timer-quick-presets{grid-template-columns:repeat(5,1fr)}
 }
 @media(max-width:760px){.rm-result-layout{grid-template-columns:1fr}}
+/* V10.8 alarma del reloj */
+@keyframes timerAlarmFlash{0%,100%{box-shadow:0 0 0 0 rgba(63,185,80,0)}50%{box-shadow:0 0 0 6px rgba(63,185,80,.55),0 0 34px rgba(63,185,80,.45)}}
+body.timer-alarm .clock-fab,body.timer-alarm .timer-panel{animation:timerAlarmFlash .9s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){body.timer-alarm .clock-fab,body.timer-alarm .timer-panel{animation:none;box-shadow:0 0 0 4px rgba(63,185,80,.6)}}
