@@ -58,10 +58,17 @@ function bindInputs(){
   $("#modeSelect")?.addEventListener("change", e => {
     collectDraftInputs();
     if(!confirmDiscardDraft()){ e.target.value = state.selectedMode; return; }
-    state.selectedMode = String(e.target.value);
-    state.routine = clone(PLAN.routineByMode?.[state.selectedMode] || PLAN.routine);
-    state.days = clone(PLAN.modeDays[state.selectedMode] || PLAN.days);
-    state.weeklyTargets = clone(PLAN.weeklyTargetsByMode[state.selectedMode] || PLAN.weeklyTargets || {});
+    const nextMode = String(e.target.value);
+    state.routinesByMode = state.routinesByMode || {};
+    state.routinesByMode[String(state.selectedMode)] = clone(state.routine);
+    state.selectedMode = nextMode;
+    state.routine = clone(state.routinesByMode[nextMode] || PLAN.routineByMode?.[nextMode] || PLAN.routine);
+    state.routinesByMode[nextMode] = clone(state.routine);
+    state.days = clone(PLAN.modeDays[nextMode] || PLAN.days);
+    // Los objetivos editados por el usuario se mantienen por modo; solo se crea el bloque si aún no existe.
+    state.weeklyTargetsByMode = state.weeklyTargetsByMode || {};
+    if(!state.weeklyTargetsByMode[nextMode]) state.weeklyTargetsByMode[nextMode] = clone(PLAN.weeklyTargetsByMode?.[nextMode] || PLAN.weeklyTargets || {});
+    state.weeklyTargets = clone(state.weeklyTargetsByMode[nextMode]);
     state.selectedDay = state.days[0];
     state.selectedWeekday = weekdayOf(state.selectedDay) || WEEKDAYS[0];
     saveState();
@@ -183,9 +190,11 @@ function bindMobileDrawer(){
 
 /* ---------- Uso sin internet ---------- */
 
-function registerServiceWorker(){
+async function registerServiceWorker(){
   if(!("serviceWorker" in navigator) || !location.protocol.startsWith("http")) return;
-  // La recarga al llegar una versión nueva la hace el script de index.html; el registro sin
-  // guardar se guarda al salir de la página (pagehide), así que no se pierde.
-  navigator.serviceWorker.register("sw.js").catch(err => console.warn("Service worker no registrado:", err));
+  try{
+    const reg = await navigator.serviceWorker.register("sw.js?v="+APP_VERSION, {updateViaCache:"none"});
+    await reg.update();
+    if(reg.waiting) reg.waiting.postMessage({type:"SKIP_WAITING"});
+  }catch(err){ console.warn("Service worker no registrado:", err); }
 }
