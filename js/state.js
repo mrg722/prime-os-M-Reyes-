@@ -252,6 +252,8 @@ function normalizeState(data){
     session: s.session || "",
     weekday: s.weekday || "",
     week: s.week || data.selectedWeek,
+    // Conserva el modo (2D/3D/4D) con que se guardó la sesión; antes se perdía al recargar.
+    ...(s.mode ? {mode: String(s.mode)} : {}),
     day: s.day || data.selectedDay,
     readiness: s.readiness || {status:"Sin dato"},
     exercises: (s.exercises || []).map(e => ({
