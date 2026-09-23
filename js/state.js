@@ -23,7 +23,7 @@ async function loadPlan(){
   const modeDays = {
     "4": ["Martes - Upper A","Miércoles - Lower A","Viernes - Upper B","Sábado - Lower B","Jueves - Cardio/Abs/Movilidad"],
     "3": ["Martes - Upper A","Miércoles - Lower A","Sábado - Full Body · Excel","Jueves - Cardio/Abs/Movilidad"],
-    "2": ["Full Body A · Adaptativo 2D","Full Body B · Adaptativo 2D"]
+    "2": ["Full Body A · Adaptativo 2D","Full Body B · Adaptativo 2D","Cardio/Abs/Movilidad · Adaptativo 2D"]
   };
   const map3 = {"Martes - Upper A":"Upper A","Miércoles - Lower A":"Lower A","Sábado - Full Body · Excel":"Full Body · Excel","Jueves - Cardio/Abs/Movilidad":"Cardio/Abs/Movilidad"};
   const map4 = {"Martes - Upper A":"Upper A","Miércoles - Lower A":"Lower A","Viernes - Upper B":"Upper B","Sábado - Lower B":"Lower B","Jueves - Cardio/Abs/Movilidad":"Cardio/Abs/Movilidad"};
